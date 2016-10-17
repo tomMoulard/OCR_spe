@@ -9,5 +9,6 @@ int main()
 {
     Pixel *p = new_pixel(100, 50, 25);
     printf("%u\n", rgb_average(p));
+    free(p);
     return 0;
 }
