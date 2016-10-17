@@ -9,7 +9,7 @@ LDLIBS=
 # you should at least create empty file insert_sort.c and quick_sort.c in
 # order to compile
  
-SRC= pixel.c main_tests.c
+SRC= types/pixel.c image_op/binarize.c main_tests.c
 OBJ= ${SRC:.c=.o}
 DEP= ${SRC:.c=.d}
  
