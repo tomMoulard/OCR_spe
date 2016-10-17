@@ -7,7 +7,7 @@ CFLAGS= -Wall -Wextra -Werror -std=c99 -O3
 LDFLAGS=
 LDLIBS=
 
-SRC= split.c main.c
+SRC= cut.c rlsa.c main.c
 OBJ= ${SRC:.c=.o}
 
 all: main
