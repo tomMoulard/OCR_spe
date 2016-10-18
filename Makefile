@@ -1,15 +1,12 @@
 # Makefile
 
 CC=gcc
-CPPFLAGS= -MMD -D_XOPEN_SOURCE=500
+CPPFLAGS= -MMD -D_XOPEN_SOURCE=500 `pkg-config --cflags sdl`
 CFLAGS= -Wall -Wextra -std=c99 -O2
 LDFLAGS=
-LDLIBS=
+LDLIBS= `pkg-config --libs sdl` -lSDL_image
 
-# you should at least create empty file insert_sort.c and quick_sort.c in
-# order to compile
-
-SRC= types/pixel.c image_op/binarize.c main_tests.c matrix_op/rlsa.c SDL/main.c SDL/pixel_operations.c
+SRC= types/pixel.c image_op/binarize.c main_tests.c matrix_op/rlsa.c SDL/pixel_operations.c
 OBJ= ${SRC:.c=.o}
 DEP= ${SRC:.c=.d}
 

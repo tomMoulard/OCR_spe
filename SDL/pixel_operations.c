@@ -68,10 +68,10 @@ unsigned** frompictomatbin(SDL_Surface *surface,int x, int y){
       g = (pixel & 0x00ff0000) >> 16;
       b = (pixel & 0xff000000) >> 24;
       if ((r + g + b) / 3 < 127) {
-        mat[i][j] = 0;
+        mat[i][j] = 1;
       }
       else{
-        mat[i][j] = 1;
+        mat[i][j] = 0;
       }
     }
   }
@@ -82,14 +82,21 @@ unsigned** frompictomatbin(SDL_Surface *surface,int x, int y){
 SDL_Surface* frommatbintopict(unsigned** mat,int x,int y){
   Uint32 white = 0x00000000;
   Uint32 black = 0xffffffff;
+  Uint32 yolo = 0xff0000;
   SDL_Surface *pict = SDL_CreateRGBSurface(0,x,y,32,0,0,0,0);
   for (int i = 0; i < x; i++) {
     for (int j = 0; j < y; j++) {
-      if (mat[i][j] == 0) {
+      if (mat[i][j] == 1) {
         putpixel(pict,i,j,white);
       }
       else{
-        putpixel(pict,i,j,black);
+        if (mat[i][j] == 2) {
+          putpixel(pict,i,j,yolo);
+        }
+        else{
+          putpixel(pict,i,j,black);
+        }
+
       }
     }
   }

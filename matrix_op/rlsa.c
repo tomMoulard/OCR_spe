@@ -36,7 +36,7 @@ void _array_hor(unsigned *source,unsigned *dest,size_t len,int coef){
   }
 }
 
-unsigned** horizontal(unsigned **matrix,size_t x, size_t y, int coef){
+unsigned** vertical(unsigned **matrix,size_t x, size_t y, int coef){
   unsigned **mat = calloc(x,sizeof(unsigned[y]));
   for (size_t i = 0; i < x; i++) {
     mat[i] = calloc(y,sizeof(unsigned));
@@ -58,14 +58,15 @@ int isokv(unsigned **matrix,size_t y,size_t len,size_t pos,int coef){
   }
 }
 
-unsigned** vertical(unsigned **matrix,size_t x,size_t y,int coef){
-
+unsigned** horizontal(unsigned **matrix,size_t x,size_t y,int coef){
   unsigned **mat = calloc(x,sizeof(unsigned[y]));
-  for (size_t i = 0; i < y; i++) {
+  for (size_t i = 0; i < x; i++) {
     mat[i] = calloc(y,sizeof(unsigned));
   }
+
   for (size_t j = 0; j < y; j++) {
     int isblack = isokv(matrix,j,x,0,coef);
+
     for (size_t i = 0; i < x; i++) {
       if (matrix[i][j] == 1) {
         isblack = isokv(matrix,j,x,i + 1,coef);
