@@ -15,9 +15,10 @@ Pixel *new_pixel(Uint8 r, Uint8 g, Uint8 b){
 }
 
 Pixel **new_pixel_matrix(int dimx, int dimy){ 
-    Pixel **mat = calloc(dimx, sizeof(Pixel[dimy]));
+    Pixel **mat;
+    mat = malloc(dimx * sizeof(Pixel*));
     for(int i =0; i < dimx; i++)
-        mat[i] = calloc(dimy, sizeof(Pixel));
+        mat[i] = malloc(dimy * sizeof(Pixel));
     return mat;
 }
 
