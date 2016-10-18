@@ -8,7 +8,6 @@ unsigned **binarize(Pixel **image, int dimx, int dimy)
         mat[x] = calloc(dimy, sizeof(unsigned));
         for(int y = 0; y < dimy; y++)
         {
-
             Uint8 average = rgb_average(p);
             if(average > 127)
                 mat[x][y] = 1;

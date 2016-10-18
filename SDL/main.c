@@ -5,6 +5,7 @@
 # include <SDL/SDL.h>
 # include <SDL/SDL_image.h>
 
+# include "pixel_operations.h"
 
 void wait_for_keypressed(void) {
   SDL_Event             event;
@@ -66,7 +67,12 @@ SDL_Surface* display_image(SDL_Surface *img) {
 }
 
 int main(void) {
-SDL_Surface *img = load_image("img.jpeg");
+SDL_Surface *img = load_image("test.bmp");
+int w = 1024;
+int h = 768;
+unsigned **mat = frompictomatbin(img,w,h);
+img = frommatbintopict(mat,w,h);
+
 img = display_image(img);
 return 0;
 }

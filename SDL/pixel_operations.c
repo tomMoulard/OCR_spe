@@ -55,3 +55,43 @@ void putpixel(SDL_Surface *surface, unsigned x, unsigned y, Uint32 pixel) {
     break;
   }
 }
+
+unsigned** frompictomatbin(SDL_Surface *surface,int x, int y){
+  Uint8 r,g,b;
+  Uint32 pixel;
+  unsigned** mat = calloc(x,sizeof(unsigned[y]));
+  for (int i = 0; i < x; i++) {
+    mat[i] = calloc(y,sizeof(unsigned));
+    for (int j = 0; j < y; j++) {
+      pixel = getpixel(surface,i,j);
+      r = (pixel & 0x0000ff00) >> 8;
+      g = (pixel & 0x00ff0000) >> 16;
+      b = (pixel & 0xff000000) >> 24;
+      if ((r + g + b) / 3 < 127) {
+        mat[i][j] = 0;
+      }
+      else{
+        mat[i][j] = 1;
+      }
+    }
+  }
+  return mat;
+}
+
+
+SDL_Surface* frommatbintopict(unsigned** mat,int x,int y){
+  Uint32 white = 0x00000000;
+  Uint32 black = 0xffffffff;
+  SDL_Surface *pict = SDL_CreateRGBSurface(0,x,y,32,0,0,0,0);
+  for (int i = 0; i < x; i++) {
+    for (int j = 0; j < y; j++) {
+      if (mat[i][j] == 0) {
+        putpixel(pict,i,j,white);
+      }
+      else{
+        putpixel(pict,i,j,black);
+      }
+    }
+  }
+  return pict;
+}
