@@ -100,34 +100,3 @@ unsigned** rlsa(unsigned **matrix, size_t x, size_t y ,int coefh,int coefv){
   return mat;
 
 }
-
-/*
-size_t* neighboroud(unsigned **matrix,size_t x,size_t y, size_t posx,size_t posy,
-size_t coef, size_t *len){
-  size_t *neigh = malloc(sizeof(size_t));
-
-  for (size_t i = (posx > coef)?posx - coef:0;
-  i < (posx < x - coef)?posx + coef: x; i++) {
-    for (size_t j = (posy > coef)? posy - coef : 0;
-     j < (posy < x - coef)? posy + coef: y; j++) {
-      if (matrix[i][j] == 1) {
-        *(neigh + len) = i;
-        (*len)++;
-        *(neigh + len) = j
-        (*len)++;
-      }
-    }
-  }
-}
-
-struct Rect blockpos(unsigned **matrix,size_t *pos,size_t x, size_t y,){
-
-}
-
-
-size_t* blockdetect(unsigned **matrix,size_t x ,size_t y,size_t coef){
-  coord = malloc(sizeof(size_t));
-  size_t len = 0;
-  size_t *neighbor = neighboroud(matrix,x,y,)
-}
-*/

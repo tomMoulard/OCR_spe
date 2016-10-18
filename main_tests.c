@@ -11,6 +11,7 @@
 # include "image_op/binarize.h"
 # include "matrix_op/rlsa.h"
 # include "SDL/pixel_operations.h"
+# include "matrix_op/rectangle.h"
 
 void wait_for_keypressed(void) {
   SDL_Event             event;
@@ -103,6 +104,7 @@ unsigned **mat = frompictomatbin(img,w,h);
 int coefh = w / 10;
 int coefv = h / 3;
 
+
 unsigned **matrlsa = horizontal(mat,w,h,coefh);
 
 img = frommatbintopict(matrlsa,w,h);
@@ -120,8 +122,6 @@ matrlsa = rlsa(mat,w,h,coefh,coefv);
 img = frommatbintopict(matrlsa,w,h);
 
 img = display_image(img);
-
-
 
 
 return 0;
