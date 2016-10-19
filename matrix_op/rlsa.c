@@ -96,7 +96,12 @@ unsigned** rlsa(unsigned **matrix, size_t x, size_t y ,int coefh,int coefv){
       mat[i][j] = math[i][j] && matv[i][j];
     }
   }
-
+  for (size_t i = 0; i < x; i++) {
+    free(math[i]);
+    free(matv[i]);
+  }
+  free(math);
+  free(matv);
   return mat;
 
 }

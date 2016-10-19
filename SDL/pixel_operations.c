@@ -82,7 +82,7 @@ unsigned** frompictomatbin(SDL_Surface *surface,int x, int y){
 SDL_Surface* frommatbintopict(unsigned** mat,int x,int y){
   Uint32 white = 0x00000000;
   Uint32 black = 0xffffffff;
-  Uint32 yolo = 0xff0000;
+  Uint32 yolo = 0xffff0000;
   SDL_Surface *pict = SDL_CreateRGBSurface(0,x,y,32,0,0,0,0);
   for (int i = 0; i < x; i++) {
     for (int j = 0; j < y; j++) {

@@ -15,4 +15,6 @@
 
   unsigned** cut_y(unsigned **mat,size_t x, size_t y1,size_t y2);
 
+  unsigned** copy_mat(unsigned **matrix, size_t x,size_t y);
+
   # endif

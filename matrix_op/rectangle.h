@@ -3,13 +3,20 @@
 # include <stdio.h>
 # include <stdlib.h>
 
-typedef struct Rect Rect;
-struct Rect{
-  size_t x1;
-  size_t y1;
-  size_t x2;
-  size_t y2;
+typedef struct Coordinates Coordinates;
+struct Coordinates{
+  size_t x;
+  size_t y;
 };
 
+typedef struct Rect Rect;
+struct Rect{
+  Coordinates a1;
+  Coordinates a2;
+};
+
+
 Rect* allrect(unsigned **matrix,
-              size_t x,size_t y, size_t coef,size_t *len);
+              size_t x,size_t y, size_t coef,size_t len,size_t *max);
+
+void displayrect(unsigned **matrix,size_t x,size_t y,size_t coef);

@@ -7,11 +7,13 @@
 # include <SDL/SDL.h>
 # include <SDL/SDL_image.h>
 
+
 # include "types/pixel.h"
 # include "image_op/binarize.h"
 # include "matrix_op/rlsa.h"
 # include "SDL/pixel_operations.h"
 # include "matrix_op/rectangle.h"
+# include "matrix_op/cut.h"
 
 void wait_for_keypressed(void) {
   SDL_Event             event;
@@ -96,8 +98,8 @@ void matrix_print(unsigned **matrix, size_t x,size_t y)
 
 int main(void) {
 SDL_Surface *img = load_image("SDL/test.bmp");
-int w = 1024;
-int h = 768;
+size_t w = 1024;
+size_t h = 768;
 unsigned **mat = frompictomatbin(img,w,h);
 
 
@@ -105,23 +107,17 @@ int coefh = w / 10;
 int coefv = h / 3;
 
 
-unsigned **matrlsa = horizontal(mat,w,h,coefh);
 
-img = frommatbintopict(matrlsa,w,h);
+unsigned **matrlsa = rlsa(mat,w,h,coefh,coefv);
 
-img = display_image(img);matrlsa = rlsa(mat,w,h,coefh,coefv);
+displayrect(mat,w,h,5);
+img = frommatbintopict(mat,w,h);
+display_image(img);
 
-matrlsa = vertical(mat,w,h,coefv);
 
-img = frommatbintopict(matrlsa,w,h);
 
-img = display_image(img);
-
-matrlsa = rlsa(mat,w,h,coefh,coefv);
-
-img = frommatbintopict(matrlsa,w,h);
-
-img = display_image(img);
+free(mat);
+free(matrlsa);
 
 
 return 0;

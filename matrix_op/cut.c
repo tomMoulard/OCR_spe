@@ -34,3 +34,14 @@
     }
     return mat;
   }
+
+unsigned** copy_mat(unsigned **matrix, size_t x,size_t y){
+  unsigned **mat = calloc(x,sizeof(unsigned[y]));
+  for (size_t i = 0; i < x; i++) {
+    mat[i] = calloc(y,sizeof(unsigned));
+    for (size_t j = 0; j < y; j++) {
+      mat[i][j] = matrix[i][j];
+    }
+  }
+  return mat;
+}
