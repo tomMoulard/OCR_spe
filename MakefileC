@@ -1,0 +1,22 @@
+# Makefile
+
+CC=gcc
+CFLAGS= -Wall -Wextra -std=c99 -O2
+CPPFLAGS= -MMD -D_XOPEN_SOURCE=500 
+LDFLAGS=
+LDLIBS= -lm
+
+SRC= types/pixel.c image_op/binarize.c main.c
+OBJ= ${SRC:.c=.o}
+DEP= ${SRC:.c=.d}
+
+all:
+
+-include ${DEP}
+
+main: ${OBJ}
+
+clean:
+	rm -f ${OBJ} ${DEP} main
+
+# END

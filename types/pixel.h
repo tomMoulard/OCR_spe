@@ -4,9 +4,14 @@
 # include <stdlib.h>
 # include <SDL/SDL.h>
 
-typedef struct _Pixel Pixel;
-Pixel *new_pixel(Uint8 r, Uint8 g, Uint8 b);
+typedef struct _Pixel{
+    Uint8 r;
+    Uint8 g;
+    Uint8 b;
+}Pixel;
+
+Pixel new_pixel(Uint8 r, Uint8 g, Uint8 b);
 Pixel **new_pixel_matrix(int dimx, int dimy);
-Uint8 rgb_average(Pixel *pixel);
+void free_pixel_matrix(Pixel **mat, int dmx);//, int dmy);
 
 # endif

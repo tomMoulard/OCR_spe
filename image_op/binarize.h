@@ -3,9 +3,13 @@
 
 # include <SDL/SDL.h>
 # include <stdlib.h>
+# include <math.h>
 
 # include "../types/pixel.h"
 
-unsigned **binarize(Pixel **image, int dimx, int dimy);
+void to_grey_scale(Pixel **image, Pixel **dest, int dmx, int dmy);
+void get_histogram(Pixel **grey_mat, int* array, int dmx, int dmy);
+Uint8 get_threshold(int *histogram, int total);
+void binarize(Pixel **image, unsigned **mat, int dimx, int dimy);
 
 # endif
