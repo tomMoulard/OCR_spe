@@ -106,7 +106,6 @@ void displayrect(unsigned **matrix,size_t x,size_t y,size_t coef)
 
   for (size_t n = 0; n < max; n++) {
     Rect currect = rect[n];
-    printrect(currect);
     for (size_t i = currect.a2.x; i < currect.a1.x; i++) {
       matrix[i][currect.a1.y] = 2;
       matrix[i][currect.a2.y] = 2;
