@@ -5,7 +5,7 @@ CC=gcc
 CPPFLAGS= -MMD
 CFLAGS= -Wall -Wextra -std=c99 -O2
 LDFLAGS=
-LDLIBS=
+LDLIBS=-lm
  
 SRC= nr.c
 DEP= ${SRC:.c=.d}
