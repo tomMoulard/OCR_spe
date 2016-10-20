@@ -2,6 +2,13 @@
 network.py
 ~~~~~~~~~~
 
+use :
+import network
+
+net = network.Network([784, 100, 10]) //to initiate network
+
+net.SGD(training_data, 30, 10, 3.0, test_data=test_data) //to process network
+
 A module to implement the stochastic gradient descent learning
 algorithm for a feedforward neural network.  Gradients are calculated
 using backpropagation.  Note that I have focused on making the code
@@ -39,7 +46,6 @@ class Network(object):
         """Return the output of the network if ``a`` is input."""
         for b, w in zip(self.biases, self.weights):
             a = sigmoid(np.dot(w, a)+b)
-        print a
         return a
 
     def SGD(self, training_data, epochs, mini_batch_size, eta,
