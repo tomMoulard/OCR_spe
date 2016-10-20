@@ -1,10 +1,10 @@
 # Makefile
 
 CC=gcc
+CPPFLAGS= -MMD -D_XOPEN_SOURCE=500 `pkg-config --cflags sdl`
 CFLAGS= -Wall -Wextra -std=c99 -O2
-CPPFLAGS= -MMD -D_XOPEN_SOURCE=500 
 LDFLAGS=
-LDLIBS= -lm
+LDLIBS= -lm `pkg-config --libs sdl` -lSDL_image
 
 SRC= types/pixel.c image_op/binarize.c main.c
 OBJ= ${SRC:.c=.o}

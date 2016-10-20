@@ -20,7 +20,8 @@ Pixel **new_pixel_matrix(int dimx, int dimy){
 void free_pixel_matrix(Pixel **mat, int dimx)//, int dimy)
 {
     for(int i = 0; i < dimx; i++)
-    {   //for(int j = 0; j < dimy; i++)
+    {   
+        //for(int j = 0; j < dimy; i++)
             //free((mat[i] + j));
         free(mat[i]);
     }

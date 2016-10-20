@@ -20,7 +20,6 @@ void get_histogram(Pixel **grey_mat, int *array, int dimx, int dimy)
     for(int i = 0; i < dimx; i++)
         for(int j = 0; j < dimy; j++)
             *(array + grey_mat[i][j].r) += 1;
-
 }
 
 Uint8 get_threshold(int *histogram, int total)
@@ -40,7 +39,6 @@ Uint8 get_threshold(int *histogram, int total)
         wf = total - wb;
         if( wf == 0)
             break;
-
         sumb += i * histogram[i];
         mb = sumb / wb;
         mf = (sum - sumb) / wf;
@@ -53,7 +51,22 @@ Uint8 get_threshold(int *histogram, int total)
             max = between;
         }
     }
-    return((threshold1 +threshold2) / 2);
+    Uint8 threshold = ((threshold1 + threshold2) / 2);
+    printf("threshold = %u\n", threshold);
+    return threshold;
+}
+
+void array_print(int array[], size_t len)
+{
+  int line = 0;
+  for (size_t i = 0; i < len; ++i) {
+    if (line > 72) {
+      printf("|`|\n");
+      line = 0;
+    }
+    line += printf("| %d", array[i]);
+  }
+  printf("|\n");
 }
 
 void binarize(Pixel **image, unsigned **mat, int dimx, int dimy)
@@ -61,16 +74,19 @@ void binarize(Pixel **image, unsigned **mat, int dimx, int dimy)
     Pixel **grey_mat = new_pixel_matrix(dimx, dimy);
     to_grey_scale(image, grey_mat, dimx, dimy);
     int *histogram = malloc(256 * sizeof(int));
+    array_print(histogram, 256);
     Uint8 threshold = get_threshold(histogram, dimx*dimy);
+    while(threshold > 200)
+        threshold = get_threshold(histogram, dimx*dimy);
     for(int i = 0; i < dimx; i++)
     {
         for(int j = 0; j < dimy; j++)
         {
             Uint8 g = grey_mat[i][j].r;
             if(g > threshold)
-                mat[i][j] = 1;
-            else
                 mat[i][j] = 0;
+            else
+                mat[i][j] = 1;
         }
     }
     free_pixel_matrix(grey_mat, dimx);//, dimy);
