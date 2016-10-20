@@ -13,7 +13,7 @@
 # include "matrix_op/rlsa.h"
 # include "SDL/pixel_operations.h"
 # include "matrix_op/rectangle.h"
-# include "matrix_op/cut.h"
+# include "matrix_op/matrix_op.h"
 
 void wait_for_keypressed(void) {
   SDL_Event             event;
@@ -97,27 +97,23 @@ void matrix_print(unsigned **matrix, size_t x,size_t y)
 }
 
 int main(void) {
-SDL_Surface *img = load_image("SDL/test.bmp");
-size_t w = 1024;
-size_t h = 768;
-unsigned **mat = frompictomatbin(img,w,h);
+  SDL_Surface *img = load_image("SDL/test.bmp");
+  size_t w = 1024;
+  size_t h = 768;
+  unsigned **mat = frompictomatbin(img,w,h);
 
-
-int coefh = w / 10;
-int coefv = h / 3;
-
-
-
-unsigned **matrlsa = rlsa(mat,w,h,coefh,coefv);
-
-displayrect(mat,w,h,5);
-img = frommatbintopict(mat,w,h);
-display_image(img);
+  size_t len = 0;
+  unsigned ***matmat = getrect(mat,w,h,4,5,&len);
+  for (size_t i = 0; i < len; i++) {
+      img = frommatbintopict(matmat[i],30,30);
+      display_image(img);
+  }
 
 
 
-free(mat);
-free(matrlsa);
+
+  free(mat);
+  //free(matest);
 
 
 return 0;

@@ -3,7 +3,7 @@
 # include <stdio.h>
 # include <stdlib.h>
 
-# include "cut.h"
+# include "matrix_op.h"
 
   void array_copy(unsigned *source,unsigned *dest, size_t len){
     for (size_t i = 0; i < len; i++) {
@@ -35,6 +35,18 @@
     return mat;
   }
 
+  unsigned** cut(unsigned **matrix,size_t x1, size_t x2,size_t y1,size_t y2){
+
+    unsigned **mat = calloc(x2 - x1,sizeof(unsigned[y2 - y1]));
+    for (size_t i = 0; i < x2 - x1; i++) {
+      mat[i] = calloc(y2 - y1,sizeof(unsigned));
+      for (size_t j = 0; j < y2 - y1; j++) {
+        mat[i][j] = matrix[i + x1][j + y1];
+      }
+    }
+    return mat;
+  }
+
 unsigned** copy_mat(unsigned **matrix, size_t x,size_t y){
   unsigned **mat = calloc(x,sizeof(unsigned[y]));
   for (size_t i = 0; i < x; i++) {
@@ -45,3 +57,21 @@ unsigned** copy_mat(unsigned **matrix, size_t x,size_t y){
   }
   return mat;
 }
+
+unsigned** expand_mat(unsigned **matrix,size_t x,size_t y,
+  size_t xdest,size_t ydest){
+
+    unsigned **mat = calloc(xdest,sizeof(unsigned[ydest]));
+    for (size_t i = 0; i < x; i++) {
+      mat[i] = calloc(ydest,sizeof(unsigned));
+      for (size_t j = 0; j < y; j++) {
+        mat[i][j] = matrix[i][j];
+      }
+    }
+
+    for (size_t i = x; i < xdest; i++) {
+      mat[i] = calloc(ydest,sizeof(unsigned));
+    }
+
+    return mat;
+  }

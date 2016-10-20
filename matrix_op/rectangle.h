@@ -17,6 +17,10 @@ struct Rect{
 
 
 Rect* allrect(unsigned **matrix,
-              size_t x,size_t y, size_t coef,size_t len,size_t *max);
+              size_t x,size_t y, size_t coefh,size_t coefv,
+              size_t len,size_t *max);
 
-void displayrect(unsigned **matrix,size_t x,size_t y,size_t coef);
+void displayrect(unsigned **matrix,size_t x,size_t y,size_t coefh,size_t coefv);
+
+unsigned ***getrect(unsigned **matrix,size_t x,size_t y,
+  size_t coefh,size_t coefv,size_t *len);
