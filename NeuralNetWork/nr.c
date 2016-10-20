@@ -17,6 +17,10 @@ double sigmoid(double z)
 {
 	return 1.0 / (1.0 + exp(z));
 }
+double sigmoidPrime(double z)
+{
+	return sigmoid(z) * (1 - sigmoid(z));
+}
 //prints
 void printArrayIntLen(int *array, int len)
 {
@@ -141,33 +145,81 @@ Network makeNetWork(int len, int *sizes)
 	//lenBiases
 	net.lenBiases = net.len - 1;
 	//**weight
-	int x = sizes[0], y = sizes[1];
+	int x = 0, y = sizes[1];
 	double ***res = malloc(sizeof(double) * net.num_layers);
 	net.weight = res;
-	for (int q = 0; q < net.num_layers; ++q)
+	for (int q = 0; q < net.num_layers - 1; ++q)
 	{
-		res[q] = randnFile(net.seed, x, y);
+		res[q] = randnFile(net.seed, sizes[x], sizes[y]);
 		x = x + 1;
 		y = y + 1;
 	}
 	//lenWeight
 	return net;
 }
-/*
-int **dot(int *a, int *b, int leni, int lenj)
+
+void freeNetwork(Network net)
 {
-	int *resj = malloc(lenj * sizeof(int));
-	int **res = malloc(leni * sizeof(resj));
-	for (int i = 0; i < leni; ++i)
+	free(net.sizes);
+	for (int i = 0; i < net.len; ++i)
 	{
-		for (int j = 0; j < lenj; ++j)
+		free(net.biases[i]);
+	}
+	free(net.biases);
+	int x = 0;
+	for (int j = 0; j < net.num_layers - 1; ++j)
+	{
+		for (int w = 0; w < net.sizes[x]; ++w)
 		{
-			
+			printf("yolo1\n");
+			free(net.weight[j][w]);
+		}
+		printf("yolo2\n");
+		x = x + 1;
+		//free(net.weight[j]);
+
+	}
+	free(net.weight);
+}
+
+Network update_mini_bash(Network net, double eta)
+{
+	double **nabla_b = malloc(sizeof(double *) * net.len);
+	for (double i = 0; i < net.len; ++i)
+	{
+		double *tmp = malloc(sizeof(double) * net.sises[i])
+		for (int j = 0; j < net.sizes[i]; ++j)
+		{
+			tmp[j] =0;
 		}
 	}
-	return res;
+	double ***nabla_w = malloc(sizeof(double **) * net.num_layers);
+	double x = 0;
+	double y = 1;
+	for (double i = 0; i < net.num_layers - 1; ++i)
+	{
+		double **tmpi = malloc(sizeof(double *) * net.sizes[x]);
+		for (int j = 0; j < net.sizes[x]; ++j)
+		{
+			double *tmpj = malloc(sizeof(double) * net.size[y]);
+			for (int k = 0; k < net.sizes[y]; ++k)
+			{
+				tmpj[k] = 0;
+			}
+		}
+		x = 1 + x;
+		y = 1 + y;
+	}
+
+	return net;
 }
-*/
+
+void saveNr(Network, net)
+{
+	FILE *nr;
+	nr = fopen("REMOVEME!neuralNetwork.nr", "r");
+	fclose(nr);
+}
 
 //open a .nr file to get a previouly saved network : WORK IN PROGRESS
 Network openNr()
@@ -184,7 +236,8 @@ Network openNr()
     return net;
 }
 
-int *setNetwork(int type){
+int *setNetwork(int type, int nbPixels)
+{
 	if (type == 1) //xor -> set len to 3
 	{
 		int *res   = malloc(3 * sizeof(int));
@@ -196,7 +249,7 @@ int *setNetwork(int type){
 	if (type == 2)//picture recognition [0-9]
 	{
 		int *res   = malloc(3 * sizeof (int));
-		*res       = 273;
+		*res       = nbPixels;
 		*(res + 1) = 100;//fixme
 		*(res + 2) = 10;
 		return res;
@@ -204,7 +257,7 @@ int *setNetwork(int type){
 	if (type == 3)//picture recognition [0-9a-zA-Z]
 	{
 		int *res   = malloc(3 * sizeof (int));
-		*res       = 273;
+		*res       = nbPixels;
 		*(res + 1) = 100;//fixme
 		*(res + 2) = 62;
 		return res;
@@ -212,7 +265,7 @@ int *setNetwork(int type){
 	if (type == 4)//picture recognition [0-9]
 	{ 
 		int *res   = malloc(3 * sizeof (int));
-		*res       = 273;
+		*res       = nbPixels;
 		*(res + 1) = 100; //fixme
 		*(res + 2) = 185;
 		return res;
@@ -226,15 +279,18 @@ int main(int argc, char *argv[])
 {
 	if (argc < 2)
 		errx(1, "Please input a valid input :\n	- number of pixel in width\n 	- list of pixels\n");
+	argv[0]++;
 	int len = 3;
+	int nbPixels = 900;
 	//int **test = makeNetWorkOld(len, net);
 	Network net = openNr();
 	if (net.len == -1)
 	{
 		int type = 1;
-		net = makeNetWork(len, setNetwork(type));
+		net = makeNetWork(len, setNetwork(type, nbPixels));
 	}
 	printNetwork(net);
-	argv[0]++;
+	saveNr(net);
+	freeNetwork(net);
 	return 0;
 }

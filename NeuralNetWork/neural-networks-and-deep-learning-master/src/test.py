@@ -15,8 +15,7 @@ printArray(b)
 print "weights"
 a = [np.random.randn(y, x) for x, y in zip(sizes[:-1], sizes[1:])]
 printArray(a)
-print a
-sizes.append(5) 
-a = [np.random.randn(y, x) for x, y in zip(sizes[:-1], sizes[1:])]
-printArray(a)
-print a
+#print a
+
+nabla_b = [np.zeros(bia.shape) for bia in b]
+printArray(nabla_b)
