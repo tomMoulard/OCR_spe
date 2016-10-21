@@ -83,9 +83,9 @@ void binarize(Pixel **image, unsigned **mat, int dimx, int dimy)
         {
             Uint8 g = grey_mat[i][j].r;
             if(g > threshold)
-                mat[i][j] = 1;
-            else
                 mat[i][j] = 0;
+            else
+                mat[i][j] = 1;
         }
     }
     free(histogram);
