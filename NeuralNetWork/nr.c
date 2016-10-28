@@ -17,9 +17,49 @@ double sigmoid(double z)
 {
 	return 1.0 / (1.0 + exp(z));
 }
+double *sigmoidStar(double *z, int len)
+{
+	double *res = malloc(sizeof(double) * len);
+	for (int i = 0; i < len; ++i)
+	{
+		res[i] = sigmoid(z[i]);
+	}
+	return res;
+}
 double sigmoidPrime(double z)
 {
 	return sigmoid(z) * (1 - sigmoid(z));
+}
+double **transpose(double ***toTranspose)
+{
+	return *toTranspose;
+}
+double *dotdouble(double coeff, double *a, int len)
+{
+	for (int i = 0; i < len; ++i)
+	{
+		*a *= coeff;
+	}
+	return a;
+}
+double *append(double *a, double *b, int lenA, int lenB)
+{
+	double *res = malloc(sizeof(a) * lenA + sizeof(b) * lenB);
+	res = a;
+	for (int i = lenA; i < lenB; ++i)
+	{
+		res[i] = *b;
+	}
+	return res;
+}
+double dotstar(double *a, double *b, int len)
+{
+	double res;
+	for (int i = 0; i < len; ++i)
+	{
+		printf("dotstar\n");
+	}
+	return res;
 }
 //prints
 void printArrayIntLen(int *array, int len)
@@ -64,62 +104,14 @@ void printNetwork(Network net)
 /*
 	Making a function to create a new neural network in a Network : net 
 */
-int **makeNetWorkOld(int len, int *array)
-{
-	int **Array = malloc(5);
-	int nbNeurons = *array;
-	for (int i = 1; i < len; ++i)
-	{
-		nbNeurons += array[i];
-	}
-	int *biasesDeb = malloc(nbNeurons * sizeof ( int )); 
-	int *tmp = biasesDeb;
-	//random :
-	srand(time(NULL));
-
-	for(; tmp < nbNeurons + biasesDeb; ++tmp)
-	{
-		*tmp = rand()%2; // init biase value
-	}
-	//free(tmp);
-	printArrayIntEnd(biasesDeb, (biasesDeb + nbNeurons) );
-	int *weightDeb = malloc(len);
-	tmp = weightDeb;
-	for(; tmp < weightDeb + nbNeurons; ++tmp)
-	{
-		*tmp = rand()%2; // init biase value	
-	}
-	printArrayIntEnd(biasesDeb, biasesDeb + len);
-	*(Array+0) = biasesDeb; //biasesFin = biasesDeb + nbNeurons;
-	*(Array+1) = weightDeb; //weightFin = weightDeb + nbNeurons;
-	*(Array+2) = array;	
-	return Array;	
-}
-
-double **randnFile(time_t seed, int a, int b)
-{
-	srand(seed);
-	double **res = malloc(sizeof(double) * a * b);
-	for (int i = 0; i < a; ++i)
-	{
-		double *tmp = malloc(b * sizeof(double));
-		res[i] = tmp;
-		for (int j = 0; j < b; ++j)
-		{
-			tmp[j] = rand()%2;
-		}
-	}
-	return res;
-}
-
 Network makeNetWork(int len, int *sizes)
 {
 	Network net;
-	//num_layers
-	net.num_layers = *sizes;
+	//numLayers
+	net.numLayers = *sizes;
 	for (int i = 0; i < len; ++i)
 	{
-		net.num_layers = sizes[i];
+		net.numLayers = sizes[i];
 	}
 	//len
 	net.len = len;
@@ -129,31 +121,23 @@ Network makeNetWork(int len, int *sizes)
 	net.seed = time(NULL);
 	srand(net.seed);
 	//**biases
-	double **tmpBiases = malloc(len * sizeof(double *) * net.num_layers);
-	net.biases = tmpBiases;
-	for (int i = 1; i < len; ++i)
+	double *tmpBiases = malloc(len * sizeof(double) * net.numLayers);
+	for (int i = 0; i < net.lenBiases; ++i)
 	{
-		double *tmp = malloc(sizeof(double *) * sizes[i]);
-		*tmpBiases = tmp;
-		for (int j = 0; j < sizes[i]; ++j)
-		{
-			*tmp = rand()%2;
-			++tmp;
-		}
-		++tmpBiases;
+		tmpBiases[i] = rand()%2;
 	}
+	net.biases = tmpBiases;
+	free(tmpBiases);
 	//lenBiases
 	net.lenBiases = net.len - 1;
 	//**weight
-	int x = 0, y = sizes[1];
-	double ***res = malloc(sizeof(double) * net.num_layers);
-	net.weight = res;
-	for (int q = 0; q < net.num_layers - 1; ++q)
+	double *tmpWeights = malloc(sizeof(double) * lenWeight);
+	for (int j = 0; j < net.lenWeight; ++j)
 	{
-		res[q] = randnFile(net.seed, sizes[x], sizes[y]);
-		x = x + 1;
-		y = y + 1;
+		tmpWeights[j] = rand()%2;
 	}
+	net.weight = tmpWeights;
+	free(tmpWeights);
 	//lenWeight
 	return net;
 }
@@ -161,63 +145,122 @@ Network makeNetWork(int len, int *sizes)
 void freeNetwork(Network net)
 {
 	free(net.sizes);
-	for (int i = 0; i < net.len; ++i)
-	{
-		free(net.biases[i]);
-	}
 	free(net.biases);
-	int x = 0;
-	for (int j = 0; j < net.num_layers - 1; ++j)
-	{
-		for (int w = 0; w < net.sizes[x]; ++w)
-		{
-			printf("yolo1\n");
-			free(net.weight[j][w]);
-		}
-		printf("yolo2\n");
-		x = x + 1;
-		//free(net.weight[j]);
-
-	}
 	free(net.weight);
 }
 
-Network update_mini_bash(Network net, double eta)
+Bashint *makeBAshXor(int len, Network net){
+	Bashint *res = malloc(sizeof(Bashint) * len);
+	//initiate random
+	srand(net.seed);
+	for (int i = 0; i < len; ++i)
+ 	{
+ 		Bashint b;
+ 		double *tmp = malloc(sizeof(double) * 2);
+ 		*tmp = rand()%2;
+ 		*(tmp + 1) = rand()%2;
+ 		b.res = xor(*tmp, *(tmp + 1));
+ 		b.input = tmp;
+ 		res[i] = b;
+ 	} 	
+ 	return res;
+
+}
+
+double **backProp(Network net,int x ,int y)
+{
+	//initiate nabla_b et nabla_w
+	double ***nabla_b = malloc(sizeof(double **));
+	double **nabla_bTmp = malloc(sizeof(double *) * net.len);
+	for (int i = 0; i < net.len; ++i)
+	{
+		double *tmp = malloc(sizeof(double) * net.sizes[i]);
+		for (int j = 0; j < net.sizes[i]; ++j)
+		{
+			tmp[j] =0;
+		}
+	}
+	*nabla_b = nabla_bTmp;
+	double ***nabla_w = malloc(sizeof(double **) * net.num_layers);
+	int xTmp = 0;
+	int yTmp = 1;
+	for (int i = 0; i < net.num_layers - 1; ++i)
+	{
+		double **tmpi = malloc(sizeof(double *) * net.sizes[xTmp]);
+		for (int j = 0; j < net.sizes[xTmp]; ++j)
+		{
+			double *tmpj = malloc(sizeof(double) * net.sizes[yTmp]);
+			for (int k = 0; k < net.sizes[yTmp]; ++k)
+			{
+				tmpj[k] = 0;
+			}
+			tmpi[j] = tmpj;
+		}
+		xTmp = 1 + xTmp;
+		yTmp = 1 + yTmp;
+	}
+	//feedforward
+	double activation = x;
+	double *activations = malloc(sizeof(double) * net.len);
+	*activations = x;
+	double **zs = malloc(sizeof(double *) * net.len);
+	for (int i = 0; i < net.len; ++i)
+	{
+		double *z = append(dotdouble(net.weight[i], activation, net.num_layers), net.biases[i] net.len, net.len);
+		zs[i] = z;
+		activation = sigmoid(z);
+		activations[i] = activation;
+	}
+	//backwardpass
+	double delta = 
+		(activations[net.len - 1] - y) * sigmoidPrime(zs[net.len - 1]);
+	nabla_b[net.len - 1]        = delta;
+	nabla_w[net.num_layers - 1] = dotdouble(delta, activations, net.len);
+
+	return nabla_bTmp;
+}
+
+Network update_mini_bash(Network net, double eta, Bashint *mini_bash)
 {
 	double **nabla_b = malloc(sizeof(double *) * net.len);
-	for (double i = 0; i < net.len; ++i)
+	for (int i = 0; i < net.len; ++i)
 	{
-		double *tmp = malloc(sizeof(double) * net.sises[i])
+		double *tmp = malloc(sizeof(double) * net.sizes[i]);
 		for (int j = 0; j < net.sizes[i]; ++j)
 		{
 			tmp[j] =0;
 		}
 	}
 	double ***nabla_w = malloc(sizeof(double **) * net.num_layers);
-	double x = 0;
-	double y = 1;
+	int x = 0;
+	int y = 1;
 	for (double i = 0; i < net.num_layers - 1; ++i)
 	{
 		double **tmpi = malloc(sizeof(double *) * net.sizes[x]);
 		for (int j = 0; j < net.sizes[x]; ++j)
 		{
-			double *tmpj = malloc(sizeof(double) * net.size[y]);
+			double *tmpj = malloc(sizeof(double) * net.sizes[y]);
 			for (int k = 0; k < net.sizes[y]; ++k)
 			{
 				tmpj[k] = 0;
 			}
+			tmpi[j] = tmpj;
 		}
 		x = 1 + x;
 		y = 1 + y;
 	}
+	//remove me!
+	(*mini_bash).res  = 2;
+	eta++;
 
 	return net;
 }
 
-void saveNr(Network, net)
+void saveNr(Network net)
 {
 	FILE *nr;
 	nr = fopen("REMOVEME!neuralNetwork.nr", "r");
+	net.len++;
 	fclose(nr);
 }
 
@@ -289,6 +332,8 @@ int main(int argc, char *argv[])
 		int type = 1;
 		net = makeNetWork(len, setNetwork(type, nbPixels));
 	}
+	Bashint *testBash = makeBAshXor(1000, net);
+	net = update_mini_bash(net, 0.3, testBash);
 	printNetwork(net);
 	saveNr(net);
 	freeNetwork(net);
