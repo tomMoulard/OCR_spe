@@ -3,6 +3,8 @@
 # include <stdio.h>
 # include <stdlib.h>
 
+# include "../types/matrix.h"
+
 typedef struct Coordinates Coordinates;
 struct Coordinates{
   size_t x;
@@ -16,11 +18,10 @@ struct Rect{
 };
 
 
-Rect* allrect(unsigned **matrix,
-              size_t x,size_t y, size_t coefh,size_t coefv,
-              size_t len,size_t *max);
+Rect* allrect(UnsignedMatrix *matrix, size_t coefh,size_t coefv
+              ,size_t len,size_t *max);
 
-void displayrect(unsigned **matrix,size_t x,size_t y,size_t coefh,size_t coefv);
+void displayrect(UnsignedMatrix *matrix,size_t coefh,size_t coefv);
 
-unsigned ***getrect(unsigned **matrix,size_t x,size_t y,
+UnsignedMatrix** getrect(UnsignedMatrix *matrix,
   size_t coefh,size_t coefv,size_t *len);

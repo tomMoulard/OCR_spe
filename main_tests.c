@@ -13,7 +13,8 @@
 # include "matrix_op/rlsa.h"
 # include "SDL/pixel_operations.h"
 # include "matrix_op/rectangle.h"
-# include "matrix_op/matrix_op.h"
+//# include "matrix_op/matrix_op.h"
+# include "types/matrix.h"
 
 void wait_for_keypressed(void) {
   SDL_Event             event;
@@ -100,19 +101,40 @@ int main(void) {
   SDL_Surface *img = load_image("SDL/test.bmp");
   size_t w = 1024;
   size_t h = 768;
-  unsigned **mat = frompictomatbin(img,w,h);
 
+
+  int coefh = 700;
+  int coefv = 200;
+  UnsignedMatrix *mat = frompictomatbin(img,w,h);
+  UnsignedMatrix *math = horizontal(mat,coefh);
+  img = frommatbintopict(math);
+  display_image(img);
+  UnsignedMatrix *matv = vertical(mat,coefv);
+  img = frommatbintopict(matv);
+  display_image(img);
+  UnsignedMatrix *matrlsa = rlsa(mat,coefh,coefv);
+  img = frommatbintopict(matrlsa);
+  display_image(img);
+  /*
   size_t len = 0;
-  unsigned ***matmat = getrect(mat,w,h,4,5,&len);
-  for (size_t i = 0; i < len; i++) {
-      img = frommatbintopict(matmat[i],30,30);
+
+  displayrect(mat,4,5);
+  img = frommatbintopict(mat);
+  display_image(img);
+
+  UnsignedMatrix **matmat = getrect(mat,4,5,&len);
+  for (size_t i = 0; i < len / 10; i++) {
+      img = frommatbintopict(matmat[i]);
       display_image(img);
   }
+  */
 
+/*
+img = frommatbintopict(rlsa(mat,w,h,1000,1000),w,h);
+display_image(img);
+*/
 
-
-
-  free(mat);
+  free_unsigned_matrix(mat);
   //free(matest);
 
 

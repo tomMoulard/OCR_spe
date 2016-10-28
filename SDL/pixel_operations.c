@@ -5,6 +5,7 @@
 // (http://www.libsdl.org/release/SDL-1.2.15/docs/html/guidevideo.html)
 
 # include "pixel_operations.h"
+# include "../types/matrix.h"
 
 static inline
 Uint8* pixelref(SDL_Surface *surf, unsigned x, unsigned y) {
@@ -56,22 +57,21 @@ void putpixel(SDL_Surface *surface, unsigned x, unsigned y, Uint32 pixel) {
   }
 }
 
-unsigned** frompictomatbin(SDL_Surface *surface,int x, int y){
+ UnsignedMatrix* frompictomatbin(SDL_Surface *surface,int x, int y){
   Uint8 r,g,b;
   Uint32 pixel;
-  unsigned** mat = calloc(x,sizeof(unsigned[y]));
+  UnsignedMatrix *mat = new_unsigned_matrix(x,y);
   for (int i = 0; i < x; i++) {
-    mat[i] = calloc(y,sizeof(unsigned));
     for (int j = 0; j < y; j++) {
       pixel = getpixel(surface,i,j);
       r = (pixel & 0x0000ff00) >> 8;
       g = (pixel & 0x00ff0000) >> 16;
       b = (pixel & 0xff000000) >> 24;
       if ((r + g + b) / 3 < 127) {
-        mat[i][j] = 1;
+        mat->data[i * y + j] = 1;
       }
       else{
-        mat[i][j] = 0;
+        mat->data[i * y + j] = 0;
       }
     }
   }
@@ -79,18 +79,18 @@ unsigned** frompictomatbin(SDL_Surface *surface,int x, int y){
 }
 
 
-SDL_Surface* frommatbintopict(unsigned** mat,int x,int y){
+SDL_Surface* frommatbintopict(UnsignedMatrix* mat){
   Uint32 white = 0x00000000;
   Uint32 black = 0xffffffff;
   Uint32 yolo = 0xffff0000;
-  SDL_Surface *pict = SDL_CreateRGBSurface(0,x,y,32,0,0,0,0);
-  for (int i = 0; i < x; i++) {
-    for (int j = 0; j < y; j++) {
-      if (mat[i][j] == 1) {
+  SDL_Surface *pict = SDL_CreateRGBSurface(0,mat->lines,mat->cols,32,0,0,0,0);
+  for (size_t i = 0; i < mat->lines; i++) {
+    for (size_t j = 0; j < mat->cols; j++) {
+      if (mat->data[i * mat->cols + j] == 1) {
         putpixel(pict,i,j,white);
       }
       else{
-        if (mat[i][j] == 2) {
+        if (mat->data[i * mat->cols + j] == 2) {
           putpixel(pict,i,j,yolo);
         }
         else{

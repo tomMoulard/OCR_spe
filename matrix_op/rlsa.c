@@ -4,104 +4,109 @@
 # include <stdlib.h>
 
 # include "rlsa.h"
+# include "../types/matrix.h"
 
-int isokh(unsigned *array,size_t len, size_t pos, int coef){
-  while (pos < len && array[pos] == 0 && coef > 0) {
+int isokh(UnsignedMatrix *mat, size_t pos, int coef){
+  size_t max = mat->lines * mat->cols;
+  while (pos < max && mat->data[pos] == 0 && coef > 0) {
     coef--;
-    pos++;
+    pos += mat->cols;
   }
-  if(pos == len || array[pos] == 1){
+  if(pos >= max || mat->data[pos] == 1){
     return 1;
   }
   else{
     return 0;
   }
+  return 0;
 }
 
-void _array_hor(unsigned *source,unsigned *dest,size_t len,int coef){
-    int isblack = isokh(source,len,0,coef);
-    for (size_t j = 0; j < len; j++) {
-      if (source[j] == 1) {
-        isblack = isokh(source,len,j + 1,coef);
-        dest[j] = 1;
+UnsignedMatrix* horizontal(UnsignedMatrix *matrix, int coef){
+
+  UnsignedMatrix *mat = copy_mat(matrix);
+  int isblack;
+
+    for (size_t j = 0; j < mat->cols; j++) {
+      isblack = isokh(matrix,j * mat->cols,coef);
+      for (size_t i = 0; i < mat->lines; i++) {
+
+      if (matrix->data[i * matrix->cols + j] == 1) {
+        isblack = isokh(matrix,(i + 1) * matrix->cols + j,coef);
+        mat->data[i * mat->cols + j] = 1;
       }
       else{
-      if (isblack > 0) {
-        dest[j] = 1;
+        if (isblack > 0) {
+          mat->data[i * mat->cols + j] = 1;
+        }
+        else{
+          mat->data[i * mat->cols + j] = 0;
+        }
       }
-      else{
-        dest[j] = 0;
-      }
-    }
-  }
-}
-
-unsigned** vertical(unsigned **matrix,size_t x, size_t y, int coef){
-  unsigned **mat = calloc(x,sizeof(unsigned[y]));
-  for (size_t i = 0; i < x; i++) {
-    mat[i] = calloc(y,sizeof(unsigned));
-    _array_hor(matrix[i],mat[i], y , coef);
-  }
-    return mat;
-}
-
-int isokv(unsigned **matrix,size_t y,size_t len,size_t pos,int coef){
-  while (pos < len && matrix[pos][y] == 0 && coef > 0) {
-    coef--;
-    pos++;
-  }
-  if(pos == len || matrix[pos][y] == 1){
-    return 1;
-  }
-  else{
-    return 0;
-  }
-}
-
-unsigned** horizontal(unsigned **matrix,size_t x,size_t y,int coef){
-  unsigned **mat = calloc(x,sizeof(unsigned[y]));
-  for (size_t i = 0; i < x; i++) {
-    mat[i] = calloc(y,sizeof(unsigned));
-  }
-
-  for (size_t j = 0; j < y; j++) {
-    int isblack = isokv(matrix,j,x,0,coef);
-
-    for (size_t i = 0; i < x; i++) {
-      if (matrix[i][j] == 1) {
-        isblack = isokv(matrix,j,x,i + 1,coef);
-        mat[i][j] = 1;
-      }
-      else{
-      if (isblack > 0) {
-        mat[i][j] = 1;
-      }
-      else{
-        mat[i][j] = 0;
-      }
-     }
     }
   }
   return mat;
 }
 
-unsigned** rlsa(unsigned **matrix, size_t x, size_t y ,int coefh,int coefv){
-  unsigned **math = horizontal(matrix, x, y,coefh);
-  unsigned **matv = vertical(matrix,x,y,coefv);
-  unsigned **mat = calloc(x,sizeof(unsigned[y]));
 
-  for (size_t i = 0; i < x; i++) {
-    mat[i] = calloc(y,sizeof(unsigned));
-    for (size_t j = 0; j < y; j++) {
-      mat[i][j] = math[i][j] && matv[i][j];
+int isokv(UnsignedMatrix *mat, size_t pos, int coef){
+  size_t max = ((pos / mat->cols) + 1) * mat->cols;
+  while (pos < max && mat->data[pos] == 0 && coef > 0) {
+    coef--;
+    pos++;
+  }
+  if(pos >= max || mat->data[pos] == 1){
+    return 1;
+  }
+  else{
+    return 0;
+  }
+  return 0;
+}
+
+UnsignedMatrix* vertical(UnsignedMatrix *matrix, int coef){
+
+  UnsignedMatrix *mat = copy_mat(matrix);
+
+  int isblack;
+
+  for (size_t i = 0; i < mat->lines; i++) {
+
+  isblack = isokv(matrix,i * mat->cols,coef);
+
+  for (size_t j = 0; j < mat->cols; j++) {
+
+      if (matrix->data[i * matrix->cols + j] == 1) {
+        isblack = isokv(matrix,(i + 1) * matrix->cols + j,coef);
+        mat->data[i * mat->cols + j] = 1;
+      }
+      else{
+        if (isblack > 0) {
+          mat->data[i * mat->cols + j] = 1;
+        }
+        else{
+          mat->data[i * mat->cols + j] = 0;
+        }
+      }
     }
   }
+  return mat;
+}
+
+UnsignedMatrix* rlsa(UnsignedMatrix *matrix,int coefh,int coefv){
+  UnsignedMatrix *math = horizontal(matrix,coefh);
+  UnsignedMatrix *matv = vertical(matrix,coefv);
+  UnsignedMatrix *mat = new_unsigned_matrix(matrix->lines,matrix->cols);
+
+  size_t x = mat->lines;
+  size_t y = mat->cols;
   for (size_t i = 0; i < x; i++) {
-    free(math[i]);
-    free(matv[i]);
+    for (size_t j = 0; j < y; j++) {
+      mat->data[i * y + j] = math->data[i * y + j] && matv->data[i * y + j];
+    }
   }
-  free(math);
-  free(matv);
+
+  free_unsigned_matrix(math);
+  free_unsigned_matrix(matv);
   return mat;
 
 }

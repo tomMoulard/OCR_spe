@@ -9,10 +9,12 @@
 # include <SDL/SDL.h>
 # include <SDL/SDL_image.h>
 
+# include "../types/matrix.h"
+
 Uint32 getpixel(SDL_Surface *surface, unsigned x, unsigned y);
 void putpixel(SDL_Surface *surface, unsigned x, unsigned y, Uint32 pixel);
 
-unsigned** frompictomatbin(SDL_Surface *surface,int x, int y);
-SDL_Surface* frommatbintopict(unsigned** mat,int x,int y);
+UnsignedMatrix* frompictomatbin(SDL_Surface *surface,int x, int y);
+SDL_Surface* frommatbintopict(UnsignedMatrix* mat);
 
 # endif

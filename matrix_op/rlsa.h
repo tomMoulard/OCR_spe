@@ -6,13 +6,15 @@
 # include <stdio.h>
 # include <stdlib.h>
 
+# include "../types/matrix.h"
 
-unsigned** horizontal(unsigned **matrix,size_t x,size_t y,int coef);
 
-unsigned** vertical(unsigned **matrix,size_t x,size_t y,int coef);
+UnsignedMatrix* horizontal(UnsignedMatrix *matrix, int coef);
 
-unsigned** rlsa(unsigned **matrix, size_t x, size_t y ,int coefh,int coefv);
+UnsignedMatrix* vertical(UnsignedMatrix *matrix, int coef);
 
-size_t* blockdetect(unsigned **matrix,size_t x ,size_t y);
+UnsignedMatrix* rlsa(UnsignedMatrix *matrix,int coefh,int coefv);
+
+//size_t* blockdetect(unsigned **matrix,size_t x ,size_t y);
 
 # endif
