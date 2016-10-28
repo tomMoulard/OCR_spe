@@ -8,6 +8,7 @@
 # include <SDL/SDL_image.h>
 
 # include "types/pixel.h"
+# include "types/matrix.h"
 # include "image_op/binarize.h"
 
 void wait_for_keypressed(void) {
@@ -158,5 +159,7 @@ int main()
     img = display_image(surf);
     SDL_FreeSurface(surf);
     SDL_FreeSurface(img);
+    UnsignedMatrix *m = new_unsigned_matrix(5, 5);
+    free_unsigned_matrix(m);
     return 0;
 }
