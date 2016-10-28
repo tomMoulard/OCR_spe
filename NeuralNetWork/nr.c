@@ -76,29 +76,29 @@ void printArrayIntEnd(int *beg, int *end)
 	for(; beg < end; ++beg)
 		printf("%d\n", *beg);
 }
-
-void printBiases(Network net)
-{
-	printf("%p\n", &net.biases);
-}
-void printWeight(Network net)
-{
-	printf("%p\n", &net.weight);
-}
-
 void printNetwork(Network net)
 {
-	printf("num_layers : %d\n", net.num_layers);
+	printf("numLayers : %d\n", net.numLayers);
 	printf("seed       : %ld\n", net.seed);
 	printf("len        : %d\n", net.len);
 	printf("lenBiases  : %d\n", net.lenBiases);
 	printf("lenWeight  : %d\n", net.lenWeight);
 	printf("size       :\n");
 	printArrayIntLen(net.sizes, net.len);
-	printf("bias       :\n");	
-	printBiases(net);
-	printf("weight     :\n");
-	printWeight(net);
+	printf("biases     :\n");	
+	for (int i = 0; i < net.lenBiases; ++i)
+	{
+		printf("%f ; ", net.biases[i]);
+		if(i % net.numLayers == 0)
+			printf("\n");
+	}
+	printf("weight     :\n");	
+	for (int i = 0; i < net.lenWeight; ++i)
+	{
+		printf("%f ; ", net.weight[i]);
+		if(i % net.numLayers == 0)
+			printf("\n");
+	}
 	printf("\n");
 }
 /*
@@ -108,11 +108,15 @@ Network makeNetWork(int len, int *sizes)
 {
 	Network net;
 	//numLayers
-	net.numLayers = *sizes;
+	net.numLayers = 3;
+	//lenbiases
+	net.lenBiases = *sizes;
 	for (int i = 0; i < len; ++i)
 	{
-		net.numLayers = sizes[i];
+		net.lenBiases += sizes[i];
 	}
+	//lenwieghts
+	net.lenWeight = net.lenBiases;
 	//len
 	net.len = len;
 	//sizes
@@ -181,10 +185,10 @@ double **backProp(Network net,int x ,int y)
 		}
 	}
 	*nabla_b = nabla_bTmp;
-	double ***nabla_w = malloc(sizeof(double **) * net.num_layers);
+	double ***nabla_w = malloc(sizeof(double **) * net.numLayers);
 	int xTmp = 0;
 	int yTmp = 1;
-	for (int i = 0; i < net.num_layers - 1; ++i)
+	for (int i = 0; i < net.numLayers - 1; ++i)
 	{
 		double **tmpi = malloc(sizeof(double *) * net.sizes[xTmp]);
 		for (int j = 0; j < net.sizes[xTmp]; ++j)
@@ -206,7 +210,7 @@ double **backProp(Network net,int x ,int y)
 	double **zs = malloc(sizeof(double *) * net.len);
 	for (int i = 0; i < net.len; ++i)
 	{
-		double *z = append(dotdouble(net.weight[i], activation, net.num_layers), net.biases[i] net.len, net.len);
+		double *z = append(dotdouble(net.weight[i], activation, net.numLayers), net.biases[i] net.len, net.len);
 		zs[i] = z;
 		activation = sigmoid(z);
 		activations[i] = activation;
@@ -215,7 +219,7 @@ double **backProp(Network net,int x ,int y)
 	double delta = 
 		(activations[net.len - 1] - y) * sigmoidPrime(zs[net.len - 1]);
 	nabla_b[net.len - 1]        = delta;
-	nabla_w[net.num_layers - 1] = dotdouble(delta, activations, net.len);
+	nabla_w[net.numLayers - 1] = dotdouble(delta, activations, net.len);
 
 	return nabla_bTmp;
 }
@@ -231,10 +235,10 @@ Network update_mini_bash(Network net, double eta, Bashint *mini_bash)
 			tmp[j] =0;
 		}
 	}
-	double ***nabla_w = malloc(sizeof(double **) * net.num_layers);
+	double ***nabla_w = malloc(sizeof(double **) * net.numLayers);
 	int x = 0;
 	int y = 1;
-	for (double i = 0; i < net.num_layers - 1; ++i)
+	for (double i = 0; i < net.numLayers - 1; ++i)
 	{
 		double **tmpi = malloc(sizeof(double *) * net.sizes[x]);
 		for (int j = 0; j < net.sizes[x]; ++j)
@@ -332,8 +336,8 @@ int main(int argc, char *argv[])
 		int type = 1;
 		net = makeNetWork(len, setNetwork(type, nbPixels));
 	}
-	Bashint *testBash = makeBAshXor(1000, net);
-	net = update_mini_bash(net, 0.3, testBash);
+	//Bashint *testBash = makeBAshXor(1000, net);
+	//net = update_mini_bash(net, 0.3, testBash);
 	printNetwork(net);
 	saveNr(net);
 	freeNetwork(net);
