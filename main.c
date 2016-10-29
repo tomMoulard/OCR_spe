@@ -124,18 +124,18 @@ SDL_Surface* frommatbintopict(UnsignedMatrix *mat){
   return pict;
 }
 
-void save_image(SDL_Surface *img, Pixel **image, int dimx, int dimy)
+void save_image(SDL_Surface *img, PixelMatrix *image)
 {
     Uint8 r, g, b;
     Uint32 pixel;
-    for(int i = 0; i < dimx; i++)
-        for(int j = 0; j < dimy; j++)
+    for(size_t i = 0; i < image->lines; i++)
+        for(size_t j = 0; j < image->cols; j++)
         {
             pixel = getpixel(img, i, j);
             r = (pixel & 0x0000ff00) >> 8;
             g = (pixel & 0x00ff0000) >> 16;
             b = (pixel & 0xff000000) >> 24;
-            image[i][j] = new_pixel(r, g, b);
+            image->data[i * image->cols + j] = new_pixel(r, g, b);
         }
 }
 
@@ -143,18 +143,16 @@ int main()
 {
     SDL_Surface *surf;
     SDL_Surface *img;
-    int dimx = 1024;
-    int dimy = 768;
     size_t lines = 1024;
     size_t cols = 768;
-    Pixel **image = new_pixel_matrix(dimx, dimy);
+    PixelMatrix *image = new_pixel_matrix(lines, cols);
     init_sdl();
     printf("Display image : %s\n", "test.jpg");
     surf = load_image("test.bmp");
     img = display_image(surf);
-    save_image(img, image, dimx, dimy);
+    save_image(img, image);
     UnsignedMatrix *mat = new_unsigned_matrix(lines, cols);
-    binarize(image, mat, dimx, dimy);
+    binarize(image, mat);
     surf = frommatbintopict(mat);
     img = display_image(surf);
     SDL_FreeSurface(surf);

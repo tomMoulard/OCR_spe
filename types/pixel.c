@@ -1,7 +1,6 @@
 # include "pixel.h"
 
 Pixel new_pixel(Uint8 r, Uint8 g, Uint8 b){
-    //Pixel pixel = malloc(sizeof(Pixel));
     Pixel pixel;
     pixel.r = r;
     pixel.g = g;
@@ -9,21 +8,16 @@ Pixel new_pixel(Uint8 r, Uint8 g, Uint8 b){
     return pixel;
 }
 
-Pixel **new_pixel_matrix(int dimx, int dimy){ 
-    Pixel **mat;
-    mat = malloc(dimx * sizeof(Pixel*));
-    for(int i =0; i < dimx; i++)
-        mat[i] = malloc(dimy * sizeof(Pixel));
-    return mat;
+PixelMatrix *new_pixel_matrix(size_t lines, size_t cols){ 
+    PixelMatrix *matrix;
+    matrix = malloc(sizeof(PixelMatrix));
+    matrix->lines = lines;
+    matrix->cols = cols;
+    matrix->data = malloc(lines * cols * sizeof(Pixel));
+    return matrix;
 }
 
-void free_pixel_matrix(Pixel **mat, int dimx)//, int dimy)
-{
-    for(int i = 0; i < dimx; i++)
-    {   
-        //for(int j = 0; j < dimy; i++)
-            //free((mat[i] + j));
-        free(mat[i]);
-    }
-    free(mat);
+void free_pixel_matrix(PixelMatrix *matrix){
+    free(matrix->data);
+    free(matrix);
 }

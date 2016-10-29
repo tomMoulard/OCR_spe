@@ -9,6 +9,6 @@
 # include "../types/pixel.h"
 # include "../types/matrix.h"
 
-void binarize(Pixel **image, UnsignedMatrix *mat, int dimx, int dimy);
+void binarize(PixelMatrix *image, UnsignedMatrix *mat);
 
 # endif
