@@ -52,15 +52,6 @@ double *append(double *a, double *b, int lenA, int lenB)
 	}
 	return res;
 }
-double dotstar(double *a, double *b, int len)
-{
-	double res;
-	for (int i = 0; i < len; ++i)
-	{
-		printf("dotstar\n");
-	}
-	return res;
-}
 //prints
 void printArrayIntLen(int *array, int len)
 {
@@ -78,26 +69,40 @@ void printArrayIntEnd(int *beg, int *end)
 }
 void printNetwork(Network net)
 {
-	printf("numLayers : %d\n", net.numLayers);
-	printf("seed       : %ld\n", net.seed);
+	int i;
+	printf("lenLayers  : %d\n", net.lenlayers);
+	printf("numLayers  :\n");
+	for(i = 0; i < net.lenlayers; ++i)
+	{
+		printf("%d ", net.numLayers[i]);
+	}
+	printf("\nseed     : %ld\n", net.seed);
 	printf("len        : %d\n", net.len);
 	printf("lenBiases  : %d\n", net.lenBiases);
 	printf("lenWeight  : %d\n", net.lenWeight);
 	printf("size       :\n");
 	printArrayIntLen(net.sizes, net.len);
 	printf("biases     :\n");	
-	for (int i = 0; i < net.lenBiases; ++i)
+	int thisLayer = 0;
+	for (i = 0; i < net.lenBiases; ++i)
 	{
-		printf("%f ; ", net.biases[i]);
-		if(i % net.numLayers == 0)
-			printf("\n");
+		printf("| %f ", net.biases[i]);
+		if(xor(i != 0,  i % net.numLayers[thisLayer] == 0))
+		{
+			thisLayer += 1;
+			printf("|\n");
+		}
 	}
-	printf("weight     :\n");	
-	for (int i = 0; i < net.lenWeight; ++i)
+	thisLayer = 0;
+	printf("\nweight     :\n");	
+	for (i = 0; i < net.lenWeight; ++i)
 	{
-		printf("%f ; ", net.weight[i]);
-		if(i % net.numLayers == 0)
-			printf("\n");
+		printf("| %f ", net.weight[i]);
+		if(xor(i != 0, i % net.numLayers[thisLayer] == 0))
+		{
+			thisLayer += 1;
+			printf("|\n");
+		}
 	}
 	printf("\n");
 }
@@ -107,11 +112,17 @@ void printNetwork(Network net)
 Network makeNetWork(int len, int *sizes)
 {
 	Network net;
-	//numLayers
-	net.numLayers = 3;
+	//lenLayers
+	net.lenlayers = 3;
+	//numlayers
+	net.numLayers = malloc(sizeof(int) * net.lenlayers);
+	for (int i = 0; i < net.lenlayers; ++i)
+	{
+		net.numLayers[i] = sizes[i];
+	}
 	//lenbiases
 	net.lenBiases = *sizes;
-	for (int i = 0; i < len; ++i)
+	for (int i = 1; i < len; ++i)
 	{
 		net.lenBiases += sizes[i];
 	}
@@ -124,24 +135,23 @@ Network makeNetWork(int len, int *sizes)
 	//seed
 	net.seed = time(NULL);
 	srand(net.seed);
-	//**biases
-	double *tmpBiases = malloc(len * sizeof(double) * net.numLayers);
+	//*biases
+	double *tmpBiases = malloc(sizeof(double) * net.lenBiases);
 	for (int i = 0; i < net.lenBiases; ++i)
 	{
-		tmpBiases[i] = rand()%2;
+		tmpBiases[i] = ((double)rand()/(double)RAND_MAX);
 	}
 	net.biases = tmpBiases;
-	free(tmpBiases);
-	//lenBiases
-	net.lenBiases = net.len - 1;
-	//**weight
-	double *tmpWeights = malloc(sizeof(double) * lenWeight);
+	srand(net.seed + 42);
+	//*weight
+	double *tmpWeights = malloc(sizeof(double) * net.lenWeight);
 	for (int j = 0; j < net.lenWeight; ++j)
 	{
-		tmpWeights[j] = rand()%2;
+		tmpWeights[j] = ((double)rand()/(double)RAND_MAX);
 	}
 	net.weight = tmpWeights;
 	free(tmpWeights);
+	free(tmpBiases);
 	//lenWeight
 	return net;
 }
@@ -149,8 +159,9 @@ Network makeNetWork(int len, int *sizes)
 void freeNetwork(Network net)
 {
 	free(net.sizes);
-	free(net.biases);
-	free(net.weight);
+	free(net.numLayers);
+	//free(net.weight);
+	//free(net.biases);
 }
 
 Bashint *makeBAshXor(int len, Network net){
@@ -170,96 +181,13 @@ Bashint *makeBAshXor(int len, Network net){
  	return res;
 
 }
-
-double **backProp(Network net,int x ,int y)
-{
-	//initiate nabla_b et nabla_w
-	double ***nabla_b = malloc(sizeof(double **));
-	double **nabla_bTmp = malloc(sizeof(double *) * net.len);
-	for (int i = 0; i < net.len; ++i)
-	{
-		double *tmp = malloc(sizeof(double) * net.sizes[i]);
-		for (int j = 0; j < net.sizes[i]; ++j)
-		{
-			tmp[j] =0;
-		}
-	}
-	*nabla_b = nabla_bTmp;
-	double ***nabla_w = malloc(sizeof(double **) * net.numLayers);
-	int xTmp = 0;
-	int yTmp = 1;
-	for (int i = 0; i < net.numLayers - 1; ++i)
-	{
-		double **tmpi = malloc(sizeof(double *) * net.sizes[xTmp]);
-		for (int j = 0; j < net.sizes[xTmp]; ++j)
-		{
-			double *tmpj = malloc(sizeof(double) * net.sizes[yTmp]);
-			for (int k = 0; k < net.sizes[yTmp]; ++k)
-			{
-				tmpj[k] = 0;
-			}
-			tmpi[j] = tmpj;
-		}
-		xTmp = 1 + xTmp;
-		yTmp = 1 + yTmp;
-	}
-	//feedforward
-	double activation = x;
-	double *activations = malloc(sizeof(double) * net.len);
-	*activations = x;
-	double **zs = malloc(sizeof(double *) * net.len);
-	for (int i = 0; i < net.len; ++i)
-	{
-		double *z = append(dotdouble(net.weight[i], activation, net.numLayers), net.biases[i] net.len, net.len);
-		zs[i] = z;
-		activation = sigmoid(z);
-		activations[i] = activation;
-	}
-	//backwardpass
-	double delta = 
-		(activations[net.len - 1] - y) * sigmoidPrime(zs[net.len - 1]);
-	nabla_b[net.len - 1]        = delta;
-	nabla_w[net.numLayers - 1] = dotdouble(delta, activations, net.len);
-
-	return nabla_bTmp;
-}
-
+/*
 Network update_mini_bash(Network net, double eta, Bashint *mini_bash)
 {
-	double **nabla_b = malloc(sizeof(double *) * net.len);
-	for (int i = 0; i < net.len; ++i)
-	{
-		double *tmp = malloc(sizeof(double) * net.sizes[i]);
-		for (int j = 0; j < net.sizes[i]; ++j)
-		{
-			tmp[j] =0;
-		}
-	}
-	double ***nabla_w = malloc(sizeof(double **) * net.numLayers);
-	int x = 0;
-	int y = 1;
-	for (double i = 0; i < net.numLayers - 1; ++i)
-	{
-		double **tmpi = malloc(sizeof(double *) * net.sizes[x]);
-		for (int j = 0; j < net.sizes[x]; ++j)
-		{
-			double *tmpj = malloc(sizeof(double) * net.sizes[y]);
-			for (int k = 0; k < net.sizes[y]; ++k)
-			{
-				tmpj[k] = 0;
-			}
-			tmpi[j] = tmpj;
-		}
-		x = 1 + x;
-		y = 1 + y;
-	}
-	//remove me!
-	(*mini_bash).res  = 2;
-	eta++;
-
 	return net;
 }
-
+*/
+/*
 void saveNr(Network net)
 {
 	FILE *nr;
@@ -267,7 +195,7 @@ void saveNr(Network net)
 	net.len++;
 	fclose(nr);
 }
-
+*/
 //open a .nr file to get a previouly saved network : WORK IN PROGRESS
 Network openNr()
 {
@@ -339,7 +267,7 @@ int main(int argc, char *argv[])
 	//Bashint *testBash = makeBAshXor(1000, net);
 	//net = update_mini_bash(net, 0.3, testBash);
 	printNetwork(net);
-	saveNr(net);
+	//saveNr(net);
 	freeNetwork(net);
 	return 0;
 }
