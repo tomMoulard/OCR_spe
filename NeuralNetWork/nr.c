@@ -106,7 +106,7 @@ void printNetwork(Network net)
 	}
 	printf("\n");
 }
-/*
+/* test
 	Making a function to create a new neural network in a Network : net 
 */
 Network makeNetWork(int len, int *sizes)
