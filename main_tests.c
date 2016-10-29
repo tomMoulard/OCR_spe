@@ -13,8 +13,10 @@
 # include "matrix_op/rlsa.h"
 # include "SDL/pixel_operations.h"
 # include "matrix_op/rectangle.h"
-//# include "matrix_op/matrix_op.h"
 # include "types/matrix.h"
+# include "types/matbintree.h"
+# include "matrix_op/xycut.h"
+
 
 void wait_for_keypressed(void) {
   SDL_Event             event;
@@ -97,15 +99,56 @@ void matrix_print(unsigned **matrix, size_t x,size_t y)
  printf("\n");
 }
 
+void mbt_print(MatBinTree *mbt,size_t h){
+  if (mbt) {
+      display_image(frommatbintopict(mbt->key));
+      printf("left, h = %zu\n",h );
+      mbt_print(mbt->left,h + 1);
+      printf("right, h = %zu\n",h );
+      mbt_print(mbt->right, h + 1);
+  }
+}
+
+void display_leaves(MatBinTree* mbt){
+  if (mbt) {
+    if(!mbt->left){
+      if(!mbt->right){
+        display_image(frommatbintopict(mbt->key));
+      }
+      else{
+        display_leaves(mbt->right);
+      }
+    }
+    else{
+      display_leaves(mbt->left);
+      if(mbt->right){
+        display_leaves(mbt->right);
+      }
+    }
+  }
+}
+
 int main(void) {
-  SDL_Surface *img = load_image("SDL/test.bmp");
+  SDL_Surface *img = load_image("test.bmp");
   size_t w = 1024;
   size_t h = 768;
 
 
-  int coefh = 700;
-  int coefv = 200;
   UnsignedMatrix *mat = frompictomatbin(img,w,h);
+  UnsignedMatrix* cuti = supprbord(mat);
+
+  MatBinTree *mbt = new_matbintree(cuti);
+  xycut(mbt,1,1,0);
+  mbt_print(mbt,0);
+  free_matbintree(mbt);
+
+
+/*
+  int coefh = 100;
+  int coefv = 50;
+  UnsignedMatrix *mat = frompictomatbin(img,w,h);
+  img = frommatbintopict(mat);
+  display_image(img);
   UnsignedMatrix *math = horizontal(mat,coefh);
   img = frommatbintopict(math);
   display_image(img);
@@ -115,26 +158,21 @@ int main(void) {
   UnsignedMatrix *matrlsa = rlsa(mat,coefh,coefv);
   img = frommatbintopict(matrlsa);
   display_image(img);
-  /*
+*/
+/*
   size_t len = 0;
-
-  displayrect(mat,4,5);
-  img = frommatbintopict(mat);
-  display_image(img);
-
   UnsignedMatrix **matmat = getrect(mat,4,5,&len);
   for (size_t i = 0; i < len / 10; i++) {
       img = frommatbintopict(matmat[i]);
       display_image(img);
   }
-  */
+*/
 
 /*
 img = frommatbintopict(rlsa(mat,w,h,1000,1000),w,h);
 display_image(img);
 */
 
-  free_unsigned_matrix(mat);
   //free(matest);
 
 
