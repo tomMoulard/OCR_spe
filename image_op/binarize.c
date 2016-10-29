@@ -15,11 +15,16 @@ void to_grey_scale(Pixel **image, Pixel **dest, int dimx, int dimy)
         }
 }
 
-void get_histogram(Pixel **grey_mat, unsigned long *array, int dimx, int dimy)
+unsigned long *get_histogram(Pixel **grey_mat, unsigned long *array, int dimx, int dimy)
 {
     for(int i = 0; i < dimx; i++)
         for(int j = 0; j < dimy; j++)
-            *(array + grey_mat[i][j].r) += 1;
+        {
+            Uint8 n = grey_mat[i][j].r;
+            if(array[n] < 4294967295)
+                array[n] += 1;
+        }
+    return array;
 }
 
 Uint8 get_threshold(unsigned long *histogram, int total)
@@ -52,7 +57,7 @@ Uint8 get_threshold(unsigned long *histogram, int total)
         }
     }
     Uint8 threshold = ((threshold1 + threshold2) / 2);
-    //printf("threshold = %u\n", threshold);
+    printf("threshold = %u\n", threshold);
     return threshold;
 }
 
@@ -69,25 +74,30 @@ void array_print(unsigned long array[], size_t len)
   printf("|\n");
 }
 
-void binarize(Pixel **image, unsigned **mat, int dimx, int dimy)
+void binarize(Pixel **image, UnsignedMatrix *mat, int dimx, int dimy)
 {
     Pixel **grey_mat = new_pixel_matrix(dimx, dimy);
     to_grey_scale(image, grey_mat, dimx, dimy);
-    unsigned long *histogram = malloc(256 * sizeof(unsigned long));
-    get_histogram(grey_mat, histogram, dimx, dimy);
+    //unsigned long *histogram = malloc(256 * sizeof(unsigned long));
+    //histogram = get_histogram(grey_mat, histogram, dimx, dimy);
     //array_print(histogram, 256);
-    Uint8 threshold = get_threshold(histogram, dimx*dimy);
-    for(int i = 0; i < dimx; i++)
+    unsigned long *hist = malloc(256 * sizeof(unsigned long));
+    hist = get_histogram(grey_mat, hist, dimx, dimy);
+    array_print(hist, 256);
+    Uint8 threshold = get_threshold(hist, dimx*dimy);
+    for(size_t i = 0; i < mat->lines; i++)
     {
-        for(int j = 0; j < dimy; j++)
+        for(size_t j = 0; j < mat->cols; j++)
         {
             Uint8 g = grey_mat[i][j].r;
             if(g > threshold)
-                mat[i][j] = 0;
+                mat->data[i * mat->cols + j] = 0;
             else
-                mat[i][j] = 1;
+                mat->data[i * mat->cols + j] = 1;
         }
     }
-    free(histogram);
+    //free(histogram);
+    free(hist);
     free_pixel_matrix(grey_mat, dimx);//, dimy);
+    printf("free ended\n");
 }

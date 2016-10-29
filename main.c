@@ -100,18 +100,18 @@ Uint32 getpixel(SDL_Surface *surface, unsigned x, unsigned y) {
   return 0;
 }
 
-SDL_Surface* frommatbintopict(unsigned** mat,int x,int y){
+SDL_Surface* frommatbintopict(UnsignedMatrix *mat){
   Uint32 white = 0x00000000;
   Uint32 black = 0xffffffff;
   Uint32 yolo = 0xffff0000;
-  SDL_Surface *pict = SDL_CreateRGBSurface(0,x,y,32,0,0,0,0);
-  for (int i = 0; i < x; i++) {
-    for (int j = 0; j < y; j++) {
-      if (mat[i][j] == 1) {
+  SDL_Surface *pict = SDL_CreateRGBSurface(0,mat->lines,mat->cols,32,0,0,0,0);
+  for (size_t i = 0; i < mat->lines; i++) {
+    for (size_t j = 0; j < mat->cols; j++) {
+      if (mat->data[i * mat->cols + j] == 1) {
         putpixel(pict,i,j,white);
       }
       else{
-        if (mat[i][j] == 2) {
+        if (mat->data[i * mat->cols + j] == 2) {
           putpixel(pict,i,j,yolo);
         }
         else{
@@ -145,21 +145,20 @@ int main()
     SDL_Surface *img;
     int dimx = 1024;
     int dimy = 768;
+    size_t lines = 1024;
+    size_t cols = 768;
     Pixel **image = new_pixel_matrix(dimx, dimy);
     init_sdl();
     printf("Display image : %s\n", "test.jpg");
     surf = load_image("test.bmp");
     img = display_image(surf);
     save_image(img, image, dimx, dimy);
-    unsigned **mat = malloc(dimx * sizeof(unsigned *));
-    for(int i = 0; i < dimx; i++)
-        mat[i] = malloc(dimy * sizeof(unsigned));
+    UnsignedMatrix *mat = new_unsigned_matrix(lines, cols);
     binarize(image, mat, dimx, dimy);
-    surf = frommatbintopict(mat, dimx, dimy);
+    surf = frommatbintopict(mat);
     img = display_image(surf);
     SDL_FreeSurface(surf);
     SDL_FreeSurface(img);
-    UnsignedMatrix *m = new_unsigned_matrix(5, 5);
-    free_unsigned_matrix(m);
+    free_unsigned_matrix(mat);
     return 0;
 }

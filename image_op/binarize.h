@@ -7,7 +7,8 @@
 # include <math.h>
 
 # include "../types/pixel.h"
+# include "../types/matrix.h"
 
-void binarize(Pixel **image, unsigned **mat, int dimx, int dimy);
+void binarize(Pixel **image, UnsignedMatrix *mat, int dimx, int dimy);
 
 # endif
