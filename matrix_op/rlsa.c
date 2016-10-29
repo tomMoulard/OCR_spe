@@ -27,7 +27,7 @@ UnsignedMatrix* horizontal(UnsignedMatrix *matrix, int coef){
   int isblack;
 
     for (size_t j = 0; j < mat->cols; j++) {
-      isblack = isokh(matrix,j * mat->cols,coef);
+      isblack = isokh(matrix,mat->cols + j,coef);
       for (size_t i = 0; i < mat->lines; i++) {
 
       if (matrix->data[i * matrix->cols + j] == 1) {

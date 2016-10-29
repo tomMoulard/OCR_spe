@@ -6,7 +6,7 @@ CFLAGS= -Wall -Wextra -std=c99 -O2
 LDFLAGS=
 LDLIBS= `pkg-config --libs sdl` -lSDL_image
 
-SRC= types/pixel.c main_tests.c matrix_op/rlsa.c SDL/pixel_operations.c matrix_op/rectangle.c types/matrix.c
+SRC= types/pixel.c main_tests.c matrix_op/rlsa.c SDL/pixel_operations.c matrix_op/rectangle.c types/matrix.c types/matbintree.c matrix_op/xycut.c
 OBJ= ${SRC:.c=.o}
 DEP= ${SRC:.c=.d}
 

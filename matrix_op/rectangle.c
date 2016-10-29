@@ -48,9 +48,8 @@ rect.a1.y = posy;
 rect.a2.x = posx;
 rect.a2.y = posy;
 Rect rect2;
-
+printf("posx: %zu, posy: %zu\n",posx,posy );
 coord = neighbor(matrix,posx,posy,coefh,coefv);
-
 while(coord.x != 0 || coord.y != 0) {
 
 
@@ -68,6 +67,7 @@ while(coord.x != 0 || coord.y != 0) {
 
   coord = neighbor(matrix,posx,posy,coefh,coefv);
 }
+
 return rect;
 }
 
@@ -80,6 +80,7 @@ Rect *rects = malloc(sizeof(Rect) * len);
     for (size_t j = 0; j < matrix->cols; j++) {
 
       if (matrix->data[i * matrix->cols + j] == 1) {
+
         rects[*max] = posrect(matrix,i,j,coefh,coefv);
 
         rects[*max].a1.x++;
@@ -99,9 +100,8 @@ void displayrect(UnsignedMatrix *matrix,size_t coefh,size_t coefv)
 
   UnsignedMatrix *mat = copy_mat(matrix);
   Rect *rect;
+
   rect = allrect(mat,coefh,coefv,len,&max);
-
-
 
   for (size_t n = 0; n < max; n++) {
     Rect currect = rect[n];
@@ -156,4 +156,24 @@ UnsignedMatrix** getrect(UnsignedMatrix *matrix,
     free_unsigned_matrix(mat);
     free(rects);
     return matmat;
+}
+
+
+RecBinTree* new_recbintree(Rect* rect){
+    RecBinTree *rbt = malloc(sizeof(Rect));
+    rbt->key = rect;
+    rbt->left = NULL;
+    rbt->right = NULL;
+    return rbt;
+  }
+
+void free_recbintree(RecBinTree* rbt){
+  if(rbt){
+    free(rbt->key);
+    free_matbintree(rbt->left);
+    free_matbintree(rbt->right);
+  }
+  else{
+    free(rbt);
+  }
 }
