@@ -96,9 +96,18 @@ void printNetwork(Network net)
 	printf("\nweight     :\n");	
 	for (int k = 0; k < net.lenWeight; ++k)
 	{
-		printf("| %f |\n", net.weight[k]);
+		printf("| %d :  %f |\n", k, net.weight[k]);
 	}
 	printf("\n");
+}
+void printNetworkArray(Network *a)
+{
+	while(a)
+	{
+		printf("%p\n", a);
+		printNetwork(*a);
+		a += 1;
+	}
 }
 Network makeNetWork(int len, int *sizes)
 { //To create a brand (and shiny) new NeuralNetwork 
@@ -156,8 +165,8 @@ void freeNetwork(Network net)
 {  //explicit content
 	free(net.sizes);
 	free(net.numLayers);
-	//free(net.weight);
-	//free(net.biases);
+	free(net.weight);
+	free(net.biases);
 }
 
 void printBashint(Bashint b)
@@ -228,6 +237,7 @@ double *cutarray(double *array, int posmin, int posmax)
 double **backprop(Network *network, double *x, double y) //may be done .....
 {
 	double **res = malloc(sizeof(double *) * 2);
+	printNetworkArray(network);
 	Network net = *network;
 	//init:
 	double *nabla_b = malloc(sizeof(double) * net.lenBiases);
@@ -293,15 +303,6 @@ double **backprop(Network *network, double *x, double y) //may be done .....
 	freeNetwork(net);
 	//I'm freeeee, from my worries
 	return res;
-}
-void printNetworkArray(Network *a)
-{
-	while(a)
-	{
-		printf("%p\n", a);
-		printNetwork(*a);
-		a += 1;
-	}
 }
 Bashint *update_mini_bash(Bashint *mini_bash, size_t len_mini_bash, double eta, Network *network) //done
 {	
