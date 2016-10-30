@@ -34,17 +34,14 @@ double sigmoidPrime(double z)
 {
 	return sigmoid(z) * (1 - sigmoid(z));
 }
-double **transpose(double ***toTranspose)
+double dotdouble(double coeff, double *a, int len)
 {
-	return *toTranspose;
-}
-double dotdouble(double coeff, double a, int len)
-{
+	double res = 0;
 	for (int i = 0; i < len; ++i)
 	{
-		a *= coeff;
+		res += a[i] * coeff;
 	}
-	return a;
+	return res;
 }
 double *append(double *a, double *b, int lenA, int lenB)
 {
@@ -209,6 +206,16 @@ Bashint *suffleBashint(Bashint *bash, int len, time_t seed)
 	}
 	return bash;
 }
+double *cutarray(double *array, int posmin, int posmax)
+{
+	int len = posmax - posmin;
+	double *res = malloc(sizeof(double) * len);
+	for (int i = 0; i < len; ++i)
+	{
+		res[i] = array[i + posmin];
+	}
+	return res;
+}
 double **backprop(Network *network, double *x, double y)
 {
 	double **res = malloc(sizeof(double *) * 2);
@@ -228,19 +235,38 @@ double **backprop(Network *network, double *x, double y)
 	//feedforward
 	double *activation = x;
 	int min_len = (net.lenBiases > net.lenWeight ? net.lenWeight : net.lenBiases);
-	double **activations = malloc(sizeof(double *) * min_len)
+	double **activations = malloc(sizeof(double *) * min_len);
 	double *zs = malloc(sizeof(double) * min_len);
 	double z;
-	for(i = 0; i < min_len; ++i)
+	int thisLayerWieght = 0;
+	for(i = 0; i < min_len - 1; ++i)
 	{
-		z = dotdouble()
+		z = dotdouble(activation[i], cutarray(net.weight[i], /*posinweightmin*/, /*posinweighmax*/), /*len aka posinweightmax - posinwiehgtmin*/) + net.biases[i];
+		zs[i] = z;
+		activation = sigmoid(z);
+		activations[i] = activation;
 	}
+	double delta = (activations[min_len - 1] - y ) * sigmoidPrime(zs[min_len - 1]);
+	double sp;
+	for (int l = 2; l < net.lenlayers; ++l)
+	{
+		z = zs[min_len - l];
+		sp = sigmoidPrime(z);
+		//no transposition : useless....
+		delta = dotdouble(delta, net.weight[min_len - l + 1]) * sp;
+		nabla_b[min_len - l] = delta;
+		nabla_w[min_len - l] = dot(delta, activations[min_len - l - 1]) * sp;
+	}
+	//building result
+	res[0] = nabla_b;
+	res[1] = nabla_w;
 	//free
 	*network = net;
 	free(activation);
 	free(zs);
 	free(nabla_b);
 	free(nabla_w);
+	free(curentlayer);
 	freeNetwork(net);
 	return res;
 }

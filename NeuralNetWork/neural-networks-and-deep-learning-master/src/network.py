@@ -7,9 +7,9 @@ import network, mnist_loader
 
 training_data, validation_data, test_data = mnist_loader.load_data_wrapper()
 
-net = network.Network([784, 100, 10]) //to initiate network
+net = network.Network([784, 100, 10]) #to initiate network
 
-net.SGD(training_data, 30, 10, 3.0, test_data=test_data) //to process network
+net.SGD(training_data, 30, 10, 3.0, test_data=test_data) #to process network
 
 A module to implement the stochastic gradient descent learning
 algorithm for a feedforward neural network.  Gradients are calculated
@@ -60,7 +60,6 @@ class Network(object):
         network will be evaluated against the test data after each
         epoch, and partial progress printed out.  This is useful for
         tracking progress, but slows things down substantially."""
-        print training_data
         if test_data: n_test = len(test_data)
         n = len(training_data)
         for j in xrange(epochs):
@@ -104,6 +103,7 @@ class Network(object):
         activations = [x] # list to store all the activations, layer by layer
         zs = [] # list to store all the z vectors, layer by layer
         for b, w in zip(self.biases, self.weights):
+            print x
             z = np.dot(w, activation)+b
             zs.append(z)
             activation = sigmoid(z)
