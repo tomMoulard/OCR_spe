@@ -417,17 +417,17 @@ Network SGD(Network net, Bashint *training_data, size_t len_training_data,
 {
 	size_t n_test = len_test_data; 
 	size_t n = len_training_data;
-	double **mini_batches = malloc(sizeof(Bashint) * n / len_mini_bash);
+	double **mini_batches = malloc(sizeof(Bashint) * n / mini_bash_size);
 	int k;
 	int j;
 	for (int j = 0; j < epoch; ++j)
 	{
 		training_data = suffleBashint(training_data, len_training_data, net.seed);
-		for (k = 0; k < n; k += len_mini_bash)
+		for (k = 0; k < n; k += mini_bash_size)
 		{
-			mini_batches[j][k] = cutarray(training_data, k, k + len_mini_bash);
+			mini_batches[j][k] = cutarray(training_data, k, k + mini_bash_size);
 		}
-		for (j = 0; j < n / len_mini_bash; ++j)
+		for (j = 0; j < n / mini_bash_size; ++j)
 		{
 						
 		}
