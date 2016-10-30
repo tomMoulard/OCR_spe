@@ -144,12 +144,12 @@ Network makeNetWork(int len, int *sizes)
 	net.seed = time(NULL);
 	srand(net.seed);
 	//*biases
-	double *tmpBiases = malloc(sizeof(double) * net.lenBiases);
+	net.biases = malloc(sizeof(double) * net.lenBiases);
 	for (int i = 0; i < net.lenBiases; ++i)
 	{
-		tmpBiases[i] = ((double)rand()/(double)RAND_MAX);
+		net.biases[i] = ((double)rand()/(double)RAND_MAX);
+		printf("%f\n", net.biases[i]);
 	}
-	net.biases = tmpBiases;
 	//lenweight
 	//len first  = [0] * [1]
 	//len second = [1] * [2]
@@ -166,7 +166,6 @@ Network makeNetWork(int len, int *sizes)
 	}
 	net.weight = tmpWeights;
 	free(tmpWeights);
-	free(tmpBiases);
 	//lenWeight
 	return net;
 }
@@ -175,8 +174,8 @@ void freeNetwork(Network net)
 {  //explicit content
 	free(net.sizes);
 	free(net.numLayers);
-	free(net.weight);
-	free(net.biases);
+	//free(net.weight);
+	//free(net.biases);
 }
 void freeBashint(Bashint b)
 { //explicit content
@@ -549,6 +548,7 @@ int main(int argc, char *argv[])
 		net = makeNetWork(len, setNetwork(type, nbPixels)); //create network
 	}
 	//printNetwork(net);
+	freeNetwork(net);
 	Bashint *testBash = makeBAshXor(lenTest, net); // create a Bashint List to improve the network
 	net = SGD(net, testBash, lenTest, 
 			epoch, mini_bash_size, 
