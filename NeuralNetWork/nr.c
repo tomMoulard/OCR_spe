@@ -372,9 +372,9 @@ double evaluate(Bashint *test_data, int len_test_data, Network net)
 	}
 	return res;
 }
-Network SGD(Network net, Bashint *training_data, size_t len_training_data, 
+Network SGDV1(Network net, Bashint *training_data, size_t len_training_data, 
 	int epoch, int mini_bash_size, double eta, Bashint *test_data, 
-	size_t len_test_data)//done
+	size_t len_test_data)//V1
 {
 	/*
 	printf("training_data : \n");
@@ -388,20 +388,19 @@ Network SGD(Network net, Bashint *training_data, size_t len_training_data,
 	for (int j = 0; j < epoch; j += mini_bash_size)
 	{
 		training_data = suffleBashint(training_data, len_training_data, net.seed);
-		Bashint **mini_batches = malloc(sizeof(Bashint) * mini_bash_size * n);
+		Bashint *mini_batches = malloc(sizeof(Bashint) * mini_bash_size * n);
 		for (size_t k = 0; k < n; ++k)
 		{
 			for (size_t i = k; i < k + mini_bash_size; ++i)
 			{
-				printf("test\n");
-				mini_batches[k][i] = training_data[i];
-				printf("test\n");
+				printf("%zu\n", i);
+				printBashint(mini_batches[k + i]);  
+				mini_batches[k + i] = training_data[i];
 			}
 		}
-		printf("test\n");
 		for (size_t l = 0; l < n; ++l)
 		{
-			mini_batches[l] = update_mini_bash(mini_batches[l], mini_bash_size, eta, &net);
+			mini_batches = update_mini_bash(mini_batches, mini_bash_size, eta, &net);
 		}
 		if(test_data)
 		{
@@ -412,7 +411,28 @@ Network SGD(Network net, Bashint *training_data, size_t len_training_data,
 	}
 	return net;
 }
-
+Network SGD(Network net, Bashint *training_data, size_t len_training_data, 
+	int epoch, int mini_bash_size, double eta, Bashint *test_data, 
+	size_t len_test_data)//V2
+{
+	size_t n_test = len_test_data;
+	size_t n = len_training_data;
+	double **mini_batches = malloc(sizeof(Bashint) * n / len_mini_bash);
+	int k;
+	int j;
+	for (int j = 0; j < epoch; ++j)
+	{
+		training_data = suffleBashint(training_data, len_training_data, net.seed);
+		for (k = 0; k < n; k += len_mini_bash)
+		{
+			mini_batches[j][k] = cutarray(training_data, k, k + len_mini_bash);
+		}
+		for (j = 0; j < n / len_mini_bash; ++j)
+		{
+						
+		}
+	}	
+}
 /*
 void saveNr(Network net)
 {
