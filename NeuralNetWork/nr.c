@@ -560,5 +560,5 @@ int main(int argc, char *argv[])
 	net = SGD(net, testBash, lenTest, epoch, mini_bash_size, eta, testBash, mini_bash_size); // update network
 	//saveNr(net);
 	freeNetwork(net);
-	return 0;//test
+	return 0;
 }
