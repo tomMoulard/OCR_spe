@@ -126,12 +126,9 @@ Network makeNetWork(int len, int *sizes)
 	net.lenlayers = 3;
 	//numlayers
 	net.numLayers = malloc(sizeof(int) * net.lenlayers);
-	for (int i = 0; i < net.lenlayers; ++i)
-	{
-		net.numLayers[i] = sizes[i];
-	}
+	net.numLayers = sizes;
 	//lenbiases
-	net.lenBiases = *sizes;
+	net.lenBiases = sizes[0];
 	for (int i = 1; i < len; ++i)
 	{
 		net.lenBiases += sizes[i];
@@ -158,13 +155,11 @@ Network makeNetWork(int len, int *sizes)
 		net.lenWeight += net.numLayers[i] * net.numLayers[i + 1];
 	}
 	//*weight
-	double *tmpWeights = malloc(sizeof(double) * net.lenWeight);
+	net.weight = malloc(sizeof(double) * net.lenWeight);
 	for (int j = 0; j < net.lenWeight; ++j)
 	{
-		tmpWeights[j] = ((double)rand()/(double)RAND_MAX);
+		net.weight[j] = ((double)rand()/(double)RAND_MAX);
 	}
-	net.weight = tmpWeights;
-	free(tmpWeights);
 	//lenWeight
 	return net;
 }
@@ -491,40 +486,32 @@ Network openNr()
 
 int *setNetwork(int type, int nbPixels)
 {
+	int *res = malloc(sizeof(int) * 3);
 	if (type == 1) //xor -> set len to 3
 	{
-		int *res   = malloc(3 * sizeof(int));
 		*res       = 2 ; //input neurons
 		*(res + 1) = 3 ;
 		*(res + 2) = 1 ; //output neurons
-		return res;
 	}
 	if (type == 2)//picture recognition [0-9]
 	{
-		int *res   = malloc(3 * sizeof (int));
 		*res       = nbPixels;
 		*(res + 1) = 100;//fixme
 		*(res + 2) = 10;
-		return res;
 	}
 	if (type == 3)//picture recognition [0-9a-zA-Z]
 	{
-		int *res   = malloc(3 * sizeof (int));
 		*res       = nbPixels;
 		*(res + 1) = 100;//fixme
 		*(res + 2) = 62;
-		return res;
 	}
 	if (type == 4)//picture recognition [0-9]
 	{ 
-		int *res   = malloc(3 * sizeof (int));
 		*res       = nbPixels;
 		*(res + 1) = 100; //fixme
 		*(res + 2) = 185;
-		return res;
 	}
-	//fail : no layer schema
-	errx(2, "Please, input a valid input : input a network scheme.");
+	return res;
 }
 
 //convert A char to int : A = strtoul(A, NULL, 10);
@@ -546,8 +533,7 @@ int main(int argc, char *argv[])
 		int type = 1; //see setNetwork funct to see why
 		net = makeNetWork(len, setNetwork(type, nbPixels)); //create network
 	}
-	//printNetwork(net);
-	freeNetwork(net);
+	printNetwork(net);
 	Bashint *testBash = makeBAshXor(lenTest, net); // create a Bashint List to improve the network
 	net = SGD(net, testBash, lenTest, 
 			epoch, mini_bash_size, 
