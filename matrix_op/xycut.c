@@ -44,23 +44,32 @@ int hor_cut(MatBinTree *mbt,size_t coef){
   if (y2 == coef){
     UnsignedMatrix *mat = copy_mat(mbt->key);
     mbt->left = new_matbintree(mat);
+    mbt->left->pos = mbt->pos;
     return 0;
   }
   if (y1 == 0) {
     UnsignedMatrix *mat = cut(mbt->key,0,mbt->key->lines,y2,mbt->key->cols);
     mbt->left = new_matbintree(mat);
+    mbt->left->pos = new_rect(mbt->pos.a1.x,mbt->pos.a1.y + y2,
+      mbt->pos.a2.x,mbt->pos.a2.y);
     return 1;
   }
   if (y2 == mbt->key->lines) {
     UnsignedMatrix *mat = cut(mbt->key,0,mbt->key->lines,0,y1);
     mbt->left = new_matbintree(mat);
+    mbt->left->pos = new_rect(mbt->pos.a1.x,mbt->pos.a1.y,
+      mbt->pos.a2.x,mbt->pos.a2.y - y1);
     return 1;
   }
 
   UnsignedMatrix *matl = cut(mbt->key,0,mbt->key->lines,0,y1);
   UnsignedMatrix *matr = cut(mbt->key,0,mbt->key->lines,y2,mbt->key->cols);
   mbt->left = new_matbintree(matl);
+  mbt->left->pos = new_rect(mbt->pos.a1.x,mbt->pos.a1.y,
+    mbt->pos.a2.x,mbt->pos.a1.y + y1);
   mbt->right = new_matbintree(matr);
+  mbt->right->pos = new_rect(mbt->pos.a1.x,mbt->pos.a1.y + y2,
+    mbt->pos.a2.x,mbt->pos.a2.y);
   return 1;
 }
 
@@ -101,16 +110,21 @@ int ver_cut(MatBinTree *mbt,size_t coef){
   if (x2 == coef){
     UnsignedMatrix *mat = copy_mat(mbt->key);
     mbt->left = new_matbintree(mat);
+    mbt->left->pos = mbt->pos;
     return 0;
   }
   if (x1 == 0) {
     UnsignedMatrix *mat = cut(mbt->key,x2,mbt->key->lines,0,mbt->key->cols);
     mbt->left = new_matbintree(mat);
+    mbt->left->pos = new_rect(mbt->pos.a1.x + x2,mbt->pos.a1.y,
+      mbt->pos.a2.x,mbt->pos.a2.y);
     return 1;
   }
   if (x2 == mbt->key->lines) {
     UnsignedMatrix *mat = cut(mbt->key,0,x1,0,mbt->key->cols);
     mbt->left = new_matbintree(mat);
+    mbt->left->pos = new_rect(mbt->pos.a1.x,mbt->pos.a1.y,
+      mbt->pos.a2.x - (x2 - x1),mbt->pos.a2.y);
     return 1;
   }
 
@@ -119,7 +133,11 @@ int ver_cut(MatBinTree *mbt,size_t coef){
   UnsignedMatrix *matl = cut(mbt->key,0,x1,0,mbt->key->cols);
   UnsignedMatrix *matr = cut(mbt->key,x2,mbt->key->lines,0,mbt->key->cols);
   mbt->left = new_matbintree(matl);
+  mbt->left->pos = new_rect(mbt->pos.a1.x,mbt->pos.a1.y,
+    mbt->pos.a1.x + x1,mbt->pos.a2.y);
   mbt->right = new_matbintree(matr);
+  mbt->right->pos = new_rect(mbt->pos.a1.x + x2,mbt->pos.a1.y,
+    mbt->pos.a2.x,mbt->pos.a2.y);
   return 1;
 }
 
@@ -147,12 +165,12 @@ UnsignedMatrix* supprbord(UnsignedMatrix *mat){
 void xycut(MatBinTree * mbt, int hor,int ver,size_t h){
   if (mbt && (hor || ver)) {
     if (h % 2 == 0) {
-      int a = hor_cut(mbt,0);
+      int a = hor_cut(mbt,1);
       xycut(mbt->left,a,ver,h + 1);
       xycut(mbt->right,a,ver,h + 1);
     }
     else{
-      int a = ver_cut(mbt,0);
+      int a = ver_cut(mbt,1);
       xycut(mbt->left,hor,a,h + 1);
       xycut(mbt->right,hor,a,h + 1);
     }

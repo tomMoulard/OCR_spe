@@ -112,45 +112,74 @@ UnsignedMatrix* vertical(UnsignedMatrix *matrix, int coef){
 
 }
 
-void eight_conn(UnsignedMatrix *mat,size_t x,size_t y){
-  size_t imin = x > 0? x - 1 : 0;
-  size_t imax = x < mat->lines?x + 1: mat->lines;
-  size_t jmin = y > 0? y - 1 : 0;
-  size_t jmax = x < mat->cols?y + 1: mat->cols;
-  unsigned coef = mat->data[x * mat->cols + y];
-  unsigned data;
-  for (size_t i = imin; i < imax + 1; i++) {
-    for (size_t j = jmin; j < jmax + 1;j++) {
-
-      data = mat->data[i * mat->cols + j];
-      coef = (data > 1 && data < coef)?data:coef;
+void four_connexe_forth(UnsignedMatrix *mat,size_t x,size_t y,int *isok){
+  unsigned data1 = x > 0?mat->data[(x - 1) * mat->cols + y]:0;
+  unsigned data2 = y > 0?mat->data[x * mat->cols + y - 1]:0;
+  if(data1 <= 1 || (mat->data[x * mat->cols + y] < data1)){
+    if(data2 <= 1 || (mat->data[x * mat->cols + y] < data2)){
+      *isok = *isok || 0;
     }
+    mat->data[x * mat->cols + y] = data2;
+    *isok = 1;
   }
-  mat->data[x * mat->cols + y] = coef;
+  if (data2 <= 1 || (mat->data[x * mat->cols + y] < data2)) {
+    mat->data[x * mat->cols + y] = data1;
+    *isok = 1;
+  }
+  else{
+    mat->data[x * mat->cols + y] = data1 < data2?data1:data2;
+    *isok = 1;
+  }
+  *isok = *isok || 0;
+}
+
+void four_connexe_back(UnsignedMatrix *mat,size_t x,size_t y,int *isok){
+  unsigned data1 = x < mat->lines?mat->data[(x + 1) * mat->cols +y]:0;
+  unsigned data2 = y < mat->cols?mat->data[x * mat->cols + y + 1]:0;
+  if(data1 <= 1 || (mat->data[x * mat->cols + y] < data1)){
+    if(data2 <= 1 || (mat->data[x * mat->cols + y] < data2)){
+      *isok = *isok || 0;
+    }
+    mat->data[x * mat->cols + y] = data2;
+    *isok = 1;
+  }
+  if (data2 <= 1 || (mat->data[x * mat->cols + y] < data2)) {
+    mat->data[x * mat->cols + y] = data1;
+    *isok = 1;
+  }
+  else{
+    mat->data[x * mat->cols + y] = data1 < data2?data1:data2;
+    *isok = 1;
+  }
+  *isok = *isok || 0;
 }
 
 UnsignedMatrix* ecc(UnsignedMatrix *matrix,unsigned *coef){
-  UnsignedMatrix *mat = copy_mat(matrix);
-  *coef = 1;
-  for (size_t i = 0; i < mat->lines; i++) {
-    for (size_t j = 0; j < mat->cols; j++) {
+ int isok = 1;
+ UnsignedMatrix *mat = copy_mat(matrix);
+ while(isok){
+ isok = 0;
+  for (size_t j = 0; j < mat->cols; j++) {
+    for (size_t i = 0; i < mat->lines; i++) {
       if (mat->data[i * mat->cols +j] > 0){
         mat->data[i * mat->cols +j] = *coef;
-        eight_conn(mat,i,j);
-        if (mat->data[i * mat->cols +j] == *coef) {
-          (*coef)++;
-        }
-      }
-    }
-  }
-  for (size_t i = mat->lines; i > 0; i--) {
-    for (size_t j = mat->cols; j > 0; j--) {
-      if (mat->data[i * mat->cols +j] > 0) {
-        eight_conn(mat,i,j);
-      }
-    }
-  }
+        four_connexe_forth(mat,i,j,&isok);
 
+      if (isok) {
+          (*coef)++;
+       }
+     }
+   }
+ }
+
+  for (size_t j = mat->cols; j > 0; j--) {
+    for (size_t i = mat->lines; i > 0; i--) {
+      if (mat->data[i * mat->cols +j] > 0) {
+        four_connexe_back(mat,i,j,&isok);
+      }
+    }
+  }
+}
   return mat;
 }
 

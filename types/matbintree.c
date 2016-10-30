@@ -1,4 +1,3 @@
-# include <stdlib.h>
 # include "matbintree.h"
 
 MatBinTree* new_matbintree(UnsignedMatrix* mat){
@@ -22,7 +21,7 @@ void free_matbintree(MatBinTree* mbt){
 
 void mbt_print(MatBinTree *mbt,size_t h){
   if (mbt) {
-      display_image(unsignedMatrix_to_pict(mbt->key));
+      display_image(unsignedMatrix_to_pict(mbt->key, 1));
       mbt_print(mbt->left,h + 1);
       mbt_print(mbt->right, h + 1);
   }
@@ -32,7 +31,7 @@ void display_leaves(MatBinTree* mbt){
   if (mbt) {
     if(!mbt->left){
       if(!mbt->right)
-        display_image(unsignedMatrix_to_pict(mbt->key));
+        display_image(unsignedMatrix_to_pict(mbt->key, 1));
       else
         display_leaves(mbt->right);
     }

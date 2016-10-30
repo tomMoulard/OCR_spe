@@ -6,6 +6,20 @@
 # include "rectangle.h"
 # include "../types/matrix.h"
 
+Coordinates new_coords(size_t x,size_t y){
+  Coordinates coord;
+  coord.x = x;
+  coord.y = y;
+  return coord;
+}
+
+Rect new_rect(size_t x1,size_t y1,size_t x2,size_t y2){
+  Rect rect;
+  rect.a1 = new_coords(x1,y1);
+  rect.a2 = new_coords(x2,y2);
+  return rect;
+
+}
 
 Coordinates neighbor(UnsignedMatrix *matrix, size_t posx,size_t posy,
               size_t coefh,size_t coefv){
@@ -91,28 +105,28 @@ Rect *rects = malloc(sizeof(Rect) * len);
 return rects;
 }
 
-void displayrect(UnsignedMatrix *matrix,size_t coefh,size_t coefv)
+void printrect(Rect rect){
+  printf("a1: %zu %zu, a2: %zu %zu\n",rect.a1.x,rect.a1.y,rect.a2.x,rect.a2.y);
+}
+
+void displayrect(UnsignedMatrix *matrix,Rect currect, unsigned col){
+  for (size_t i = currect.a1.x; i < currect.a2.x; i++) {
+    matrix->data[i * matrix->cols + currect.a2.y] = col;
+    matrix->data[i * matrix->cols + currect.a1.y] = col;
+
+  }
+  for (size_t i = currect.a1.y; i < currect.a2.y; i++) {
+    matrix->data[currect.a2.x * matrix->cols + i] = col;
+    matrix->data[currect.a1.x * matrix->cols + i] = col;
+
+  }
+}
+
+void displayrects(UnsignedMatrix *matrix,Rect* rect,size_t max)
 {
-  size_t max = 0;
-  size_t len = 10000;
-
-  UnsignedMatrix *mat = copy_mat(matrix);
-  Rect *rect;
-
-  rect = allrect(mat,coefh,coefv,len,&max);
-
   for (size_t n = 0; n < max; n++) {
-    Rect currect = rect[n];
-    for (size_t i = currect.a2.x; i < currect.a1.x; i++) {
-      matrix->data[i * matrix->cols + currect.a1.y] = 2;
-      matrix->data[i * matrix->cols + currect.a2.y] = 2;
+    displayrect(matrix,rect[n],2);
 
-    }
-    for (size_t i = currect.a2.y; i < currect.a1.y; i++) {
-      matrix->data[currect.a1.x * matrix->cols + i] = 2;
-      matrix->data[currect.a2.x * matrix->cols + i] = 2;
-
-    }
   }
 
   size_t maxl = 0;
