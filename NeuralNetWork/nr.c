@@ -359,10 +359,12 @@ Bashint *update_mini_bash(Bashint *mini_bash, size_t len_mini_bash, double eta, 
 }
 double *feedforward(Network net, int *x)
 {
-	int min_len = (net.lenBiases > net.lenWeight ? net.lenWeight : net.lenBiases);
+	int min_len = (net.lenBiases > net.lenWeight ? 
+					net.lenWeight : net.lenBiases);
 	for (int i = 0; i < min_len; ++i)
 	{
-		x[i] = sigmoid(dotdouble(net.weight[i], (double*)x, min_len) + net.biases[i]);
+		x[i] = sigmoid(
+				dotdouble(net.weight[i], (double*)x, min_len) + net.biases[i]);
 	}
 	return (double *)x;
 }
@@ -384,7 +386,10 @@ double evaluate(Bashint *test_data, int len_test_data, Network net)
 	for (int i = 0; i < len_test_data; ++i)
 	{
 		test_result[i] = malloc(sizeof(double) * 2);
-		test_result[i][0] = (double)argmax(feedforward(net, (int *)test_data[i].input), (net.lenBiases > net.lenWeight ? net.lenWeight : net.lenBiases));
+		test_result[i][0] = 
+			(double)argmax(feedforward(net, (int *)test_data[i].input), 
+					(net.lenBiases > net.lenWeight ? 
+						net.lenWeight : net.lenBiases));
 		//change test_result[i][1] is not neccesary :/
 	}
 	//compute test_result
@@ -410,7 +415,8 @@ Network SGDV1(Network net, Bashint *training_data, size_t len_training_data,
 	size_t n = len_training_data;
 	for (int j = 0; j < epoch; j += mini_bash_size)
 	{
-		training_data = suffleBashint(training_data, len_training_data, net.seed);
+		training_data = 
+			suffleBashint(training_data, len_training_data, net.seed);
 		Bashint *mini_batches = malloc(sizeof(Bashint) * mini_bash_size * n);
 		for (size_t k = 0; k < n; ++k)
 		{
@@ -422,11 +428,13 @@ Network SGDV1(Network net, Bashint *training_data, size_t len_training_data,
 		}
 		for (size_t l = 0; l < n; ++l)
 		{
-			mini_batches = update_mini_bash(mini_batches, mini_bash_size, eta, &net);
+			mini_batches = 
+				update_mini_bash(mini_batches, mini_bash_size, eta, &net);
 		}
 		if(test_data)
 		{
-			printf("%d: %f / %zu\n", j, evaluate(test_data, len_test_data, net) , n_test);
+			printf("%d: %f / %zu\n", 
+					j, evaluate(test_data, len_test_data, net) , n_test);
 		}
 		else
 			printf("Epoch %d complete.\n", j);
@@ -459,15 +467,18 @@ Network SGD(Network net, Bashint *training_data, size_t len_training_data,
 		training_data = suffleBashint(training_data, len_training_data, net.seed);
 		for (k = 0; k < n; k += mini_bash_size)
 		{
-			mini_batches[j + k] = cutarrayBashint(training_data, k, k + mini_bash_size);
+			mini_batches[j + k] = 
+				cutarrayBashint(training_data, k, k + mini_bash_size);
 		}
 		for (l = 0; l < n / mini_bash_size; ++l)
 		{
-			mini_batches[l] = update_mini_bash(training_data, mini_bash_size, eta, netw);
+			mini_batches[l] = update_mini_bash(training_data, 
+					mini_bash_size, eta, netw);
 		}
 		if(test_data)
 		{
-			printf("%d: %f / %zu\n", j, evaluate(test_data, len_test_data, net) , n_test);
+			printf("%d: %f / %zu\n", j, evaluate(test_data, 
+					len_test_data, net) , n_test);
 		}
 		else
 			printf("Epoch %d complete.\n", j);
@@ -490,7 +501,8 @@ Network openNr()
 	nr = fopen("REMOVEME!neuralNetwork.nr", "r"); 
     Network net;
   	if (nr == NULL) {
-    	printf("Fail to retrive neural network from file, creating a new one : \n");  
+    	printf("Fail to retrive neural network from file, 
+    			creating a new one : \n"); 
     	net.len = -1;
     	return net;
     }
@@ -533,7 +545,8 @@ int *setNetwork(int type, int nbPixels)
 		return res;
 	}
 	//fail : no layer schema
-	errx(2, "Please, input a valid input : input a network scheme.");
+	errx(2, "Please, input a valid input : 
+		input a network scheme.");
 }
 
 //convert A char to int : A = strtoul(A, NULL, 10);
@@ -556,8 +569,11 @@ int main(int argc, char *argv[])
 		net = makeNetWork(len, setNetwork(type, nbPixels)); //create network
 	}
 	printNetwork(net);
-	Bashint *testBash = makeBAshXor(lenTest, net); // create a Bashint List to improve the network
-	net = SGD(net, testBash, lenTest, epoch, mini_bash_size, eta, testBash, mini_bash_size); // update network
+	Bashint *testBash = 
+		makeBAshXor(lenTest, net); // create a Bashint List to improve the network
+	net = SGD(net, testBash, lenTest, 
+			epoch, mini_bash_size, 
+			eta, testBash, mini_bash_size); // update network
 	//saveNr(net);
 	freeNetwork(net);
 	return 0;
