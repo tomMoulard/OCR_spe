@@ -539,9 +539,10 @@ int *setNetwork(int type, int nbPixels)
 //convert A char to int : A = strtoul(A, NULL, 10);
 int main(int argc, char *argv[])
 {
-	if (argc < 2)
-		errx(1, "Please input a valid input :\n	- number of pixel in width\n 	- list of pixels\n");
+	//if (argc < 2)
+	//	errx(1, "Please input a valid input :\n	- number of pixel in width\n 	- list of pixels\n");
 	argv[0]++; // warning removers
+	argc++;
 	int len = 3;// set number of layers
 	int nbPixels = 900; // set number of input neurons
 	size_t lenTest = 1000; //set number of test to occure
