@@ -266,9 +266,7 @@ double **backprop(Network *network, double *x, double y) //may be done .....
 			nbneuronsleft = net.numLayers[thisLayerWieght];
 		}
 		posmininweight += 1;
-		printdoublearray(net.weight);
-		printf("test\n");
-		printNetwork(net);
+		//seg fault
 		z = dotdouble(activation[i], 
 			cutarray(net.weight, posmininweight, posmininweight + net.numLayers[thisLayerWieght]), 
 			net.numLayers[thisLayerWieght]) + net.biases[i];
