@@ -1,10 +1,4 @@
 //made by moular_b
-#include <stdio.h>
-#include <math.h>
-#include <err.h>
-#include <assert.h>
-#include <stdlib.h>
-#include <time.h>
 #include "nr.h"
 
 int xor(int a, int b)
