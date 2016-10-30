@@ -21,3 +21,9 @@ print "end weights\n"
 
 nabla_b = [np.zeros(bia.shape) for bia in b]
 printArray(nabla_b)
+
+
+
+a = [1, 2, 3]
+b = [4, 5, 6, 7]
+print zip(a,b)

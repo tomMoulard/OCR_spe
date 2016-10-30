@@ -38,11 +38,11 @@ double **transpose(double ***toTranspose)
 {
 	return *toTranspose;
 }
-double *dotdouble(double coeff, double *a, int len)
+double dotdouble(double coeff, double a, int len)
 {
 	for (int i = 0; i < len; ++i)
 	{
-		*a *= coeff;
+		a *= coeff;
 	}
 	return a;
 }
@@ -209,6 +209,41 @@ Bashint *suffleBashint(Bashint *bash, int len, time_t seed)
 	}
 	return bash;
 }
+double **backprop(Network *network, double *x, double y)
+{
+	double **res = malloc(sizeof(double *) * 2);
+	Network net = *network;
+	//init:
+	double *nabla_b = malloc(sizeof(double) * net.lenBiases);
+	int i;
+	for(i = 0; i < net.lenBiases; ++i)
+	{
+		nabla_b[i] = 0;
+	}
+	double *nabla_w = malloc(sizeof(double) * net.lenWeight);
+	for(i = 0; i <net.lenWeight; ++i)
+	{
+		nabla_w[i] = 0;
+	}
+	//feedforward
+	double *activation = x;
+	int min_len = (net.lenBiases > net.lenWeight ? net.lenWeight : net.lenBiases);
+	double **activations = malloc(sizeof(double *) * min_len)
+	double *zs = malloc(sizeof(double) * min_len);
+	double z;
+	for(i = 0; i < min_len; ++i)
+	{
+		z = dotdouble()
+	}
+	//free
+	*network = net;
+	free(activation);
+	free(zs);
+	free(nabla_b);
+	free(nabla_w);
+	freeNetwork(net);
+	return res;
+}
 Bashint *update_mini_bash(Bashint *mini_bash, size_t len_mini_bash, double eta, Network *network)
 {
 	Network net = *network;
@@ -224,9 +259,44 @@ Bashint *update_mini_bash(Bashint *mini_bash, size_t len_mini_bash, double eta, 
 	{
 		net.weight[i] = 0;
 	}
-	return mini_bash;
 	//loop
+	Bashint b;
+	double *x;
+	double y;
+	double **deltas = malloc(sizeof(double *) * 2);
+	int j;
+	size_t w;
+	for (w = 0; w < len_mini_bash; ++w)
+	{
+		b = mini_bash[w];
+		x = b.input;
+		y = b.res;
+		deltas = backprop(network, x, y); //deltas[0] == delta_nabla_b and deltas[1] == delta_nabla_w
+		for(j = 0; j < net.lenBiases; ++j)
+		{
+			nabla_b[j] += deltas[0][j]; 
+		}
+		for(j = 0; j < net.lenWeight; ++j)
+		{
+			nabla_w[j] += deltas[1][j];
+		}
 
+	}
+	int k;
+	for (k = 0; k < net.lenWeight; ++k)
+	{
+		net.weight[k] = net.weight[k] - (eta / len_mini_bash) * nabla_w[k];
+	}
+	for(k = 0; k < net.lenBiases; ++k)
+	{
+		net.biases[k] = net.biases[k] - (eta / len_mini_bash) * nabla_b[k];
+	}
+	//free
+	*network = net;
+	free(nabla_b);
+	free(nabla_w);
+	freeNetwork(net);
+	return mini_bash;
 }
 Network SGD(Network net, Bashint *training_data, size_t len_training_data, int epoch, int mini_bash_size, double eta, Bashint *test_data, size_t len_test_data)
 {
