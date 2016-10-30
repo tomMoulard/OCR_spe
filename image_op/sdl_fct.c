@@ -89,20 +89,22 @@ Uint32 getpixel(SDL_Surface *surface, unsigned x, unsigned y) {
   return 0;
 }
 
-SDL_Surface* unsignedMatrix_to_pict(UnsignedMatrix *mat){
+SDL_Surface* unsignedMatrix_to_pict(UnsignedMatrix *mat, unsigned coef){
   Uint32 white = 0x00000000;
   Uint32 black = 0xffffffff;
-  Uint32 yolo = 0xffff0000;
+  Uint32 color = 0xffffffff / coef;
   SDL_Surface *pict = SDL_CreateRGBSurface(0,mat->lines,mat->cols,32,0,0,0,0);
   for (size_t i = 0; i < mat->lines; i++)
-    for (size_t j = 0; j < mat->cols; j++) {
+    for (size_t j = 0; j < mat->cols; j++)
+    {
       if (mat->data[i * mat->cols + j] == 1)
         putpixel(pict,i,j,white);
-      else{
-        if (mat->data[i * mat->cols + j] == 2)
-          putpixel(pict,i,j,yolo);
-        else
+      else
+      {
+        if (mat->data[i * mat->cols + j] == 0)
           putpixel(pict,i,j,black);
+        else
+          putpixel(pict,i,j,color * mat->data[i * mat->cols + j]);
       }
     }
   return pict;
