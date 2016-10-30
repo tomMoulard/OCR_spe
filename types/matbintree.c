@@ -2,6 +2,7 @@
 # include <SDL/SDL.h>
 
 # include "matrix.h"
+# include "rectangle.h"
 # include "matbintree.h"
 
 MatBinTree* new_matbintree(UnsignedMatrix* mat){

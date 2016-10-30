@@ -4,9 +4,11 @@
 # include <stdlib.h>
 
 # include "matrix.h"
+# include "rectangle.h"
 
 typedef struct _MatBinTree{
   UnsignedMatrix     *key;
+  Rect               pos;
   struct _MatBinTree *left;
   struct _MatBinTree *right;
 }MatBinTree;
