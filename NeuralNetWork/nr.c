@@ -296,7 +296,7 @@ double **backprop(Network *network, double *x, double y) //may be done .....
 	free(nabla_b);
 	free(nabla_w);
 	freeNetwork(net);
-	//I'm freeeee, from my worries ;)
+	//I'm freeeee, from my worries
 	return res;
 }
 Bashint *update_mini_bash(Bashint *mini_bash, size_t len_mini_bash, double eta, Network *network) //done
