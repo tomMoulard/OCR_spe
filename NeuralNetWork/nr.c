@@ -109,6 +109,23 @@ void printNetworkArray(Network *a)
 		a += 1;
 	}
 }
+void printBashint(Bashint b)
+{ //explicit content
+	printf("Bashint : %f\nInput :", b.res);
+	for (int i = 0; i < 2; ++i)
+	{
+		printf("%f ", b.input[i]);
+	}
+	printf("\n");
+}
+void printdoublearray(double *array)
+{
+	while(*array)
+	{
+		printf("%f ", *array);
+		array = array + 1;
+	}
+}
 Network makeNetWork(int len, int *sizes)
 { //To create a brand (and shiny) new NeuralNetwork 
 	Network net;
@@ -168,16 +185,6 @@ void freeNetwork(Network net)
 	free(net.weight);
 	free(net.biases);
 }
-
-void printBashint(Bashint b)
-{ //explicit content
-	printf("Bashint : %f\nInput :", b.res);
-	for (int i = 0; i < 2; ++i)
-	{
-		printf("%f ", b.input[i]);
-	}
-	printf("\n");
-}
 void freeBashint(Bashint b)
 { //explicit content
 	free(b.input);
@@ -214,14 +221,6 @@ Bashint *suffleBashint(Bashint *bash, int len, time_t seed)
 	}
 	return bash;
 }
-void printdoublearray(double *array)
-{
-	while(*array)
-	{
-		printf("%f ", *array);
-		array = array + 1;
-	}
-}
 double *cutarray(double *array, int posmin, int posmax)
 {
 	printf("%d, %d\n", posmin, posmax);
@@ -237,7 +236,6 @@ double *cutarray(double *array, int posmin, int posmax)
 double **backprop(Network *network, double *x, double y) //may be done .....
 {
 	double **res = malloc(sizeof(double *) * 2);
-	printNetworkArray(network);
 	Network net = *network;
 	//init:
 	double *nabla_b = malloc(sizeof(double) * net.lenBiases);
