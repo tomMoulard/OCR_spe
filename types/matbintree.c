@@ -1,8 +1,4 @@
 # include <stdlib.h>
-# include <SDL/SDL.h>
-
-# include "matrix.h"
-# include "rectangle.h"
 # include "matbintree.h"
 
 MatBinTree* new_matbintree(UnsignedMatrix* mat){
@@ -21,5 +17,29 @@ void free_matbintree(MatBinTree* mbt){
   }
   else{
     free(mbt);
+  }
+}
+
+void mbt_print(MatBinTree *mbt,size_t h){
+  if (mbt) {
+      display_image(unsignedMatrix_to_pict(mbt->key));
+      mbt_print(mbt->left,h + 1);
+      mbt_print(mbt->right, h + 1);
+  }
+}
+
+void display_leaves(MatBinTree* mbt){
+  if (mbt) {
+    if(!mbt->left){
+      if(!mbt->right)
+        display_image(unsignedMatrix_to_pict(mbt->key));
+      else
+        display_leaves(mbt->right);
+    }
+    else{
+      display_leaves(mbt->left);
+      if(mbt->right)
+        display_leaves(mbt->right);
+    }
   }
 }

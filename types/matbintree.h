@@ -1,7 +1,7 @@
 #ifndef _MATBINTREE_H_
 #define _MATBINTREE_H_
 
-# include <stdlib.h>
+# include <SDL/SDL.h>
 
 # include "matrix.h"
 # include "rectangle.h"
@@ -14,7 +14,8 @@ typedef struct _MatBinTree{
 }MatBinTree;
 
 MatBinTree* new_matbintree(UnsignedMatrix* mat);
-
 void free_matbintree(MatBinTree* mbt);
+void mbt_print(MatBinTree *mbt, size_t h);
+void display_leaves(MatBinTree* mbt);
 
 #endif
