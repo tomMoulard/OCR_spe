@@ -393,7 +393,6 @@ Network SGDV1(Network net, Bashint *training_data, size_t len_training_data,
 		{
 			for (size_t i = k; i < k + mini_bash_size; ++i)
 			{
-				printf("%zu\n", i);
 				printBashint(mini_batches[k + i]);  
 				mini_batches[k + i] = training_data[i];
 			}
@@ -411,6 +410,16 @@ Network SGDV1(Network net, Bashint *training_data, size_t len_training_data,
 	}
 	return net;
 }
+Bashint *cutarrayBashint(Bashint *b, int posmin, int posmax)
+{
+	int len = posmax - posmin;
+	Bashint *res = malloc(sizeof(Bashint) * len);
+	for (int i = 0; i < len; ++i)
+	{
+		res[i] = b[i + posmin];
+	}
+	return res;
+}
 Network SGD(Network net, Bashint *training_data, size_t len_training_data, 
 	int epoch, int mini_bash_size, double eta, Bashint *test_data, 
 	size_t len_test_data)//V2
@@ -418,20 +427,27 @@ Network SGD(Network net, Bashint *training_data, size_t len_training_data,
 	size_t n_test = len_test_data; 
 	size_t n = len_training_data;
 	double **mini_batches = malloc(sizeof(Bashint) * n / mini_bash_size);
-	int k;
-	int j;
+	size_t k;
+	size_t l;
 	for (int j = 0; j < epoch; ++j)
 	{
 		training_data = suffleBashint(training_data, len_training_data, net.seed);
 		for (k = 0; k < n; k += mini_bash_size)
 		{
-			mini_batches[j][k] = cutarray(training_data, k, k + mini_bash_size);
+			mini_batches[j + k] = cutarrayBashint(training_data, k, k + mini_bash_size);
 		}
-		for (j = 0; j < n / mini_bash_size; ++j)
+		for (l = 0; l < n / mini_bash_size; ++l)
 		{
-						
+			mini_batches[l] = update_mini_bash(training_data, mini_bash_size, eta, &net);
 		}
+		if(test_data)
+		{
+			printf("%d: %f / %zu\n", j, evaluate(test_data, len_test_data, net) , n_test);
+		}
+		else
+			printf("Epoch %d complete.\n", j);
 	}	
+	return net;
 }
 /*
 void saveNr(Network net)
