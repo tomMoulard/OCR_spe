@@ -11,6 +11,10 @@ int xor(int a, int b)
 {
 	return (a*(b ? 0 : 1) || (a ? 0 : 1)*b) ? 1 : 0;
 }
+int nand(int a, int b)
+{
+	return a * b ? 0 : 1;
+}
 
 //ulitity
 double sigmoid(double z)
@@ -69,7 +73,7 @@ void printArrayIntEnd(int *beg, int *end)
 }
 void printNetwork(Network net)
 {
-	int i;
+	int i, j;
 	printf("lenLayers  : %d\n", net.lenlayers);
 	printf("numLayers  :\n");
 	for(i = 0; i < net.lenlayers; ++i)
@@ -82,27 +86,20 @@ void printNetwork(Network net)
 	printf("lenWeight  : %d\n", net.lenWeight);
 	printf("size       :\n");
 	printArrayIntLen(net.sizes, net.len);
-	printf("biases     :\n");	
-	int thisLayer = 0;
-	for (i = 0; i < net.lenBiases; ++i)
+	printf("biases     :\n");
+	int pos = 0;
+	for(i = 0; i < net.lenlayers; ++i)
 	{
-		printf("| %f ", net.biases[i]);
-		if(xor(i != 0,  i % net.numLayers[thisLayer] == 0))
-		{
-			thisLayer += 1;
-			printf("|\n");
+		for (j = 0; j < net.numLayers[i]; ++j){
+			printf("| %f", net.biases[pos]);
+			pos += 1;	
 		}
+		printf("|\n");
 	}
-	thisLayer = 0;
 	printf("\nweight     :\n");	
-	for (i = 0; i < net.lenWeight; ++i)
+	for (int k = 0; k < net.lenWeight; ++k)
 	{
-		printf("| %f ", net.weight[i]);
-		if(xor(i != 0, i % net.numLayers[thisLayer] == 0))
-		{
-			thisLayer += 1;
-			printf("|\n");
-		}
+		printf("| %f |\n", net.weight[k]);
 	}
 	printf("\n");
 }
@@ -126,8 +123,6 @@ Network makeNetWork(int len, int *sizes)
 	{
 		net.lenBiases += sizes[i];
 	}
-	//lenwieghts
-	net.lenWeight = net.lenBiases;
 	//len
 	net.len = len;
 	//sizes
@@ -142,7 +137,14 @@ Network makeNetWork(int len, int *sizes)
 		tmpBiases[i] = ((double)rand()/(double)RAND_MAX);
 	}
 	net.biases = tmpBiases;
-	srand(net.seed + 42);
+	//lenweight
+	//len first  = [0] * [1]
+	//len second = [1] * [2]
+	net.lenWeight = 0;
+	for (int i = 0; i < net.lenlayers - 1; ++i)
+	{
+		net.lenWeight += net.numLayers[i] * net.numLayers[i + 1];
+	}
 	//*weight
 	double *tmpWeights = malloc(sizeof(double) * net.lenWeight);
 	for (int j = 0; j < net.lenWeight; ++j)
@@ -164,7 +166,19 @@ void freeNetwork(Network net)
 	//free(net.biases);
 }
 
-Bashint *makeBAshXor(int len, Network net){
+void printBashint(Bashint b)
+{
+	for (int i = 0; i < b.res; ++i)
+	{
+		printf("%f", b.input[i]);
+	}
+}
+void freeBashint(Bashint b)
+{
+	free(b.input);
+}
+Bashint *makeBAshXor(int len, Network net)
+{
 	Bashint *res = malloc(sizeof(Bashint) * len);
 	//initiate random
 	srand(net.seed);
@@ -177,16 +191,82 @@ Bashint *makeBAshXor(int len, Network net){
  		b.res = xor(*tmp, *(tmp + 1));
  		b.input = tmp;
  		res[i] = b;
- 	} 	
+ 	}
  	return res;
 
 }
-/*
-Network update_mini_bash(Network net, double eta, Bashint *mini_bash)
+Bashint *suffleBashint(Bashint *bash, int len, time_t seed)
 {
-	return net;
+	srand(seed);
+	int pos;
+	Bashint tmp;
+	for (int i = 0; i < len; ++i)
+	{
+		pos = rand() % (len - i);
+		tmp = bash[len - i];
+		bash[len - i] = bash[pos];
+		bash[pos] = tmp;
+	}
+	return bash;
 }
-*/
+Bashint *update_mini_bash(Bashint *mini_bash, size_t len_mini_bash, double eta, Network *network)
+{
+	Network net = *network;
+	//initialization:
+	double *nabla_b = malloc(sizeof(double) * net.lenBiases);
+	int i;
+	for (i = 0; i < net.lenBiases; ++i)
+	{
+		net.biases[i] = 0;
+	}
+	double *nabla_w = malloc(sizeof(double) * net.lenWeight);
+	for (i = 0; i < net.lenWeight; ++i)
+	{
+		net.weight[i] = 0;
+	}
+	return mini_bash;
+	//loop
+
+}
+Network SGD(Network net, Bashint *training_data, size_t len_training_data, int epoch, int mini_bash_size, double eta, Bashint *test_data, size_t len_test_data)
+{
+	//to get a pointer.... 
+	Network *network = malloc(sizeof(Network));
+	*network = net;
+	///quite ugly
+	printf("training_data : \n");
+	for (size_t m = 0; m < len_training_data; ++m)
+	{
+		printBashint(training_data[m]);
+		printf("training_data : %zu\n", m);
+	}
+	size_t n_test = len_test_data;
+	size_t n = len_training_data;
+	for (int j = 0; j < epoch; j += mini_bash_size)
+	{
+		training_data = suffleBashint(training_data, len_training_data, net.seed);
+		Bashint **mini_batches = malloc(sizeof(Bashint) * mini_bash_size * n);
+		for (size_t k = 0; k < n; ++k)
+		{
+			for (size_t i = k; i < k + mini_bash_size; ++i)
+			{
+				mini_batches[k][i] = training_data[i];
+			}
+		}
+		for (size_t l = 0; l < n; ++l)
+		{
+			mini_batches[l] = update_mini_bash(mini_batches[l], mini_bash_size, eta, network);
+		}
+		if(test_data)
+		{
+			printf("%d: %d / %zu\n", j, 42 , n_test);
+		}
+		else
+			printf("Epoch %d complete.\n", j);
+	}
+	return *network;
+}
+
 /*
 void saveNr(Network net)
 {
