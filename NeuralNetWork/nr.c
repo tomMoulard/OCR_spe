@@ -431,6 +431,7 @@ Network SGD(Network net, Bashint *training_data, size_t len_training_data,
 	size_t l;
 	for (int j = 0; j < epoch; ++j)
 	{
+		printf("test\n");
 		training_data = suffleBashint(training_data, len_training_data, net.seed);
 		for (k = 0; k < n; k += mini_bash_size)
 		{
