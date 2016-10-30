@@ -12,7 +12,7 @@
 # include "image_op/binarize.h"
 # include "image_op/sdl_fct.h"
 
-int main() 
+int main()
 {
     SDL_Surface *surf;
     SDL_Surface *img;

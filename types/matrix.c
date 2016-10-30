@@ -15,7 +15,7 @@ UnsignedMatrix* cut(UnsignedMatrix *matrix,
   UnsignedMatrix *mat = new_unsigned_matrix(x2 - x1,y2 - y1);
   for (size_t i = 0; i < x2 - x1; i++) {
     for (size_t j = 0; j < y2 - y1; j++) {
-      mat->data[i * mat->cols + j] = matrix->data[(i + x1)* matrix->cols +(j + y1)];
+      mat->data[i* mat->cols+j] = matrix->data[(i+x1) * matrix->cols+(j + y1)];
     }
   }
 
