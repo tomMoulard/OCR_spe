@@ -294,9 +294,19 @@ double **backprop(Network *network, double *x, double y) //may be done .....
 	//I'm freeeee, from my worries
 	return res;
 }
+void printNetworkArray(Network *a)
+{
+	while(a)
+	{
+		printf("%p\n", a);
+		printNetwork(*a);
+		a += 1;
+	}
+}
 Bashint *update_mini_bash(Bashint *mini_bash, size_t len_mini_bash, double eta, Network *network) //done
 {	
 	Network net = *network;
+	printNetworkArray(network);
 	//initialization:
 	double *nabla_b = malloc(sizeof(double) * net.lenBiases);
 	int i;
@@ -443,6 +453,8 @@ Network SGD(Network net, Bashint *training_data, size_t len_training_data,
 	Bashint **mini_batches = malloc(sizeof(Bashint) * n / mini_bash_size);
 	size_t k;
 	size_t l;
+	Network *netw = malloc(sizeof(Network));
+	*netw = net;
 	for (int j = 0; j < epoch; ++j)
 	{
 		training_data = suffleBashint(training_data, len_training_data, net.seed);
@@ -452,7 +464,7 @@ Network SGD(Network net, Bashint *training_data, size_t len_training_data,
 		}
 		for (l = 0; l < n / mini_bash_size; ++l)
 		{
-			mini_batches[l] = update_mini_bash(training_data, mini_bash_size, eta, &net);
+			mini_batches[l] = update_mini_bash(training_data, mini_bash_size, eta, netw);
 		}
 		if(test_data)
 		{
