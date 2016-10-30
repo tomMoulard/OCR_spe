@@ -148,7 +148,6 @@ Network makeNetWork(int len, int *sizes)
 	for (int i = 0; i < net.lenBiases; ++i)
 	{
 		net.biases[i] = ((double)rand()/(double)RAND_MAX);
-		printf("%f\n", net.biases[i]);
 	}
 	//lenweight
 	//len first  = [0] * [1]
