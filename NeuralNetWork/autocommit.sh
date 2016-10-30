@@ -4,6 +4,7 @@ cd ~/epita/ocr/OCR_spe/
 git add ~/epita/ocr/OCR_spe/NeuralNetWork/
 git commit -m "$1"
 git push 
+git status
 cd ~/epita/ocr/OCR_spe/NeuralNetWork/
 banner commited
 make
