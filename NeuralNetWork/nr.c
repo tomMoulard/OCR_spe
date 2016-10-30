@@ -90,7 +90,7 @@ void printNetwork(Network net)
 	printf("\nweight     :\n");	
 	for (int k = 0; k < net.lenWeight; ++k)
 	{
-		printf("| %d :  %f |\n", net.lenWeight, net.weight[k]);
+		//printf("| %d :  %f |\n", net.lenWeight, net.weight[k]);
 	}
 	printf("\n");
 }
@@ -98,7 +98,6 @@ void printNetworkArray(Network *a)
 {
 	while(a)
 	{
-		printf("%p\n", a);
 		printNetwork(*a);
 		a += 1;
 	}
@@ -454,7 +453,10 @@ Network SGD(Network net, Bashint *training_data, size_t len_training_data,
 		}
 		for (l = 0; l < n / mini_bash_size; ++l)
 		{
-			mini_batches[l] = update_mini_bash(training_data, mini_bash_size, eta, netw);
+			printf("yolo:######################\n");
+			printNetwork(net);
+			printf("yolo:######################\n");
+			mini_batches[l] = update_mini_bash(training_data, mini_bash_size, eta, &net);
 		}
 		if(test_data)
 		{
@@ -546,7 +548,7 @@ int main(int argc, char *argv[])
 		int type = 1; //see setNetwork funct to see why
 		net = makeNetWork(len, setNetwork(type, nbPixels)); //create network
 	}
-	printNetwork(net);
+	//printNetwork(net);
 	Bashint *testBash = makeBAshXor(lenTest, net); // create a Bashint List to improve the network
 	net = SGD(net, testBash, lenTest, 
 			epoch, mini_bash_size, 
