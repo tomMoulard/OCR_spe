@@ -1,4 +1,3 @@
-# include <math.h>
 # include "binarize.h"
 
 PixelMatrix *to_grey_scale(PixelMatrix *image)

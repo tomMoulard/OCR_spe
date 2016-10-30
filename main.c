@@ -26,7 +26,7 @@ int main()
     save_image(img, image);
     UnsignedMatrix *mat = new_unsigned_matrix(lines, cols);
     binarize(image, mat);
-    surf = unsignedMatrix_to_pict(mat);
+    surf = unsignedMatrix_to_pict(mat, 1);
     img = display_image(surf);
     SDL_FreeSurface(surf);
     SDL_FreeSurface(img);
