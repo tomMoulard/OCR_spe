@@ -415,7 +415,7 @@ Network SGD(Network net, Bashint *training_data, size_t len_training_data,
 	int epoch, int mini_bash_size, double eta, Bashint *test_data, 
 	size_t len_test_data)//V2
 {
-	size_t n_test = len_test_data; //test
+	size_t n_test = len_test_data; 
 	size_t n = len_training_data;
 	double **mini_batches = malloc(sizeof(Bashint) * n / len_mini_bash);
 	int k;
