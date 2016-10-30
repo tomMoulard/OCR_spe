@@ -162,10 +162,12 @@ void freeNetwork(Network net)
 
 void printBashint(Bashint b)
 { //explicit content
-	for (int i = 0; i < b.res; ++i)
+	printf("Bashint : %f\nInput :", b.res);
+	for (int i = 0; i < 2; ++i)
 	{
-		printf("%f", b.input[i]);
+		printf("%f ", b.input[i]);
 	}
+	printf("\n");
 }
 void freeBashint(Bashint b)
 { //explicit content
@@ -370,18 +372,17 @@ double evaluate(Bashint *test_data, int len_test_data, Network net)
 	}
 	return res;
 }
-Network SGD(Network net, Bashint *training_data, size_t len_training_data, int epoch, int mini_bash_size, double eta, Bashint *test_data, size_t len_test_data)//done
+Network SGD(Network net, Bashint *training_data, size_t len_training_data, 
+	int epoch, int mini_bash_size, double eta, Bashint *test_data, 
+	size_t len_test_data)//done
 {
-	//to get a pointer.... 
-	Network *network = malloc(sizeof(Network));
-	*network = net;
-	///quite ugly
+	/*
 	printf("training_data : \n");
 	for (size_t m = 0; m < len_training_data; ++m)
 	{
 		printBashint(training_data[m]);
-		printf("training_data : %zu\n", m);
-	}
+		printf("training_data : %zu\n\n", m);
+	}*/
 	size_t n_test = len_test_data;
 	size_t n = len_training_data;
 	for (int j = 0; j < epoch; j += mini_bash_size)
@@ -392,12 +393,15 @@ Network SGD(Network net, Bashint *training_data, size_t len_training_data, int e
 		{
 			for (size_t i = k; i < k + mini_bash_size; ++i)
 			{
+				printf("test\n");
 				mini_batches[k][i] = training_data[i];
+				printf("test\n");
 			}
 		}
+		printf("test\n");
 		for (size_t l = 0; l < n; ++l)
 		{
-			mini_batches[l] = update_mini_bash(mini_batches[l], mini_bash_size, eta, network);
+			mini_batches[l] = update_mini_bash(mini_batches[l], mini_bash_size, eta, &net);
 		}
 		if(test_data)
 		{
@@ -406,7 +410,7 @@ Network SGD(Network net, Bashint *training_data, size_t len_training_data, int e
 		else
 			printf("Epoch %d complete.\n", j);
 	}
-	return *network;
+	return net;
 }
 
 /*
@@ -476,18 +480,21 @@ int main(int argc, char *argv[])
 {
 	if (argc < 2)
 		errx(1, "Please input a valid input :\n	- number of pixel in width\n 	- list of pixels\n");
-	argv[0]++;
-	int len = 3;
-	int nbPixels = 900;
-	//int **test = makeNetWorkOld(len, net);
-	Network net = openNr();
-	if (net.len == -1)
+	argv[0]++; // warning removers
+	int len = 3;// set number of layers
+	int nbPixels = 900; // set number of input neurons
+	size_t lenTest = 1000; //set number of test to occure
+	int epoch = 30; //see tuto
+	int mini_bash_size = 10; //see tuto
+	double eta = 3.0;
+	Network net = openNr(); // to open the previously saved Network
+	if (net.len == -1) //no previously saved network
 	{
-		int type = 1;
-		net = makeNetWork(len, setNetwork(type, nbPixels));
+		int type = 1; //see setNetwork funct to see why
+		net = makeNetWork(len, setNetwork(type, nbPixels)); //create network
 	}
-	Bashint *testBash = makeBAshXor(1000, net);
-	testBash = update_mini_bash(testBash, 1000, 0.3, &net);
+	Bashint *testBash = makeBAshXor(lenTest, net); // create a Bashint List to improve the network
+	net = SGD(net, testBash, lenTest, epoch, mini_bash_size, eta, testBash, mini_bash_size); // update network
 	printNetwork(net);
 	//saveNr(net);
 	freeNetwork(net);
