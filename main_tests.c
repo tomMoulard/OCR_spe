@@ -2,138 +2,43 @@
 
 # include <stdio.h>
 # include <stdlib.h>
-
 # include <err.h>
-# include <SDL/SDL.h>
-# include <SDL/SDL_image.h>
-
 
 # include "types/pixel.h"
 # include "image_op/binarize.h"
 # include "matrix_op/rlsa.h"
-# include "SDL/pixel_operations.h"
 # include "types/rectangle.h"
 # include "types/matrix.h"
 # include "types/matbintree.h"
 # include "matrix_op/xycut.h"
+# include "image_op/sdl_fct.h"
 
 
-void wait_for_keypressed(void) {
-  SDL_Event             event;
-  // Infinite loop, waiting for event
-  for (;;) {
-    // Take an event
-    SDL_PollEvent( &event );
-    // Switch on event type
-    switch (event.type) {
-    // Someone pressed a key -> leave the function
-    case SDL_KEYDOWN: return;
-    default: break;
-    }
-  // Loop until we got the expected event
+unsigned get_all_rect(MatBinTree* mbt,UnsignedMatrix *mat,unsigned h){
+  if (!mbt) {
+    return h;
+  }
+  else{
+    displayrect(mat,mbt->pos,h);
+    unsigned l = get_all_rect(mbt->left,mat,h + 1);
+    unsigned r = get_all_rect(mbt->right,mat,h + 1);
+    return (h > l) && (h > r)? h :(l > r? l : r);
   }
 }
 
-void init_sdl(void) {
-  // Init only the video part
-  if( SDL_Init(SDL_INIT_VIDEO)==-1 ) {
-    // If it fails, die with an error message
-    errx(1,"Could not initialize SDL: %s.\n", SDL_GetError());
-  }
-  // We don't really need a function for that ...
-}
-
-SDL_Surface* load_image(char *path) {
-  SDL_Surface          *img;
-  // Load an image using SDL_image with format detection
-  img = IMG_Load(path);
-  if (!img)
-    // If it fails, die with an error message
-    errx(3, "can't load %s: %s", path, IMG_GetError());
-  return img;
-}
-
-SDL_Surface* display_image(SDL_Surface *img) {
-  SDL_Surface          *screen;
-  // Set the window to the same size as the image
-  screen = SDL_SetVideoMode(img->w, img->h, 0, SDL_SWSURFACE|SDL_ANYFORMAT);
-  if ( screen == NULL ) {
-    // error management
-    errx(1, "Couldn't set %dx%d video mode: %s\n",
-         img->w, img->h, SDL_GetError());
-  }
-
-  /* Blit onto the screen surface */
-  if(SDL_BlitSurface(img, NULL, screen, NULL) < 0)
-    warnx("BlitSurface error: %s\n", SDL_GetError());
-
-  // Update the screen
-  SDL_UpdateRect(screen, 0, 0, img->w, img->h);
-
-  // wait for a key
-  wait_for_keypressed();
-
-  // return the screen for further uses
-  return screen;
-}
-
-void array_print(unsigned array[], size_t len)
-{
-  int line = 0;
-  for (size_t i = 0; i < len; ++i) {
-    if (line > 72) {
-      printf("|`|\n");
-      line = 0;
-    }
-    line += printf("| %4d ", array[i]);
-  }
-  printf("|\n");
-}
-
-void matrix_print(unsigned **matrix, size_t x,size_t y)
-{
-
- for (size_t i = 0; i < x; ++i) {
-   array_print(matrix[i], y);
- }
- printf("\n");
-}
-
-void mbt_print(MatBinTree *mbt,size_t h){
-  if (mbt) {
-      display_image(frommatbintopict(mbt->key));
-      printf("left, h = %zu\n",h );
-      mbt_print(mbt->left,h + 1);
-      printf("right, h = %zu\n",h );
-      mbt_print(mbt->right, h + 1);
-  }
-}
-
-void display_leaves(MatBinTree* mbt){
-  if (mbt) {
-    if(!mbt->left){
-      if(!mbt->right){
-        display_image(frommatbintopict(mbt->key));
-      }
-      else{
-        display_leaves(mbt->right);
-      }
-    }
-    else{
-      display_leaves(mbt->left);
-      if(mbt->right){
-        display_leaves(mbt->right);
-      }
-    }
-  }
-}
 
 int main(void) {
   SDL_Surface *img = load_image("images/level2.jpg");
   size_t w = 1126;
   size_t h = 1570;
 
+  UnsignedMatrix* mat = cut(frompictomatbin(img,w,h),0,1126,500,1570);
+  unsigned coef;
+  UnsignedMatrix* matecc = ecc(mat,&coef);
+  display_image(frommattopict(matecc,coef));
 
+  free_unsigned_matrix(mat);
+  free_unsigned_matrix(matecc);
 
 return 0;
 }
