@@ -260,6 +260,7 @@ double **backprop(Network *network, double *x, double y) //may be done .....
 		posmininweight += 1;
 		printdoublearray(net.weight);
 		printf("test\n");
+		printNetwork(net);
 		z = dotdouble(activation[i], 
 			cutarray(net.weight, posmininweight, posmininweight + net.numLayers[thisLayerWieght]), 
 			net.numLayers[thisLayerWieght]) + net.biases[i];
@@ -542,9 +543,9 @@ int main(int argc, char *argv[])
 		int type = 1; //see setNetwork funct to see why
 		net = makeNetWork(len, setNetwork(type, nbPixels)); //create network
 	}
+	printNetwork(net);
 	Bashint *testBash = makeBAshXor(lenTest, net); // create a Bashint List to improve the network
 	net = SGD(net, testBash, lenTest, epoch, mini_bash_size, eta, testBash, mini_bash_size); // update network
-	printNetwork(net);
 	//saveNr(net);
 	freeNetwork(net);
 	return 0;
