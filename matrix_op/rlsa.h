@@ -15,6 +15,9 @@ UnsignedMatrix* vertical(UnsignedMatrix *matrix, int coef);
 
 UnsignedMatrix* rlsa(UnsignedMatrix *matrix,int coefh,int coefv);
 
+UnsignedMatrix* ecc(UnsignedMatrix *matrix,unsigned *coef);
+
+void eraseimage(UnsignedMatrix *mat,int coefh,int coefv);
 //size_t* blockdetect(unsigned **matrix,size_t x ,size_t y);
 
 # endif

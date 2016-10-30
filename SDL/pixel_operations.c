@@ -90,15 +90,27 @@ SDL_Surface* frommatbintopict(UnsignedMatrix* mat){
         putpixel(pict,i,j,white);
       }
       else{
-        if (mat->data[i * mat->cols + j] == 2) {
-          putpixel(pict,i,j,yolo);
+        if (mat->data[i * mat->cols + j] == 0) {
+          putpixel(pict,i,j,black);
         }
         else{
-          putpixel(pict,i,j,black);
+          putpixel(pict,i,j,yolo);
         }
 
       }
     }
   }
+  return pict;
+}
+
+SDL_Surface* fromecctopict(UnsignedMatrix* mat,unsigned coef){
+  Uint32 color = 0xffffffff / coef;
+  SDL_Surface *pict = SDL_CreateRGBSurface(0,mat->lines,mat->cols,32,0,0,0,0);
+  for (size_t i = 0; i < mat->lines; i++) {
+    for (size_t j = 0; j < mat->cols; j++) {
+          putpixel(pict,i,j,color * mat->data[i * mat->cols + j]);
+      }
+    }
+
   return pict;
 }

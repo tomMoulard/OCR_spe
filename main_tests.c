@@ -12,7 +12,7 @@
 # include "image_op/binarize.h"
 # include "matrix_op/rlsa.h"
 # include "SDL/pixel_operations.h"
-# include "matrix_op/rectangle.h"
+# include "types/rectangle.h"
 # include "types/matrix.h"
 # include "types/matbintree.h"
 # include "matrix_op/xycut.h"
@@ -129,24 +129,40 @@ void display_leaves(MatBinTree* mbt){
 }
 
 int main(void) {
-  SDL_Surface *img = load_image("test.bmp");
-  size_t w = 1024;
-  size_t h = 768;
+  SDL_Surface *img = load_image("images/level2.jpg");
+  size_t w = 1126;
+  size_t h = 1570;
 
-
+/*
   UnsignedMatrix *mat = frompictomatbin(img,w,h);
+  display_image(frommatbintopict(mat));
   UnsignedMatrix* cuti = supprbord(mat);
 
-  MatBinTree *mbt = new_matbintree(cuti);
+  MatBinTree *mbt = new_matbintree(mat);
   xycut(mbt,1,1,0);
-  mbt_print(mbt,0);
+  display_leaves(mbt);
+  free_matbintree(mbt);
+*/
+  int coefh = 200;
+  int coefv = 200;
+
+  UnsignedMatrix *mat = supprbord(frompictomatbin(img,w,h));
+  UnsignedMatrix *matrlsa = horizontal(rlsa(mat,coefh,coefv),2);
+  unsigned coef;
+  UnsignedMatrix* matecc = ecc(matrlsa,&coef);
+  display_image(frommatbintopict(matrlsa));
+  display_image(fromecctopict(matecc,coef));
+
+  eraseimage(mat,coefh,coefv);
+  MatBinTree *mbt = new_matbintree(mat);
+  xycut(mbt,1,1,0);
+  display_image(frommatbintopict(mat));
+
+  mbt_print(NULL,0);
   free_matbintree(mbt);
 
 
 /*
-  int coefh = 100;
-  int coefv = 50;
-  UnsignedMatrix *mat = frompictomatbin(img,w,h);
   img = frommatbintopict(mat);
   display_image(img);
   UnsignedMatrix *math = horizontal(mat,coefh);
@@ -156,12 +172,13 @@ int main(void) {
   img = frommatbintopict(matv);
   display_image(img);
   UnsignedMatrix *matrlsa = rlsa(mat,coefh,coefv);
+
+
   img = frommatbintopict(matrlsa);
   display_image(img);
-*/
-/*
+  //UnsignedMatrix *mat = frompictomatbin(img,w,h);
   size_t len = 0;
-  UnsignedMatrix **matmat = getrect(mat,4,5,&len);
+  UnsignedMatrix **matmat = getrect(matrlsa,1,1,&len);
   for (size_t i = 0; i < len / 10; i++) {
       img = frommatbintopict(matmat[i]);
       display_image(img);
