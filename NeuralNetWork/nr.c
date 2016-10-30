@@ -8,21 +8,21 @@
 #include "nr.h"
 
 int xor(int a, int b)
-{
+{  //explicit content
 	return (a*(b ? 0 : 1) || (a ? 0 : 1)*b) ? 1 : 0;
 }
 int nand(int a, int b)
-{
+{  //explicit content
 	return a * b ? 0 : 1;
 }
 
 //ulitity
 double sigmoid(double z)
-{
+{  //explicit content
 	return 1.0 / (1.0 + exp(z));
 }
 double *sigmoidStar(double *z, int len)
-{
+{  //explicit content
 	double *res = malloc(sizeof(double) * len);
 	for (int i = 0; i < len; ++i)
 	{
@@ -31,11 +31,11 @@ double *sigmoidStar(double *z, int len)
 	return res;
 }
 double sigmoidPrime(double z)
-{
+{  //explicit content
 	return sigmoid(z) * (1 - sigmoid(z));
 }
 double dotdouble(double coeff, double *a, int len)
-{
+{  //do a dot mathematical function :3 
 	double res = 0;
 	for (int i = 0; i < len; ++i)
 	{
@@ -44,7 +44,7 @@ double dotdouble(double coeff, double *a, int len)
 	return res;
 }
 double *append(double *a, double *b, int lenA, int lenB)
-{
+{  //To append two list a and b.
 	double *res = malloc(sizeof(a) * lenA + sizeof(b) * lenB);
 	res = a;
 	for (int i = lenA; i < lenB; ++i)
@@ -55,7 +55,7 @@ double *append(double *a, double *b, int lenA, int lenB)
 }
 //prints
 void printArrayIntLen(int *array, int len)
-{
+{  //explicit content
 	for (int i = 0; i < len; ++i)
 	{
 		printf("%d ", array[i]);
@@ -64,12 +64,12 @@ void printArrayIntLen(int *array, int len)
 }
 
 void printArrayIntEnd(int *beg, int *end)
-{
+{  //explicit content
 	for(; beg < end; ++beg)
 		printf("%d\n", *beg);
 }
 void printNetwork(Network net)
-{
+{  //explicit content
 	int i, j;
 	printf("lenLayers  : %d\n", net.lenlayers);
 	printf("numLayers  :\n");
@@ -100,11 +100,8 @@ void printNetwork(Network net)
 	}
 	printf("\n");
 }
-/* test
-	Making a function to create a new neural network in a Network : net 
-*/
 Network makeNetWork(int len, int *sizes)
-{
+{ //To create a brand (and shiny) new NeuralNetwork 
 	Network net;
 	//lenLayers
 	net.lenlayers = 3;
@@ -156,7 +153,7 @@ Network makeNetWork(int len, int *sizes)
 }
 
 void freeNetwork(Network net)
-{
+{  //explicit content
 	free(net.sizes);
 	free(net.numLayers);
 	//free(net.weight);
@@ -164,18 +161,19 @@ void freeNetwork(Network net)
 }
 
 void printBashint(Bashint b)
-{
+{ //explicit content
 	for (int i = 0; i < b.res; ++i)
 	{
 		printf("%f", b.input[i]);
 	}
 }
 void freeBashint(Bashint b)
-{
+{ //explicit content
 	free(b.input);
 }
 Bashint *makeBAshXor(int len, Network net)
-{
+{   //create a bash of randomely generated XOR int *inputlist and int res;
+	//reusable ti create random things ;)
 	Bashint *res = malloc(sizeof(Bashint) * len);
 	//initiate random
 	srand(net.seed);
@@ -190,10 +188,9 @@ Bashint *makeBAshXor(int len, Network net)
  		res[i] = b;
  	}
  	return res;
-
 }
 Bashint *suffleBashint(Bashint *bash, int len, time_t seed)
-{
+{ //to shuffle all elts in the BashintArray
 	srand(seed);
 	int pos;
 	Bashint tmp;
@@ -216,7 +213,7 @@ double *cutarray(double *array, int posmin, int posmax)
 	}
 	return res;
 }
-double **backprop(Network *network, double *x, double y)
+double **backprop(Network *network, double *x, double y) //may be done .....
 {
 	double **res = malloc(sizeof(double *) * 2);
 	Network net = *network;
@@ -239,23 +236,34 @@ double **backprop(Network *network, double *x, double y)
 	double *zs = malloc(sizeof(double) * min_len);
 	double z;
 	int thisLayerWieght = 0;
+	int nbneuronsleft = net.numLayers[0];
+	int posmininweight = 0;
 	for(i = 0; i < min_len - 1; ++i)
 	{
-		z = dotdouble(activation[i], cutarray(net.weight[i], /*posinweightmin*/, /*posinweighmax*/), /*len aka posinweightmax - posinwiehgtmin*/) + net.biases[i];
+		if(nbneuronsleft) // ==0
+		{
+			thisLayerWieght += 1;
+			nbneuronsleft = net.numLayers[thisLayerWieght];
+		}
+		posmininweight += 1;
+		z = dotdouble(activation[i], 
+			cutarray(net.weight, posmininweight, posmininweight + net.numLayers[thisLayerWieght]), 
+			net.numLayers[thisLayerWieght]) + net.biases[i];
+		nbneuronsleft -= 1;
 		zs[i] = z;
-		activation = sigmoid(z);
+		activation[i] = sigmoid(z);
 		activations[i] = activation;
 	}
-	double delta = (activations[min_len - 1] - y ) * sigmoidPrime(zs[min_len - 1]);
+	double delta = (activations[0][min_len - 1] - y ) * sigmoidPrime(zs[min_len - 1]);
 	double sp;
 	for (int l = 2; l < net.lenlayers; ++l)
 	{
 		z = zs[min_len - l];
 		sp = sigmoidPrime(z);
 		//no transposition : useless....
-		delta = dotdouble(delta, net.weight[min_len - l + 1]) * sp;
+		delta = dotdouble(delta, net.weight, net.lenWeight - l - 1) * sp;
 		nabla_b[min_len - l] = delta;
-		nabla_w[min_len - l] = dot(delta, activations[min_len - l - 1]) * sp;
+		nabla_w[min_len - l] = dotdouble(delta, activations[l], min_len - l - 1) * sp;
 	}
 	//building result
 	res[0] = nabla_b;
@@ -266,11 +274,11 @@ double **backprop(Network *network, double *x, double y)
 	free(zs);
 	free(nabla_b);
 	free(nabla_w);
-	free(curentlayer);
 	freeNetwork(net);
+	//I'm freeeee, from my worries
 	return res;
 }
-Bashint *update_mini_bash(Bashint *mini_bash, size_t len_mini_bash, double eta, Network *network)
+Bashint *update_mini_bash(Bashint *mini_bash, size_t len_mini_bash, double eta, Network *network) //done
 {
 	Network net = *network;
 	//initialization:
@@ -324,7 +332,44 @@ Bashint *update_mini_bash(Bashint *mini_bash, size_t len_mini_bash, double eta, 
 	freeNetwork(net);
 	return mini_bash;
 }
-Network SGD(Network net, Bashint *training_data, size_t len_training_data, int epoch, int mini_bash_size, double eta, Bashint *test_data, size_t len_test_data)
+double *feedforward(Network net, int *x)
+{
+	int min_len = (net.lenBiases > net.lenWeight ? net.lenWeight : net.lenBiases);
+	for (int i = 0; i < min_len; ++i)
+	{
+		x[i] = sigmoid(dotdouble(net.weight[i], (double*)x, min_len) + net.biases[i]);
+	}
+	return (double *)x;
+}
+int argmax(double *array, int len)
+{
+	int res = 0;
+	for (int i = 1; i < len; ++i)
+	{
+		if(array[i] > array[res])
+			res = i;
+	}
+	return res;
+}
+double evaluate(Bashint *test_data, int len_test_data, Network net)
+{
+	double res = 0;
+	double **test_result = malloc(sizeof(double *) * len_test_data);
+	//building test_result
+	for (int i = 0; i < len_test_data; ++i)
+	{
+		test_result[i][0] = malloc(sizeof(double) * 2);
+		test_result[i][0] = (double)argmax(feedforward(net, (int *)test_data[i].input), (net.lenBiases > net.lenWeight ? net.lenWeight : net.lenBiases));
+	}
+	//compute test_result
+	for (int i = 0; i < len_test_data; ++i)
+	{
+		if (test_result[0] == test_result[1])
+			res += 1;
+	}
+	return res;
+}
+Network SGD(Network net, Bashint *training_data, size_t len_training_data, int epoch, int mini_bash_size, double eta, Bashint *test_data, size_t len_test_data)//done
 {
 	//to get a pointer.... 
 	Network *network = malloc(sizeof(Network));
@@ -355,7 +400,7 @@ Network SGD(Network net, Bashint *training_data, size_t len_training_data, int e
 		}
 		if(test_data)
 		{
-			printf("%d: %d / %zu\n", j, 42 , n_test);
+			printf("%d: %f / %zu\n", j, evaluate(test_data, len_test_data, net) , n_test);
 		}
 		else
 			printf("Epoch %d complete.\n", j);
