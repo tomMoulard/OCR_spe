@@ -96,7 +96,7 @@ void printNetwork(Network net)
 	printf("\nweight     :\n");	
 	for (int k = 0; k < net.lenWeight; ++k)
 	{
-		printf("| %d :  %f |\n", k, net.weight[k]);
+		printf("| %d :  %f |\n", net.lenWeight, net.weight[k]);
 	}
 	printf("\n");
 }
