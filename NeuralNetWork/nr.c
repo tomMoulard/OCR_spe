@@ -109,7 +109,7 @@ void printNetworkArray(Network *a)
 }
 void printBashint(Bashint b)
 { //explicit content
-	printf("#~~~~~~~~~ Bashint ~~~~~~~~#\n");
+	printf("#~~~~~~~~~ Test ~~~~~~~~#\n");
 	printf("|res : %f            |\n|Input : ", b.res);
 	for (int i = 0; i < 2; ++i)	
 	{
@@ -471,7 +471,7 @@ int *setNetwork(int type, int nbPixels)
 		*(res + 1) = 3 ;
 		*(res + 2) = 1 ; //output neurons
 	}
-	if (type == 2)//picture recognition [0-9]
+	if (type == 4)//picture recognition [0-9]
 	{
 		*res       = nbPixels;
 		*(res + 1) = 100;//fixme
@@ -483,7 +483,7 @@ int *setNetwork(int type, int nbPixels)
 		*(res + 1) = 100;//fixme
 		*(res + 2) = 62;
 	}
-	if (type == 4)//picture recognition [0-9]
+	if (type == 2)//picture recognition [0-9]
 	{ 
 		*res       = nbPixels;
 		*(res + 1) = 100; //fixme
@@ -493,31 +493,47 @@ int *setNetwork(int type, int nbPixels)
 }
 
 //convert A char to int : A = strtoul(A, NULL, 10);
+const char usage[]=
+	"<typeNetwork> <epoch>"
+	"typeNetwork :"
+	" - 1 : xor"
+	" - 2 : image processing (Do not use!)"
+
 int main(int argc, char *argv[])
 {
-	//if (argc < 2)
-	//	errx(1, "Please input a valid input :\n	- number of pixel in width\n 	- list of pixels\n");
-	argv[0]++; // warning removers
-	argc++;
-	int len = 3;// set number of layers
-	int nbPixels = 900; // set number of input neurons
-	size_t lenTest = 1000; //set number of test to occure
-	int epoch = 1000; //see tuto
+	if (argc < 2)
+		errx(1, "Please input a valid input. %s", usage);
+	int epoch          = 1000;
+	if (argc < 3)
+		epoch          = strtoul(argv[2], NULL, 10);
+	int nbPixels       = 900; // set number of input neurons for image process
+	int len            = 3;   // set number of layers
+	size_t lenTest     = 1000;//set number of test to occure
 	int mini_bash_size = 100; //see tuto
-	double eta = 3.0;
-	Network net = openNr(); // to open the previously saved Network
-	if (net.len == -1) //no previously saved network
+	double eta         = 3.0; //see tuto
+
+	//instantiate network from file : if empty file, creating a new one
+	Network net = openNr();
+	if (net.len == -1)
 	{
-		int type = 1; //see setNetwork funct to see why
-		net = makeNetWork(len, setNetwork(type, nbPixels)); //create network
+		int type = strlout(argv[1], NULL, 10);
+		net = makeNetWork(len, setNetwork(type, nbPixels));
+		if (type == 1)
+		{
+			Bashint *testBash = makeBAshXor(lenTest, net); // create a Bashint List to improve the network
+		}
 	}
+	printf("Loaded this network :\n");
 	printNetwork(net);
-	Bashint *testBash = makeBAshXor(lenTest, net); // create a Bashint List to improve the network
+	printf("Improving Network : \n");
 	net = SGD(net, testBash, lenTest, 
 			epoch, mini_bash_size, 
 			eta, testBash, mini_bash_size); // update network
+	printf("Improved network :\n");
 	printNetwork(net);
-	//saveNr(net);
+	printf("Random test made by network : \n");
+	printBashintArray(testBash);
+	free(testBash);
 	freeNetwork(net);
-	return 0; 
+	return 0;
 }
