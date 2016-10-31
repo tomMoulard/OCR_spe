@@ -8,7 +8,7 @@ Pixel new_pixel(Uint8 r, Uint8 g, Uint8 b){
     return pixel;
 }
 
-PixelMatrix *new_pixel_matrix(size_t lines, size_t cols){ 
+PixelMatrix *new_pixel_matrix(size_t lines, size_t cols){
     PixelMatrix *matrix;
     matrix = malloc(sizeof(PixelMatrix));
     matrix->lines = lines;
