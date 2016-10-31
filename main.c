@@ -21,16 +21,15 @@ const char usage[] =
   "\t\t1 : Just binarization\n"
   "\t\t2 : Show letters\n"
   "\t\t3 : XY-cut\n"
-  "\t\t4 : Run Length Smoothing"
-  "\t\t5 : Related component\n"
-  "\t\t_ : all\n";
-
-
+  "\t\t4 : Run Length Smoothing\n"
+  "\t\t5 : Related component\n";
 
 int main(int argc, char *argv[]) {
   if(argc != 3)
     errx(1, "%s", usage);
   unsigned op = strtoul(argv[2], NULL, 10);
+  if(op == 0 || op > 5)
+    errx(1, "%s", usage);
   size_t lines = bmpWidth(argv[1]);
   size_t cols = bmpHeight(argv[1]);
   SDL_Surface *surf;
@@ -131,16 +130,8 @@ int main(int argc, char *argv[]) {
 
     return 0;
   }
-  //UnsignedMatrix* matrix = cut(mat,0,1126,500,1570);
-
-
-  //UnsignedMatrix* matecc = ecc(matrix,&coef);
-
   SDL_FreeSurface(surf);
   SDL_FreeSurface(img);
   free_unsigned_matrix(mat);
-  free_pixel_matrix(image);
-
   return 0;
-
 }
