@@ -72,44 +72,34 @@ int main(int argc, char *argv[]) {
     UnsignedMatrix* matrix = cut(mat,0,1024,0,95);
     surf = unsignedMatrix_to_pict(matrix, 5);
     img = display_image(surf);
-
     MatBinTree *mbt = new_matbintree(matrix);
     xycut(mbt,1,1,0);
-    //get_all_rect(mbt,matrix,0);
     surf = unsignedMatrix_to_pict(matrix, 0xffffffff);
     img = display_image(surf);
-
     display_leaves(mbt);
     free_matbintree(mbt);
-
     SDL_FreeSurface(surf);
     SDL_FreeSurface(img);
     free_unsigned_matrix(mat);
-
     return 0;
-
   }
   if(op == 4)
   {
     UnsignedMatrix *math = horizontal(mat,200);
     UnsignedMatrix *matv = vertical(mat,200);
     UnsignedMatrix *matrlsa = rlsa(mat,200,200);
-
     surf = unsignedMatrix_to_pict(math, 1);
     img = display_image(surf);
     surf = unsignedMatrix_to_pict(matv, 1);
     img = display_image(surf);
     surf = unsignedMatrix_to_pict(matrlsa, 1);
     img = display_image(surf);
-
     free_unsigned_matrix(math);
     free_unsigned_matrix(matv);
     free_unsigned_matrix(matrlsa);
-
     SDL_FreeSurface(surf);
     SDL_FreeSurface(img);
     free_unsigned_matrix(mat);
-
     return 0;
   }
   if(op == 5)
@@ -117,32 +107,24 @@ int main(int argc, char *argv[]) {
     UnsignedMatrix *matrlsa = rlsa(mat,200,200);
     unsigned coef = 0;
     UnsignedMatrix *matecc = ecc(matrlsa,&coef);
-
     surf = unsignedMatrix_to_pict(matrlsa, 1);
     img = display_image(surf);
     surf = unsignedMatrix_to_pict(matecc, coef);
     img = display_image(surf);
-
     free_unsigned_matrix(matrlsa);
     free_unsigned_matrix(matecc);
     SDL_FreeSurface(surf);
     SDL_FreeSurface(img);
     free_unsigned_matrix(mat);
-
     return 0;
   }
   if(op == 6){
     UnsignedMatrix *mattexte = eraseimage(mat,10000);
-
-
     surf = unsignedMatrix_to_pict(mattexte, 1);
     img = display_image(surf);
-
-
     SDL_FreeSurface(surf);
     SDL_FreeSurface(img);
     free_unsigned_matrix(mat);
-
     return 0;
   }
   SDL_FreeSurface(surf);
