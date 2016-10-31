@@ -10,8 +10,8 @@ LDLIBS=-lm
 SRC= nr.c
 DEP= ${SRC:.c=.d}
 PRG= ${SRC:.c=}
- 
-all: ${PRG}
+
+net : ${PRG}
  
 -include ${DEP}
  
