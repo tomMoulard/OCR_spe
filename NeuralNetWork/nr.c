@@ -210,7 +210,7 @@ Bashint *makeBAshXor(int len, Network net)
  		b.input = tmp;
  		res[i] = b;
  	}
- 	printBashintArray(res, len);
+ 	//printBashintArray(res, len);
  	return res;
 }
 Bashint *suffleBashint(Bashint *bash, int len, time_t seed)
@@ -273,12 +273,8 @@ double **backprop(Network *network, double *x, double y) //may be done .....
 			nbneuronsleft = net.numLayers[thisLayerWieght];
 		}
 		posmininweight += 1;
-		printf("\nyolo020 : %d, %d\n", net.lenBiases, i);
 		resT = cutarray(net.weight, posmininweight, posmininweight + net.numLayers[thisLayerWieght]);
-		printf("yolo020.5 : i = %d; activation[i] = %f; numLayers[HERE] = %d\n", 
-				i, activation[i], net.numLayers[thisLayerWieght]);
 		z = dotdouble(activation[i], resT, net.numLayers[thisLayerWieght]);
-		printf("yolo020.75\n");
 		z +=+ net.biases[i];
 		nbneuronsleft -= 1;
 		zs[i] = z;
@@ -333,7 +329,6 @@ Bashint *update_mini_bash(Bashint *mini_bash, size_t len_mini_bash, double eta, 
 	for (w = 0; w < len_mini_bash; ++w)
 	{
 		b = mini_bash[w];
-		printBashint(b);
 		x = b.input;
 		y = b.res;
 		deltas = backprop(network, x, y); //deltas[0] == delta_nabla_b and deltas[1] == delta_nabla_w
@@ -390,12 +385,13 @@ double evaluate(Bashint *test_data, int len_test_data, Network net)
 	{
 		test_result[i] = malloc(sizeof(double) * 2);
 		test_result[i][0] = (double)argmax(feedforward(net, (int *)test_data[i].input), (net.lenBiases > net.lenWeight ? net.lenWeight : net.lenBiases));
-		//change test_result[i][1] is not neccesary :/
+		test_result[i][1] = ;
 	}
 	//compute test_result
 	for (int i = 0; i < len_test_data; ++i)
 	{
-		if (test_result[0] == test_result[1])
+		//printf("evaluate : x = %f et y = %f\n", test_result[i][0], test_result[i][1]);
+		if (test_result[i][0] == test_result[i][1])
 			res += 1;
 	}
 	freedouble2star(test_result, len_test_data);
@@ -506,7 +502,7 @@ int main(int argc, char *argv[])
 	int nbPixels = 900; // set number of input neurons
 	size_t lenTest = 1000; //set number of test to occure
 	int epoch = 30; //see tuto
-	int mini_bash_size = 10; //see tuto
+	int mini_bash_size = 50; //see tuto
 	double eta = 3.0;
 	Network net = openNr(); // to open the previously saved Network
 	if (net.len == -1) //no previously saved network
