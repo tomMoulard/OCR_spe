@@ -540,5 +540,5 @@ int main(int argc, char *argv[])
 			eta, testBash, mini_bash_size); // update network
 	//saveNr(net);
 	freeNetwork(net);
-	return 0;
+	return 0; //coucou
 }
