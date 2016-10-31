@@ -72,10 +72,10 @@ while(coord.x != 0 || coord.y != 0) {
 
   rect2 = posrect(matrix,i,j,coefh,coefv);
   //printrect(rect2);
-  rect.a1.x = (rect.a1.x > rect2.a1.x)?rect.a1.x:rect2.a1.x;
-  rect.a1.y = (rect.a1.y > rect2.a1.y)?rect.a1.y:rect2.a1.y;
-  rect.a2.x = (rect.a2.x < rect2.a2.x)?rect.a2.x:rect2.a2.x;
-  rect.a2.y = (rect.a2.y < rect2.a2.y)?rect.a2.y:rect2.a2.y;
+  rect.a1.x = (rect.a1.x < rect2.a1.x)?rect.a1.x:rect2.a1.x;
+  rect.a1.y = (rect.a1.y < rect2.a1.y)?rect.a1.y:rect2.a1.y;
+  rect.a2.x = (rect.a2.x > rect2.a2.x)?rect.a2.x:rect2.a2.x;
+  rect.a2.y = (rect.a2.y > rect2.a2.y)?rect.a2.y:rect2.a2.y;
 
   coord = neighbor(matrix,posx,posy,coefh,coefv);
 }
@@ -95,8 +95,8 @@ Rect *rects = malloc(sizeof(Rect) * len);
 
         rects[*max] = posrect(matrix,i,j,coefh,coefv);
 
-        rects[*max].a1.x++;
-        rects[*max].a1.y++;
+        rects[*max].a2.x++;
+        rects[*max].a2.y++;
         (*max)++;
       }
     }
@@ -106,7 +106,7 @@ return rects;
 }
 
 void printrect(Rect rect){
-  printf("a1: %zu %zu, a2: %zu %zu\n",rect.a1.x,rect.a1.y,rect.a2.x,rect.a2.y);
+  printf("x1 : %zu y1 : %zu x2 : %zu : y2 : %zu\n", rect.a1.x,rect.a1.y,rect.a2.x,rect.a2.y);
 }
 
 void displayrect(UnsignedMatrix *matrix,Rect currect, unsigned col){
@@ -122,10 +122,10 @@ void displayrect(UnsignedMatrix *matrix,Rect currect, unsigned col){
   }
 }
 
-void displayrects(UnsignedMatrix *matrix,Rect* rect,size_t max)
+void displayrects(UnsignedMatrix *matrix,Rect* rect,size_t max,unsigned col)
 {
   for (size_t n = 0; n < max; n++) {
-    displayrect(matrix,rect[n],2);
+    displayrect(matrix,rect[n],col);
 
   }
 

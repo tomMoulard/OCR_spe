@@ -13,7 +13,7 @@ int hor_cut(MatBinTree *mbt,size_t coef);
 
 int ver_cut(MatBinTree *mbt,size_t coef);
 
-void xycut(MatBinTree * mbt, int hor,int ver,size_t h);
+void xycut(MatBinTree * mbt, int hor,int ver,size_t h,size_t coef);
 
 UnsignedMatrix* supprbord(UnsignedMatrix *mat);
 

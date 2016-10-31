@@ -31,7 +31,7 @@ void printrect(Rect rect);
 void displayrect(UnsignedMatrix *matrix,Rect currect, unsigned col);
 
 //displays all rects from a list in a mat
-void displayrects(UnsignedMatrix *matrix,Rect* rect,size_t max);
+void displayrects(UnsignedMatrix *matrix,Rect* rect,size_t max,unsigned col);
 
 UnsignedMatrix** getrect(UnsignedMatrix *matrix,
   size_t coefh,size_t coefv,size_t *len);

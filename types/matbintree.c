@@ -43,6 +43,21 @@ void display_leaves(MatBinTree* mbt){
   }
 }
 
+void get_leaves(MatBinTree* mbt,UnsignedMatrix *mat,unsigned h){
+  if (mbt) {
+    if(!mbt->left){
+      if(!mbt->right)
+        displayrect(mat,mbt->pos,255);
+      else
+        get_leaves(mbt->right,mat,h+1);
+    }
+    else{
+      get_leaves(mbt->left,mat,h+1);
+      if(mbt->right)
+        get_leaves(mbt->right,mat,h+1);
+    }
+  }
+}
 unsigned get_all_rect(MatBinTree* mbt,UnsignedMatrix *mat,unsigned h){
   if (!mbt) {
     return h;
