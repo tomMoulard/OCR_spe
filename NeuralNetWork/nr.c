@@ -385,7 +385,7 @@ double evaluate(Bashint *test_data, int len_test_data, Network net)
 	{
 		test_result[i] = malloc(sizeof(double) * 2);
 		test_result[i][0] = (double)argmax(feedforward(net, (int *)test_data[i].input), (net.lenBiases > net.lenWeight ? net.lenWeight : net.lenBiases));
-		test_result[i][1] = ;
+		test_result[i][1] = 1;
 	}
 	//compute test_result
 	for (int i = 0; i < len_test_data; ++i)
