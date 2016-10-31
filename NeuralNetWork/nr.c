@@ -110,7 +110,7 @@ void printNetworkArray(Network *a)
 void printBashint(Bashint b)
 { //explicit content
 	printf("#~~~~~~~~~ Bashint ~~~~~~~~#\n");
-	printf("|Bashint : %f        |\n|Input : ", b.res);
+	printf("|res : %f               |\n|Input : ", b.res);
 	for (int i = 0; i < 2; ++i)	
 	{
 		printf("%f ", b.input[i]);
