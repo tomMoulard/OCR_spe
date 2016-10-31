@@ -11,7 +11,7 @@ SRC= nr.c
 DEP= ${SRC:.c=.d}
 PRG= ${SRC:.c=}
 
-net : ${PRG}
+nr : ${PRG}
  
 -include ${DEP}
  
