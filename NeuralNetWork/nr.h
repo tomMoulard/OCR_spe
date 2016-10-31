@@ -5,7 +5,6 @@
 #include <stdlib.h>
 #include <time.h>
 
-
 typedef struct Network Network;
 struct Network{
   int    *numLayers;  //number of neurons by layers
