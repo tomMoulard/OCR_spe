@@ -109,7 +109,7 @@ void printNetworkArray(Network *a)
 }
 void printBashint(Bashint b)
 { //explicit content
-	printf("#~~~~~~~~~ Test ~~~~~~~~#\n");
+	printf("#~~~~~~~~~~ Test ~~~~~~~~~#\n");
 	printf("|res : %f            |\n|Input : ", b.res);
 	for (int i = 0; i < 2; ++i)	
 	{
@@ -493,11 +493,42 @@ int *setNetwork(int type, int nbPixels)
 }
 
 //convert A char to int : A = strtoul(A, NULL, 10);
+int main(int argc, char *argv[])
+{
+	//if (argc < 2)
+	//	errx(1, "Please input a valid input :\n	- number of pixel in width\n 	- list of pixels\n");
+	argv[0]++; // warning removers
+	argc++;
+	int len = 3;// set number of layers
+	int nbPixels = 900; // set number of input neurons
+	size_t lenTest = 1000; //set number of test to occure
+	int epoch = 100; //see tuto
+	int mini_bash_size = 100; //see tuto
+	double eta = 3.0;
+	Network net = openNr(); // to open the previously saved Network
+	if (net.len == -1) //no previously saved network
+	{
+		int type = 1; //see setNetwork funct to see why
+		net = makeNetWork(len, setNetwork(type, nbPixels)); //create network
+	}
+	printf("Loaded this network :\n");
+	printNetwork(net);
+	printf("Improving Network : \n");
+	Bashint *testBash = makeBAshXor(lenTest, net); // create a Bashint List to improve the network
+	net = SGD(net, testBash, lenTest, 
+			epoch, mini_bash_size, 
+			eta, testBash, mini_bash_size); // update network
+	printf("Improved network :\n");
+	printNetwork(net);
+	freeNetwork(net);
+	return 0; 
+}
+/*
 const char usage[]=
-	"<typeNetwork> <epoch>"
-	"typeNetwork :"
-	" - 1 : xor"
-	" - 2 : image processing (Do not use!)"
+	"<typeNetwork> <epoch>                \n"
+	"typeNetwork :                        \n"
+	" - 1 : xor                           \n"
+	" - 2 : image processing (Do not use!)\n" ; 
 
 int main(int argc, char *argv[])
 {
@@ -516,24 +547,16 @@ int main(int argc, char *argv[])
 	Network net = openNr();
 	if (net.len == -1)
 	{
-		int type = strlout(argv[1], NULL, 10);
-		net = makeNetWork(len, setNetwork(type, nbPixels));
-		if (type == 1)
-		{
-			Bashint *testBash = makeBAshXor(lenTest, net); // create a Bashint List to improve the network
-		}
+		net = makeNetWork(len, setNetwork(strtoul(argv[1], NULL, 10), nbPixels));
 	}
-	printf("Loaded this network :\n");
+	Bashint *testBash = makeBAshXor(lenTest, net); // create a Bashint List to improve the network
 	printNetwork(net);
-	printf("Improving Network : \n");
 	net = SGD(net, testBash, lenTest, 
 			epoch, mini_bash_size, 
 			eta, testBash, mini_bash_size); // update network
 	printf("Improved network :\n");
 	printNetwork(net);
-	printf("Random test made by network : \n");
-	printBashintArray(testBash);
 	free(testBash);
 	freeNetwork(net);
 	return 0;
-}
+*/
