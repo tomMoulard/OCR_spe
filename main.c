@@ -15,14 +15,19 @@
 # include "images/database.h"
 
 const char usage[] =
-  "<image path.bmp>\n"
-  "Take only a bmp image\n";
+  "<image path> <op>\n"
+  "Take only a bmp image\n"
+  "\tOperators :\n"
+  "\t\t1 : just binarization\n"
+  "\t\t2 : ...\n"
+  "\t\t_ : all\n";
 
 int main(int argc, char *argv[]) {
-  if(argc != 2)
+  if(argc != 3)
     errx(1, "%s", usage);
   for(int i = 0; i < argc; i++)
     printf("%s\n", argv[i]);
+  unsigned op = strtoul(argv[2], NULL, 10);
   size_t lines = bmpWidth(argv[1]);
   size_t cols = bmpHeight(argv[1]);
   SDL_Surface *surf;
@@ -35,7 +40,10 @@ int main(int argc, char *argv[]) {
   save_image(img, image);
   UnsignedMatrix *mat = new_unsigned_matrix(lines, cols);
   binarize(image, mat);
-
+  surf = unsignedMatrix_to_pict(mat, 1);
+  if(op == 1)
+    return 0;
+  img = display_image(surf);
   MatBinTree *mbt = new_matbintree(mat);
   mbt->pos = new_rect(0,0,mat->lines,mat->cols);
   xycut(mbt,1,1,0);
@@ -43,9 +51,6 @@ int main(int argc, char *argv[]) {
   //mbt_print(mbt,0);
 
   int coef = get_all_rect(mbt,mat,0);
-  printf("ok\n");
-
-
   surf = unsignedMatrix_to_pict(mat, coef);
   img = display_image(surf);
   //UnsignedMatrix* matrix = cut(mat,0,1126,500,1570);
