@@ -162,17 +162,17 @@ UnsignedMatrix* supprbord(UnsignedMatrix *mat){
   return cut(mat,x1,x2,y1,y2);
 }
 
-void xycut(MatBinTree * mbt, int hor,int ver,size_t h,size_t coef){
-  if (mbt && (hor || ver) && mbt->pos.a2.x - mbt->pos.a1.x > coef) {
+void xycut(MatBinTree * mbt, int hor,int ver,size_t h){
+  if (mbt && (hor || ver)) {
     if (h % 2 == 0) {
       int a = hor_cut(mbt,1);
-      xycut(mbt->left,a,ver,h + 1,coef);
-      xycut(mbt->right,a,ver,h + 1,coef);
+      xycut(mbt->left,a,ver,h + 1);
+      xycut(mbt->right,a,ver,h + 1);
     }
     else{
       int a = ver_cut(mbt,1);
-      xycut(mbt->left,hor,a,h + 1,coef);
-      xycut(mbt->right,hor,a,h + 1,coef);
+      xycut(mbt->left,hor,a,h + 1);
+      xycut(mbt->right,hor,a,h + 1);
     }
   }
 }
