@@ -110,12 +110,20 @@ void printNetworkArray(Network *a)
 void printBashint(Bashint b)
 { //explicit content
 	printf("#~~~~~~~~~ Bashint ~~~~~~~~#\n");
-	printf("|res : %f               |\n|Input : ", b.res);
+	printf("|res : %f            |\n|Input : ", b.res);
 	for (int i = 0; i < 2; ++i)	
 	{
 		printf("%f ", b.input[i]);
 	}
 	printf("|\n#~~~~~~~~~~~~~~~~~~~~~~~~~~#\n");
+}
+void printBashintArray(Bashint *a, int len)
+{
+	for (int i = 0; i < len; ++i)
+	{
+		printf(" Bashint n° %d\n", i);
+		printBashint(a[i]);
+	}
 }
 void printdoublearray(double *array)
 {
@@ -202,6 +210,7 @@ Bashint *makeBAshXor(int len, Network net)
  		b.input = tmp;
  		res[i] = b;
  	}
+ 	printBashintArray(res, len);
  	return res;
 }
 Bashint *suffleBashint(Bashint *bash, int len, time_t seed)
@@ -209,11 +218,11 @@ Bashint *suffleBashint(Bashint *bash, int len, time_t seed)
 	srand(seed);
 	int pos;
 	Bashint tmp;
-	for (int i = 0; i < len; ++i)
+	for (int i = 0; i < len - 1; ++i)
 	{
-		pos = rand() % (len - i);
-		tmp = bash[len - i];
-		bash[len - i] = bash[pos];
+		pos = rand() % (len - i - 1);
+		tmp = bash[len - i - 1];
+		bash[len - i - 1] = bash[pos];
 		bash[pos] = tmp;
 	}
 	return bash;
@@ -414,6 +423,7 @@ Network SGD(Network net, Bashint *training_data, size_t len_training_data,
 	for (int j = 0; j < epoch; ++j)
 	{
 		training_data = suffleBashint(training_data, len_training_data, net.seed);
+		//printBashintArray(training_data, len_training_data);
 		for (k = 0; k < n; k += mini_bash_size)
 		{
 			mini_batches[j + k] = cutarrayBashint(training_data, k, k + mini_bash_size);
@@ -509,6 +519,7 @@ int main(int argc, char *argv[])
 	net = SGD(net, testBash, lenTest, 
 			epoch, mini_bash_size, 
 			eta, testBash, mini_bash_size); // update network
+	printNetwork(net);
 	//saveNr(net);
 	freeNetwork(net);
 	return 0; 
