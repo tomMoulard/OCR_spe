@@ -1,4 +1,4 @@
-//made by moular_b
+//madeby moular_b
 #include "nr.h"
 
 int xor(int a, int b)
@@ -88,11 +88,12 @@ void printNetwork(Network net)
 	{
 		for (j = 0; j < net.numLayers[i]; ++j){
 			printf("| %f", net.biases[pos]);
-			pos += 1;	
+			pos += 1;
 		}
 		printf("|\n");
 	}
-	printf("|                               |\n|weight     :                   |\n");	
+	printf("|                               |\
+		\n|weight     :                   |\n");
 	for (int k = 0; k < net.lenWeight; ++k)
 	{
 		printf("| %d :  %f |               |\n", net.lenWeight, net.weight[k]);
@@ -111,7 +112,7 @@ void printBashint(Bashint b)
 { //explicit content
 	printf("#~~~~~~~~~~ Test ~~~~~~~~~#\n");
 	printf("|res : %f            |\n|Input : ", b.res);
-	for (int i = 0; i < 2; ++i)	
+	for (int i = 0; i < 2; ++i)
 	{
 		printf("%f ", b.input[i]);
 	}
@@ -134,7 +135,7 @@ void printdoublearray(double *array)
 	}
 }
 Network makeNetWork(int len, int *sizes)
-{ //To create a brand (and shiny) new NeuralNetwork 
+{ //To create a brand (and shiny) new NeuralNetwork
 	Network net;
 	//lenLayers
 	net.lenlayers = 3;
@@ -264,7 +265,7 @@ double **backprop(Network *network, double *x, double y) //may be done .....
 	int thisLayerWieght = 0;
 	int nbneuronsleft = net.numLayers[0];
 	int posmininweight = 0;
-	double *resT;	
+	double *resT;
 	for(i = 0; i < min_len - 1; ++i)
 	{
 		if(nbneuronsleft) // ==0
@@ -273,7 +274,8 @@ double **backprop(Network *network, double *x, double y) //may be done .....
 			nbneuronsleft = net.numLayers[thisLayerWieght];
 		}
 		posmininweight += 1;
-		resT = cutarray(net.weight, posmininweight, posmininweight + net.numLayers[thisLayerWieght]);
+		resT = cutarray(net.weight, posmininweight,
+			posmininweight + net.numLayers[thisLayerWieght]);
 		z = dotdouble(activation[i], resT, net.numLayers[thisLayerWieght]);
 		z +=+ net.biases[i];
 		nbneuronsleft -= 1;
@@ -281,7 +283,8 @@ double **backprop(Network *network, double *x, double y) //may be done .....
 		activation[i] = sigmoid(z);
 		activations[i] = activation;
 	}
-	double delta = (activations[0][min_len - 1] - y ) * sigmoidPrime(zs[min_len - 1]);
+	double delta = (activations[0][min_len - 1] - y )
+		* sigmoidPrime(zs[min_len - 1]);
 	double sp;
 	for (int l = 2; l < net.lenlayers; ++l)
 	{
@@ -290,7 +293,8 @@ double **backprop(Network *network, double *x, double y) //may be done .....
 		//no transposition : useless....
 		delta = dotdouble(delta, net.weight, net.lenWeight - l - 1) * sp;
 		nabla_b[min_len - l] = delta;
-		nabla_w[min_len - l] = dotdouble(delta, activations[l], min_len - l - 1) * sp;
+		nabla_w[min_len - l] = dotdouble(delta, activations[l],
+			min_len - l - 1) * sp;
 	}
 	//building result
 	res[0] = nabla_b;
@@ -304,8 +308,9 @@ double **backprop(Network *network, double *x, double y) //may be done .....
 	//I'm freeeee, from my worries
 	return res;
 }
-Bashint *update_mini_bash(Bashint *mini_bash, size_t len_mini_bash, double eta, Network *network) //done
-{	
+Bashint *update_mini_bash(Bashint *mini_bash, size_t len_mini_bash,
+	double eta, Network *network) //done
+{
 	Network net = *network;
 	//initialization:
 	double *nabla_b = malloc(sizeof(double) * net.lenBiases);
@@ -331,10 +336,11 @@ Bashint *update_mini_bash(Bashint *mini_bash, size_t len_mini_bash, double eta, 
 		b = mini_bash[w];
 		x = b.input;
 		y = b.res;
-		deltas = backprop(network, x, y); //deltas[0] == delta_nabla_b and deltas[1] == delta_nabla_w
+		deltas = backprop(network, x, y);
+		//deltas[0] == delta_nabla_b and deltas[1] == delta_nabla_w
 		for(j = 0; j < net.lenBiases; ++j)
 		{
-			nabla_b[j] += deltas[0][j]; 
+			nabla_b[j] += deltas[0][j];
 		}
 		for(j = 0; j < net.lenWeight; ++j)
 		{
@@ -385,13 +391,14 @@ double evaluate(Bashint *test_data, int len_test_data, Network net)
 	for (int i = 0; i < len_test_data; ++i)
 	{
 		test_result[i] = malloc(sizeof(double) * 2);
-		test_result[i][0] = (double)argmax(feedforward(net, test_data[i].input), min_len);
+		test_result[i][0] = (double)argmax(feedforward(net,
+			test_data[i].input), min_len);
 		test_result[i][1] = test_data[i].res;
 	}
 	//compute test_result
 	for (int i = 0; i < len_test_data; ++i)
 	{
-		//printf("evaluate : x = %f et y = %f\n", test_result[i][0], test_result[i][1]);
+//printf("evaluate : x = %f et y = %f\n", test_result[i][0], test_result[i][1]);
 		if (test_result[i][0] == test_result[i][1])
 			res += 1;
 	}
@@ -408,11 +415,11 @@ Bashint *cutarrayBashint(Bashint *b, int posmin, int posmax)
 	}
 	return res;
 }
-Network SGD(Network net, Bashint *training_data, size_t len_training_data, 
-	int epoch, int mini_bash_size, double eta, Bashint *test_data, 
+Network SGD(Network net, Bashint *training_data, size_t len_training_data,
+	int epoch, int mini_bash_size, double eta, Bashint *test_data,
 	size_t len_test_data)//V2
 {
-	size_t n_test = len_test_data; 
+	size_t n_test = len_test_data;
 	size_t n = len_training_data;
 	Bashint **mini_batches = malloc(sizeof(Bashint) * epoch * n);
 	size_t k;
@@ -423,19 +430,19 @@ Network SGD(Network net, Bashint *training_data, size_t len_training_data,
 		//printBashintArray(training_data, len_training_data);
 		for (k = 0; k < n; k += mini_bash_size)
 		{
-			mini_batches[j + k] = cutarrayBashint(training_data, k, k + mini_bash_size);
+			mini_batches[j + k] = cutarrayBashint(training_data,k,k+mini_bash_size);
 		}
 		for (l = 0; l < n / mini_bash_size; ++l)
 		{
-			mini_batches[l] = update_mini_bash(training_data, mini_bash_size, eta, &net);
+			mini_batches[l] = update_mini_bash(training_data,mini_bash_size,eta,&net);
 		}
 		if(test_data)
 		{
-			printf("%2d: %f / %zu\n", j, evaluate(test_data, len_test_data, net) , n_test);
+			printf("%2d: %f / %zu\n",j,evaluate(test_data,len_test_data,net),n_test);
 		}
 		else
 			printf("Epoch %d complete.\n", j);
-	}	
+	}
 	return net;
 }
 /*
@@ -451,10 +458,11 @@ void saveNr(Network net)
 Network openNr()
 {
 	FILE *nr;
-	nr = fopen("REMOVEME!neuralNetwork.nr", "r"); 
+	nr = fopen("REMOVEME!neuralNetwork.nr", "r");
     Network net;
   	if (nr == NULL) {
-    	printf("Fail to retrive neural network from file, creating a new one : \n");  
+    	printf("Fail to retrive neural network from file,\
+				creating a new one : \n");
     	net.len = -1;
     	return net;
     }
@@ -484,7 +492,7 @@ int *setNetwork(int type, int nbPixels)
 		*(res + 2) = 62;
 	}
 	if (type == 2)//picture recognition [0-9]
-	{ 
+	{
 		*res       = nbPixels;
 		*(res + 1) = 100; //fixme
 		*(res + 2) = 185;
@@ -496,7 +504,8 @@ int *setNetwork(int type, int nbPixels)
 int main(int argc, char *argv[])
 {
 	//if (argc < 2)
-	//	errx(1, "Please input a valid input :\n	- number of pixel in width\n 	- list of pixels\n");
+	//	errx(1, "Please input a valid input :\n
+	//- number of pixel in width\n 	- list of pixels\n");
 	argv[0]++; // warning removers
 	argc++;
 	int len = 3;// set number of layers
@@ -514,12 +523,13 @@ int main(int argc, char *argv[])
 	printf("Loaded this network :\n");
 	printNetwork(net);
 	printf("Improving Network : \n");
-	Bashint *testBash = makeBAshXor(lenTest, net); // create a Bashint List to improve the network
-	net = SGD(net, testBash, lenTest, 
-			epoch, mini_bash_size, 
+	Bashint *testBash = makeBAshXor(lenTest, net);
+	// create a Bashint List to improve the network
+	net = SGD(net, testBash, lenTest,
+			epoch, mini_bash_size,
 			eta, testBash, mini_bash_size); // update network
 	printf("Improved network :\n");
 	printNetwork(net);
 	freeNetwork(net);
-	return 0; 
+	return 0;
 }
