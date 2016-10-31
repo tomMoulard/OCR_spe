@@ -105,10 +105,6 @@ Rect *rects = malloc(sizeof(Rect) * len);
 return rects;
 }
 
-void printrect(Rect rect){
-  printf("x1 : %zu y1 : %zu x2 : %zu : y2 : %zu\n", rect.a1.x,rect.a1.y,rect.a2.x,rect.a2.y);
-}
-
 void displayrect(UnsignedMatrix *matrix,Rect currect, unsigned col){
   for (size_t i = currect.a1.x; i < currect.a2.x; i++) {
     matrix->data[i * matrix->cols + currect.a2.y] = col;

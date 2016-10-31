@@ -214,7 +214,7 @@ for (size_t j = 0; j < mat->cols; j++) {
   return mat;
 }
 
-unsigned getmaxarea(UnsignedMatrix *mat,size_t len){
+unsigned* get_all_areas(UnsignedMatrix *mat,size_t len){
   unsigned *values = malloc(len * sizeof(unsigned));
   for (size_t i = 0; i < len; i++) {
     values[i] = 0;
@@ -224,37 +224,55 @@ unsigned getmaxarea(UnsignedMatrix *mat,size_t len){
       values[mat->data[i * mat->cols +j]]++;
     }
   }
-  unsigned max = 1;
-  for (size_t i = 2; i < len; i++) {
-    max = values[max] > values[i]?max:i;
-  }
-  return max;
+  return values;
 }
 
-Rect getmaxrect(UnsignedMatrix *mat,size_t len){
-  unsigned maxarea = getmaxarea(mat,len);
-  size_t x1 = mat->lines;
-  size_t x2 = 0;
-  size_t y1 = mat->cols;
-  size_t y2 = 0;
+Rect* get_all_rects(UnsignedMatrix *mat,unsigned *values,size_t len){
+  Rect* rects = malloc(len * sizeof(Rect));
+  for (size_t i = 0; i < len; i++) {
+    rects[i].a1.x = mat->lines;
+    rects[i].a2.x = 0;
+    rects[i].a1.y = mat->cols;
+    rects[i].a2.y = 0;
+  }
+  unsigned n;
+
   for (size_t i = 0; i < mat->lines; i++) {
     for (size_t j = 0; j < mat->cols; j++) {
-      if (mat->data[i * mat->cols + j] == maxarea) {
-        x1 = x1 < i?x1:i;
-        x2 = x2 > i?x2:i;
-        y1 = y1 < j?y1:j;
-        y2 = y2 > j?y2:j;
+        n = mat->data[i * mat->cols + j];
+        rects[n].a1.x = rects[n].a1.x  < i?rects[n].a1.x :i;
+        rects[n].a2.x = rects[n].a2.x  > i?rects[n].a2.x :i;
+        rects[n].a1.y = rects[n].a1.y < j?rects[n].a1.y:j;
+        rects[n].a2.y = rects[n].a2.y > j?rects[n].a2.y:j;
+
+    }
+  }
+  free(values);
+  return rects;
+}
+
+unsigned* original_black(UnsignedMatrix *mat,
+  UnsignedMatrix *matecc,Rect* rects, size_t len){
+  unsigned *values = malloc(len * sizeof(unsigned));
+
+  for (size_t n = 0; n < len; n++) {
+    for (size_t i = rects[n].a1.x; i < rects[n].a2.x; i++) {
+      for (size_t j = rects[n].a1.y; j < rects[n].a2.y; j++) {
+        values[matecc->data[i * mat->cols + j]] += mat->data[i * mat->cols+j];
       }
     }
   }
-  Rect rect;
-  rect.a1.x = x1;
-  rect.a1.y = y1;
-  rect.a2.x = x2 + 1;
-  rect.a2.y = y2 + 1;
-  return rect;
+  return values;
 }
 
+void eraserect(UnsignedMatrix *mat,Rect rect)
+{
+  for (size_t i = rect.a1.x; i < rect.a2.x; i++) {
+    for (size_t j = rect.a1.y; j < rect.a2.y; j++) {
+      mat->data[i * mat->cols + j] = 0;
+    }
+  }
+}
 void get_items_height(UnsignedMatrix* mat,unsigned coef,
   size_t thval1,size_t thval2){
 
@@ -304,19 +322,35 @@ void get_items_height(UnsignedMatrix* mat,unsigned coef,
  free(heights);
 }
 
-UnsignedMatrix* eraseimage(UnsignedMatrix *matrix,int coefh,int coefv){
+UnsignedMatrix* eraseimage(UnsignedMatrix *matrix,unsigned maxpixel){
+
+
+  int coefh = 200;
+  int coefv = 200;
+
   UnsignedMatrix *mat = copy_mat(matrix);
   unsigned coef = 0;
   UnsignedMatrix* matrlsa = rlsa(mat,coefh,coefv);
   UnsignedMatrix* matecc = ecc(matrlsa,&coef);
 
+  unsigned* areas = get_all_areas(matecc,coef);
+  Rect* rects = get_all_rects(matecc,areas,coef);
+  //unsigned* origin = original_black(mat,matecc,rects,coef);
 
-  for (size_t i = 0; i < mat->lines; i++) {
-    for (size_t j = 0; j < mat->cols; j++) {
-      mat->data[i * mat->cols + j] = 0;
+
+
+  for (size_t i = 2; i < coef; i++) {
+    if(areas[i] > maxpixel){
+      eraserect(mat,rects[i]);
     }
   }
+
+
+
+  //free(areas);
+  free(rects);
   free_unsigned_matrix(matrlsa);
   free_unsigned_matrix(matecc);
+
   return mat;
 }

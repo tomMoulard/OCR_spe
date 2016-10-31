@@ -82,7 +82,6 @@ void binarize(PixelMatrix *image, UnsignedMatrix *mat)
     for(int i = 0; i < 256; i++)
         hist[i] = 0;
     hist = get_histogram(grey_mat, hist);
-    //array_print(hist, 256);
     Uint8 threshold = get_threshold(hist, image->lines*image->cols);
     for(size_t i = 0; i < mat->lines; i++)
     {
