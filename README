@@ -18,10 +18,10 @@
 |                           (Still proof of concept)                          |
 |                                                                             |
 | How to Compile Network:                                                     |
-|     make net                                                                |
+|     make nr                                                                 |
 |                                                                             |
 | How to exetcute program :                                                   |
-|      ./net xor                                                              |
+|      ./nr                                                                   |
 |                                                                             |
 |                                                                             |
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
