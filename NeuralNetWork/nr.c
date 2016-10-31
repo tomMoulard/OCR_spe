@@ -357,14 +357,14 @@ Bashint *update_mini_bash(Bashint *mini_bash, size_t len_mini_bash, double eta, 
 	//freeNetwork(net);
 	return mini_bash;
 }
-double *feedforward(Network net, int *x)
+double *feedforward(Network net, double *x)
 {
 	int min_len = (net.lenBiases > net.lenWeight ? net.lenWeight : net.lenBiases);
 	for (int i = 0; i < min_len; ++i)
 	{
-		x[i] = sigmoid(dotdouble(net.weight[i], (double*)x, min_len) + net.biases[i]);
+		x[i] = sigmoid(dotdouble(net.weight[i], x, min_len) + net.biases[i]);
 	}
-	return (double *)x;
+	return x;
 }
 int argmax(double *array, int len)
 {
@@ -385,7 +385,7 @@ double evaluate(Bashint *test_data, int len_test_data, Network net)
 	for (int i = 0; i < len_test_data; ++i)
 	{
 		test_result[i] = malloc(sizeof(double) * 2);
-		test_result[i][0] = (double)argmax(feedforward(net, (int *)test_data[i].input), min_len);
+		test_result[i][0] = (double)argmax(feedforward(net, test_data[i].input), min_len);
 		test_result[i][1] = test_data[i].res;
 	}
 	//compute test_result
@@ -503,7 +503,7 @@ int main(int argc, char *argv[])
 	int nbPixels = 900; // set number of input neurons
 	size_t lenTest = 1000; //set number of test to occure
 	int epoch = 30; //see tuto
-	int mini_bash_size = 50; //see tuto
+	int mini_bash_size = 500; //see tuto
 	double eta = 3.0;
 	Network net = openNr(); // to open the previously saved Network
 	if (net.len == -1) //no previously saved network
