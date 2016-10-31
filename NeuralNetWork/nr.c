@@ -502,8 +502,8 @@ int main(int argc, char *argv[])
 	int len = 3;// set number of layers
 	int nbPixels = 900; // set number of input neurons
 	size_t lenTest = 1000; //set number of test to occure
-	int epoch = 30; //see tuto
-	int mini_bash_size = 500; //see tuto
+	int epoch = 1000; //see tuto
+	int mini_bash_size = 100; //see tuto
 	double eta = 3.0;
 	Network net = openNr(); // to open the previously saved Network
 	if (net.len == -1) //no previously saved network
