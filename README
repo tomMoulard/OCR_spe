@@ -1,0 +1,27 @@
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+|                                   README                                    |
+|                                                                             |
+| Projet : Process an image to extract all text to a more usefull format.     |
+|                                                                             |
+| Made For The S3 Projet proposed by burell_m                                 |
+|                                                                             |
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Image processin~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+|                                                                             |
+| How to compile image processing :                                           |
+|     make main                                                               |
+|                                                                             |
+| How to execute program :                                                    |
+|     ./main                                                                  |
+|                                                                             |
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Neural Network~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+|                                                                             |
+|                           (Still proof of concept)                          |
+|                                                                             |
+| How to Compile Network:                                                     |
+|     make net                                                                |
+|                                                                             |
+| How to exetcute program :                                                   |
+|      ./net xor                                                              |
+|                                                                             |
+|                                                                             |
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
