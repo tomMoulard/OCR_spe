@@ -11,6 +11,9 @@ SRC= nr.c
 DEP= ${SRC:.c=.d}
 PRG= ${SRC:.c=}
 
+main:
+	make nr
+
 nr : ${PRG}
  
 -include ${DEP}
