@@ -498,9 +498,13 @@ Network openNr(char *fileName)
     	net.len = -1;
     	return net;
     }
-    char tmp[8] = {0, 0, 0, 0, 0, 0, 0, 0};
-    if(fgets(tmp, 2, nr) != NULL)
-    	net.lenlayers = (int)tmp[0];
+    char tmp[8];
+    if(fgets(tmp, 8, nr) != NULL){
+    	for (int i = 0; i < 8; ++i)
+    	{
+    		printf("yolo : %d\n", tmp[i]);
+    	}
+    }
 
 
     fclose(nr);
