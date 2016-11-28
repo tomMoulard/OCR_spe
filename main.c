@@ -13,6 +13,7 @@
 # include "matrix_op/xycut.h"
 # include "image_op/sdl_fct.h"
 # include "images/database.h"
+# include "matrix_op/hilditch.h"
 
 const char usage[] =
   "<image path> <op>\n"
@@ -23,13 +24,14 @@ const char usage[] =
   "\t\t3 : XY-cut\n"
   "\t\t4 : Run Length Smoothing\n"
   "\t\t5 : Related component\n"
-  "\t\t6 : Erase image (with experimental value)\n";
+  "\t\t6 : Erase image (with experimental value)\n"
+  "\t\t7 : tests\n";
 
 int main(int argc, char *argv[]) {
   if(argc != 3)
     errx(1, "%s", usage);
   unsigned op = strtoul(argv[2], NULL, 10);
-  if(op == 0 || op > 6)
+  if(op == 0 || op > 7)
     errx(1, "%s", usage);
   size_t lines = bmpWidth(argv[1]);
   size_t cols = bmpHeight(argv[1]);
@@ -124,6 +126,30 @@ int main(int argc, char *argv[]) {
     img = display_image(surf);
     SDL_FreeSurface(surf);
     SDL_FreeSurface(img);
+    free_unsigned_matrix(mat);
+    return 0;
+  }
+  if (op == 7) {
+    UnsignedMatrix* matrix = copy_mat(mat);
+    size_t len = 0;
+    UnsignedMatrix **letters = getrect(matrix,4,5,&len);
+
+    for (size_t i = 0; i < len; i++) {
+      surf = unsignedMatrix_to_pict(letters[i], 1);
+      img = display_image(surf);
+    }
+
+
+    for (size_t i = 0; i < len; i++) {
+      if (letters[i]) {
+        free_unsigned_matrix(letters[i]);
+      }
+    }
+    free(letters);
+    img = display_image(surf);
+    SDL_FreeSurface(surf);
+    SDL_FreeSurface(img);
+    free_unsigned_matrix(matrix);
     free_unsigned_matrix(mat);
     return 0;
   }
