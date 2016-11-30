@@ -499,6 +499,7 @@ Network openNr(char *fileName)
     	return net;
     }
     char tmp[8];
+    printf("%s\n", fileName);
     if(fgets(tmp, 8, nr) != NULL){
     	for (int i = 0; i < 8; ++i)
     	{
