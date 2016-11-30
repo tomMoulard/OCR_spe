@@ -533,7 +533,7 @@ int *setNetwork(int type, int nbPixels)
 		*(res + 1) = 100;//fixme
 		*(res + 2) = 62;
 	}
-	if (type == 2)//picture recognition [0-9]
+	if (type == 2)//picture recognition UTF08
 	{
 		*res       = nbPixels;
 		*(res + 1) = 100; //fixme
