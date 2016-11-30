@@ -96,7 +96,7 @@ void printNetwork(Network net)
 		\n|weight     :                   |\n");
 	for (int k = 0; k < net.lenweight; ++k)
 	{
-		printf("| %d :  %f |               |\n", net.lenweight, net.weight[k]);
+		printf("| %d :  %f |  %d  |\n", k, net.weight[k], net.lenweight);
 	}
 	printf("#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#\n");
 }
@@ -561,11 +561,12 @@ int main(int argc, char *argv[])
 	Network net = openNr(filenakeFAKE); // to open the previously saved Network
 	if (net.len == -1) //no previously saved network
 	{
-		int type = 1; //see setNetwork funct to see why
+		int type = 2; //see setNetwork funct to see why
 		net = makeNetWork(len, setNetwork(type, nbPixels)); //create network
 	}
 	printf("Loaded this network :\n");
 	printNetwork(net);
+	printf("%d\n", net.lenbiases);
 	printf("Improving Network : \n");
 	Bashint *testBash = makeBAshXor(lenTest, net);
 	// create a Bashint List to improve the network
