@@ -32,14 +32,14 @@ const char usage[] =
   "For Network :\n"
   "\t <filePath>\n"
   "\t\tif <filePath> contain a Neural Network : use it.\n"
-  "\t\telse : create one, train it and then save it.\n";
+  "\t\telse : create one, train it and then save it.\n";;;
 
 int main(int argc, char *argv[]) {
   //neural Network
   if(argc == 2){
     //give a filePath, if it does not contain one neuralNetwork : create one
     char *filePath = argv[1];
-    return mainNetwork(filepath);
+    return mainNetwork(filePath, argc);
   }
   if(argc != 3)
     errx(1, "%s", usage);

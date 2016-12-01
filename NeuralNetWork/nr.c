@@ -586,7 +586,7 @@ int main(int argc, char *argv[])
 	return 0;
 }*/
 
-int mainNetwork(char *filepath){
+int mainNetwork(char *filePath, int argc){
 	Network net = openNr(filePath);
     net.len = -1; //REMOVE ME !!
     if (net.len == -1) //no previously saved network fail :/

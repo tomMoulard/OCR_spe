@@ -97,4 +97,4 @@ int *setNetwork(int type, int nbPixels);
 
 //Personized Main :3
 
-int mainNetwork(char *filepath)
+int mainNetwork(char *filepath, int argc);
