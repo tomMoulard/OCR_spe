@@ -39,44 +39,7 @@ int main(int argc, char *argv[]) {
   if(argc == 2){
     //give a filePath, if it does not contain one neuralNetwork : create one
     char *filePath = argv[1];
-    Network net = openNr(filePath);
-    net.len = -1; //REMOVE ME !!
-    if (net.len == -1) //no previously saved network fail :/
-    {
-      int len = 3;// set number of layers
-      int nbPixels = 900; // set number of input neurons
-      int type = 2; //see setNetwork funct to see why
-
-
-      net = makeNetWork(len, setNetwork(type, nbPixels)); //create network
-      printf("Created network :\n");
-      printNetwork(net);
-      //improving it :
-
-      //storing it:
-      printf("Improved Network :\n");
-      printNetwork(net);
-      saveNr(net, filePath);
-      printf("Network saved.\n");
-      freeNetwork(net);
-      return 0;
-    }
-    printf("This network was already stored :\n");
-    printNetwork(net);
-    int rep = 0;
-    if((argc = scanf("Do you want to improve it ? %d", &rep)) == 0){
-      errx(1, "Not an valid input");
-    }
-    else{
-      if(rep){ //want to improve it
-
-      }
-      else{ // nop use it !
-
-      }
-    }
-    //freeNetwork(net);
-    return 0;
+    return mainNetwork(filepath);
   }
   if(argc != 3)
     errx(1, "%s", usage);
