@@ -140,8 +140,6 @@ free(rect);
 UnsignedMatrix** getrect(UnsignedMatrix *matrix,
   size_t coefh,size_t coefv,size_t *len){
 
-
-
     UnsignedMatrix *mat = copy_mat(matrix);
     Rect *rects = allrect(mat,coefh,coefv,10000,len);
 
@@ -152,7 +150,7 @@ UnsignedMatrix** getrect(UnsignedMatrix *matrix,
       x2 = rects[i].a2.x;
       y1 = rects[i].a1.y;
       y2 = rects[i].a2.y;
-      UnsignedMatrix *tempmat = cut(matrix,x2,x1,y2,y1);
+      UnsignedMatrix *tempmat = cut(matrix,x1,x2,y1,y2);
 
       matmat[i] = expand_mat(tempmat,30,30);
 
