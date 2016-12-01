@@ -586,7 +586,19 @@ int main(int argc, char *argv[])
 	return 0;
 }*/
 
-int mainNetwork(char *filePath, int argc){
+
+char *useNetwork(Network net, Bashint input){
+	char *res = "a";
+	net.weight = net.biases;
+	input.input = input.input;
+	return res;
+}
+
+int mainNetwork(char *filePath, int argc, Bashint *input, size_t lenInpout, int noMessinfWithNetworks){
+	if(noMessinfWithNetworks){//Not user Friendly :/
+
+		return 0;
+	}
 	Network net = openNr(filePath);
     net.len = -1; //REMOVE ME !!
     if (net.len == -1) //no previously saved network fail :/
@@ -620,7 +632,14 @@ int mainNetwork(char *filePath, int argc){
 
       }
       else{ // nop use it !
+      	char *res;
+      	for (size_t i = 0; i < lenInpout; ++i)
+      	{
+      		strcp(res, useNetwork(net, input[i]));
+      	}
+      	//USE RES!!!
 
+      	return 0;
       }
     }
     //freeNetwork(net);

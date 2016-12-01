@@ -39,7 +39,9 @@ int main(int argc, char *argv[]) {
   if(argc == 2){
     //give a filePath, if it does not contain one neuralNetwork : create one
     char *filePath = argv[1];
-    return mainNetwork(filePath, argc);
+    size_t lenInput = 0; //FIX ME !
+    Bashint *input = malloc(sizeof(Bashint) * lenInput); //FILL ME SENPAI! 
+    return mainNetwork(filePath, argc, input, lenInput, 0);
   }
   if(argc != 3)
     errx(1, "%s", usage);

@@ -22,7 +22,7 @@ SRC=	types/pixel.c   \
 OBJ= ${SRC:.c=.o}
 DEP= ${SRC:.c=.d}
 
-all:
+all: main
 
 -include ${DEP}
 

@@ -97,4 +97,7 @@ int *setNetwork(int type, int nbPixels);
 
 //Personized Main :3
 
-int mainNetwork(char *filepath, int argc);
+int mainNetwork(char *filePath, int argc, Bashint *input, size_t lenInpout, int noMessinfWithNetworks);
+
+//to use network:
+char *useNetwork(Network net, Bashint input);
