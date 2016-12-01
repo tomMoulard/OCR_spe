@@ -57,6 +57,7 @@ int main(int argc, char *argv[]) {
       saveNr(net, filePath);
       printf("Network saved.\n");
       freeNetwork(net);
+      return 0;
     }
     printf("This network was already stored :\n");
     printNetwork(net);
