@@ -13,6 +13,7 @@
 # include "matrix_op/xycut.h"
 # include "image_op/sdl_fct.h"
 # include "images/database.h"
+# include "image_op/rotation.h"
 
 //neural NetWork
 # include "NeuralNetWork/nr.h"
@@ -39,6 +40,7 @@ int main(int argc, char *argv[]) {
     //give a filePath, if it does not contain one neuralNetwork : create one
     char *filePath = argv[1];
     Network net = openNr(filePath);
+    net.len = -1; //REMOVE ME !!
     if (net.len == -1) //no previously saved network fail :/
     {
       int len = 3;// set number of layers
@@ -61,6 +63,20 @@ int main(int argc, char *argv[]) {
     }
     printf("This network was already stored :\n");
     printNetwork(net);
+    int rep = 0;
+    if((argc = scanf("Do you want to improve it ? %d", &rep)) == 0){
+      errx(1, "Not an valid input");
+    }
+    else{
+      if(rep){ //want to improve it
+
+      }
+      else{ // nop use it !
+
+      }
+    }
+    //freeNetwork(net);
+    return 0;
   }
   if(argc != 3)
     errx(1, "%s", usage);
@@ -80,6 +96,7 @@ int main(int argc, char *argv[]) {
   UnsignedMatrix *mat = new_unsigned_matrix(lines, cols);
   binarize(image, mat);
   free_pixel_matrix(image);
+  mat = rotation(mat, 90.0);
   if(op == 1)
   {
     surf = unsignedMatrix_to_pict(mat, 1);

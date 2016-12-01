@@ -493,8 +493,6 @@ Network openNr(char *fileName)
     Network net;
 	nr = fopen(fileName, "r");
   	if (nr == NULL) {
-    	printf("Fail to retrive neural network from file %s,\
-			\nCreating a new one : \n", fileName);
     	net.len = -1;
     	return net;
     }
