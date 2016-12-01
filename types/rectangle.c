@@ -136,6 +136,12 @@ void displayrects(UnsignedMatrix *matrix,Rect* rect,size_t max,unsigned col)
 free(rect);
 }
 
+void swap_rect(Rect *a,Rect *b) {
+  Rect c;
+  c = *a;
+  *a = *b;
+  *b = c;
+}
 
 UnsignedMatrix** getrect(UnsignedMatrix *matrix,
   size_t coefh,size_t coefv,size_t *len){

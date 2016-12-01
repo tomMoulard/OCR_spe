@@ -172,7 +172,7 @@ int main(int argc, char *argv[]) {
     return 0;
   }
   if(op == 6){
-    UnsignedMatrix *mattexte = eraseimage(mat,10000);
+    UnsignedMatrix *mattexte = eraseimage(mat);
     surf = unsignedMatrix_to_pict(mattexte, 1);
     img = display_image(surf);
     SDL_FreeSurface(surf);
@@ -181,26 +181,20 @@ int main(int argc, char *argv[]) {
     return 0;
   }
   if (op == 7) {
-    UnsignedMatrix* matrix = copy_mat(mat);
-    size_t len = 0;
-    UnsignedMatrix **letters = getrect(matrix,4,5,&len);
-
-    for (size_t i = 0; i < len; i++) {
-      surf = unsignedMatrix_to_pict(letters[i], 1);
-      img = display_image(surf);
-    }
-
-
-    for (size_t i = 0; i < len; i++) {
-      if (letters[i]) {
-        free_unsigned_matrix(letters[i]);
-      }
-    }
-    free(letters);
+    UnsignedMatrix *matrix = eraseimage(mat);
+    surf = unsignedMatrix_to_pict(matrix, 1);
     img = display_image(surf);
+
+    MatBinTree *mbt = new_matbintree(matrix);
+    xycut_test(mbt,1,1,10);
+    surf = unsignedMatrix_to_pict(matrix, 0xffffffff);
+    img = display_image(surf);
+    display_leaves(mbt);
+
+    //free_unsigned_matrix(matrix);
+    free_matbintree(mbt);
     SDL_FreeSurface(surf);
     SDL_FreeSurface(img);
-    free_unsigned_matrix(matrix);
     free_unsigned_matrix(mat);
     return 0;
   }

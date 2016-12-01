@@ -17,7 +17,7 @@ UnsignedMatrix* rlsa(UnsignedMatrix *matrix,int coefh,int coefv);
 
 UnsignedMatrix* ecc(UnsignedMatrix *matrix,unsigned *coef);
 
-UnsignedMatrix* eraseimage(UnsignedMatrix *mat,unsigned maxpixel);
+UnsignedMatrix* eraseimage(UnsignedMatrix *mat);
 //size_t* blockdetect(unsigned **matrix,size_t x ,size_t y);
 
 void get_items_height(UnsignedMatrix* mat,unsigned coef,

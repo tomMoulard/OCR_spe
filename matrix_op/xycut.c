@@ -70,7 +70,7 @@ int hor_cut(MatBinTree *mbt,size_t coef){
   mbt->right = new_matbintree(matr);
   mbt->right->pos = new_rect(mbt->pos.a1.x,mbt->pos.a1.y + y2,
     mbt->pos.a2.x,mbt->pos.a2.y);
-  return 1;
+  return (int)(y2 - y1);
 }
 
 int iswhitestripesver(UnsignedMatrix *mat,size_t x){
@@ -106,7 +106,6 @@ int ver_cut(MatBinTree *mbt,size_t coef){
   size_t x2 = coef;
   ver_cut_pos(mbt->key,&x1,&x2);
 
-
   if (x2 == coef){
     UnsignedMatrix *mat = copy_mat(mbt->key);
     mbt->left = new_matbintree(mat);
@@ -128,8 +127,6 @@ int ver_cut(MatBinTree *mbt,size_t coef){
     return 1;
   }
 
-
-
   UnsignedMatrix *matl = cut(mbt->key,0,x1,0,mbt->key->cols);
   UnsignedMatrix *matr = cut(mbt->key,x2,mbt->key->lines,0,mbt->key->cols);
   mbt->left = new_matbintree(matl);
@@ -138,7 +135,7 @@ int ver_cut(MatBinTree *mbt,size_t coef){
   mbt->right = new_matbintree(matr);
   mbt->right->pos = new_rect(mbt->pos.a1.x + x2,mbt->pos.a1.y,
     mbt->pos.a2.x,mbt->pos.a2.y);
-  return 1;
+  return (int)(x2 - x1);
 }
 
 UnsignedMatrix* supprbord(UnsignedMatrix *mat){
@@ -165,14 +162,46 @@ UnsignedMatrix* supprbord(UnsignedMatrix *mat){
 void xycut(MatBinTree * mbt, int hor,int ver,size_t h){
   if (mbt && (hor || ver)) {
     if (h % 2 == 0) {
-      int a = hor_cut(mbt,1);
+      int a = hor_cut(mbt,10);
       xycut(mbt->left,a,ver,h + 1);
       xycut(mbt->right,a,ver,h + 1);
     }
     else{
-      int a = ver_cut(mbt,1);
+      int a = ver_cut(mbt,10);
       xycut(mbt->left,hor,a,h + 1);
       xycut(mbt->right,hor,a,h + 1);
+    }
+  }
+}
+
+void xycut_test(MatBinTree *mbt, int hor,int ver,size_t coef){
+  if (mbt && (hor || ver)) {
+    if (hor) {
+      int a = hor_cut(mbt,coef);
+      if (a) {
+        xycut_test(mbt->left,a,ver,coef);
+        xycut_test(mbt->right,a,ver,coef);
+      }
+      else{
+          a = ver_cut(mbt,coef);
+          xycut_test(mbt->left,0,a,coef);
+          xycut_test(mbt->right,0,a,coef);
+      }
+
+    }
+    else{
+      if (ver) {
+        int a = ver_cut(mbt,coef);
+        if (a) {
+          xycut_test(mbt->left,hor,a,coef);
+          xycut_test(mbt->right,hor,a,coef);
+        }
+        else{
+            a = hor_cut(mbt,coef);
+            xycut_test(mbt->left,a,0,coef);
+            xycut_test(mbt->right,a,0,coef);
+        }
+      }
     }
   }
 }
