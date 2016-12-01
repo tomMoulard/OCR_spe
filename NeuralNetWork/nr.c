@@ -557,18 +557,21 @@ int main(int argc, char *argv[])
 	int mini_bash_size = 100; //see tuto
 	double eta = 3.0;
 	char *fileName = "neuralNetwork.nr";
-	char *filenakeFAKE = "yolo";
+	char *filenakeFAKE = "fileName.temporary";
 	Network net = openNr(filenakeFAKE); // to open the previously saved Network
 	if (net.len == -1) //no previously saved network
 	{
 		int type = 2; //see setNetwork funct to see why
 		net = makeNetWork(len, setNetwork(type, nbPixels)); //create network
+		printf("Creating \n");
 	}
-	printf("Loaded this network :\n");
-	printNetwork(net);
-	printf("%d\n", net.lenbiases);
+	else{
+		printf("Loaded this network :\n");
+		//printNetwork(net);	
+	}
 	printf("Improving Network : \n");
 	Bashint *testBash = makeBAshXor(lenTest, net);
+	printf("created Bashint\n");
 	// create a Bashint List to improve the network
 	net = SGD(net, testBash, lenTest,
 			epoch, mini_bash_size,
