@@ -508,7 +508,7 @@ int *setNetwork(int type, int nbPixels)
 	}
 	return res;
 }
-
+/*
 //convert A char to int : A = strtoul(A, NULL, 10);
 int main(int argc, char *argv[])
 {
@@ -542,3 +542,4 @@ int main(int argc, char *argv[])
 	freeNetwork(net);
 	return 0;
 }
+*/

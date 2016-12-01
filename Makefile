@@ -6,8 +6,8 @@ CFLAGS= -Wall -Wextra -std=c99 -O2
 LDFLAGS=
 LDLIBS= `pkg-config --libs sdl` -lSDL_image -lm
 
-SRC=	types/pixel.c		\
-	main.c			\
+SRC=	types/pixel.c   \
+	main.c			    \
 	matrix_op/rlsa.c	\
 	image_op/sdl_fct.c	\
 	image_op/binarize.c	\
@@ -15,7 +15,8 @@ SRC=	types/pixel.c		\
 	types/rectangle.c	\
 	types/matrix.c		\
 	types/matbintree.c	\
-	matrix_op/xycut.c
+	matrix_op/xycut.c   \
+	NeuralNetWork/nr.c
 
 OBJ= ${SRC:.c=.o}
 DEP= ${SRC:.c=.d}

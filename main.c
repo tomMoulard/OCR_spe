@@ -13,7 +13,6 @@
 # include "matrix_op/xycut.h"
 # include "image_op/sdl_fct.h"
 # include "images/database.h"
-# include "matrix_op/hilditch.h"
 
 //neural NetWork
 # include "NeuralNetWork/nr.h"
@@ -28,7 +27,7 @@ const char usage[] =
   "\t\t4 : Run Length Smoothing\n"
   "\t\t5 : Related component\n"
   "\t\t6 : Erase image (with experimental value)\n"
-  "\t\t7 : tests\n";
+  "\t\t7 : tests\n"
   "For Network :\n"
   "\t <filePath>\n"
   "\t\tif <filePath> contain a Neural Network : use it.\n"
