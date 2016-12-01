@@ -45,7 +45,6 @@ UnsignedMatrix* horizontal(UnsignedMatrix *matrix, int coef){
   return mat;
 }
 
-
 int isokv(UnsignedMatrix *mat, size_t pos, int coef){
   size_t max = ((pos / mat->cols) + 1) * mat->cols;
   while (pos < max && mat->data[pos] == 0 && coef > 0) {
@@ -84,7 +83,7 @@ UnsignedMatrix* vertical(UnsignedMatrix *matrix, int coef){
   return mat;
 }
 
-  UnsignedMatrix* rlsa(UnsignedMatrix *matrix,int coefh,int coefv){
+UnsignedMatrix* rlsa(UnsignedMatrix *matrix,int coefh,int coefv){
   UnsignedMatrix *math = horizontal(matrix,coefh);
   UnsignedMatrix *matv = vertical(matrix,coefv);
   UnsignedMatrix *mat = new_unsigned_matrix(matrix->lines,matrix->cols);
@@ -159,58 +158,56 @@ void eight_connexe_back(UnsignedMatrix *mat,size_t x,size_t y,int *isok){
   }
 }
 
-
 UnsignedMatrix* ecc(UnsignedMatrix *matrix,unsigned *coef){
- *coef = 2;
- int isok = 1;
- UnsignedMatrix *mat = copy_mat(matrix);
+  *coef = 2;
+  int isok = 1;
+  UnsignedMatrix *mat = copy_mat(matrix);
 
-  for (size_t j = 0; j < mat->cols; j++) {
-    for (size_t i = 0; i < mat->lines; i++) {
+   for (size_t j = 0; j < mat->cols; j++) {
+     for (size_t i = 0; i < mat->lines; i++) {
 
-      if (mat->data[i * mat->cols +j] > 0){
-        mat->data[i * mat->cols +j] = *coef;
-        eight_connexe_forth(mat,i,j,&isok);
-      if (isok) {
-          (*coef)++;
+       if (mat->data[i * mat->cols +j] > 0){
+         mat->data[i * mat->cols +j] = *coef;
+         eight_connexe_forth(mat,i,j,&isok);
+       if (isok) {
+           (*coef)++;
+        }
+      }
+    }
+  }
+  while(isok){
+    *coef = 0;
+    isok = 0;
+    for (size_t j = 0; j < mat->cols; j++) {
+      for (size_t i = 0; i < mat->lines; i++) {
+        if (mat->data[i * mat->cols +j] > 0){
+          eight_connexe_forth(mat,i,j,&isok);
+          if (mat->data[i * mat->cols +j] > *coef) {
+            *coef = mat->data[i * mat->cols +j] ;
+          }
+       }
+     }
+   }
+   for (size_t j = mat->cols; j > 0; j--) {
+     for (size_t i = mat->lines; i > 0; i--) {
+       if (mat->data[i * mat->cols +j] > 0) {
+         eight_connexe_back(mat,i,j,&isok);
+       }
+       if (mat->data[i * mat->cols +j] > *coef) {
+         *coef = mat->data[i * mat->cols +j] ;
        }
      }
    }
  }
- while(isok){
-   *coef = 0;
-   isok = 0;
-   for (size_t j = 0; j < mat->cols; j++) {
-     for (size_t i = 0; i < mat->lines; i++) {
-       if (mat->data[i * mat->cols +j] > 0){
-         eight_connexe_forth(mat,i,j,&isok);
-         if (mat->data[i * mat->cols +j] > *coef) {
-           *coef = mat->data[i * mat->cols +j] ;
-         }
-      }
-    }
-  }
-  for (size_t j = mat->cols; j > 0; j--) {
-    for (size_t i = mat->lines; i > 0; i--) {
-      if (mat->data[i * mat->cols +j] > 0) {
-        eight_connexe_back(mat,i,j,&isok);
-      }
-      if (mat->data[i * mat->cols +j] > *coef) {
-        *coef = mat->data[i * mat->cols +j] ;
-      }
-    }
-  }
-}
 
   *coef = 0;
-for (size_t j = 0; j < mat->cols; j++) {
-  for (size_t i = 0; i < mat->lines; i++) {
-      if (mat->data[i * mat->cols +j] > *coef) {
-        *coef = mat->data[i * mat->cols +j] ;
-
+  for (size_t j = 0; j < mat->cols; j++) {
+    for (size_t i = 0; i < mat->lines; i++) {
+        if (mat->data[i * mat->cols +j] > *coef) {
+          *coef = mat->data[i * mat->cols +j] ;
+     }
    }
- }
-}
+  }
   return mat;
 }
 
@@ -248,34 +245,123 @@ Rect* get_all_rects(UnsignedMatrix *mat,unsigned *values,size_t len){
     }
   }
   free(values);
+
   return rects;
 }
 
-unsigned* original_black(UnsignedMatrix *mat,
-  UnsignedMatrix *matecc,Rect* rects, size_t len){
+unsigned* original_black(UnsignedMatrix *mat/*,
+  UnsignedMatrix *matecc*/,Rect* rects, size_t len){
+
   unsigned *values = malloc(len * sizeof(unsigned));
+  for (size_t i = 0; i < len; i++) {
+    values[i] = 0;
+  }
 
   for (size_t n = 0; n < len; n++) {
     for (size_t i = rects[n].a1.x; i < rects[n].a2.x; i++) {
       for (size_t j = rects[n].a1.y; j < rects[n].a2.y; j++) {
-        values[matecc->data[i * mat->cols + j]] += mat->data[i * mat->cols+j];
+        values[/*matecc->data[i * mat->cols + j]*/n] += mat->data[i * mat->cols+j];
       }
     }
   }
   return values;
 }
 
-void eraserect(UnsignedMatrix *mat,Rect rect)
-{
+unsigned* white_black_transition(UnsignedMatrix *mat,Rect* rects, size_t len){
+  int previous_white;
+  unsigned *transitions = malloc(sizeof(unsigned) * len);
+  for (size_t i = 0; i < len; i++) {
+    transitions[i] = 0;
+  }
+  for (size_t n = 0; n < len; n++) {
+    for (size_t i = rects[n].a1.x; i < rects[n].a2.x; i++) {
+      previous_white = 0;
+      for (size_t j = rects[n].a1.y; j < rects[n].a2.y; j++) {
+        if (mat->data[i * mat->cols + j] == 1) {
+          if (previous_white) {
+            transitions[n] += 1;
+          }
+          previous_white = 0;
+        }
+        else{
+          previous_white = 1;
+        }
+      }
+    }
+  }
+  return transitions;
+}
+
+float* get_eccentricity(Rect* rects,size_t len){
+  float *eccentricities = malloc(len * sizeof(float));
+  for (size_t i = 0; i < len; i++) {
+    float x = rects[i].a1.x - rects[i].a2.x;
+    float y = rects[i].a1.y - rects[i].a2.y;
+    eccentricities[i]= x / y;
+  }
+    return eccentricities;
+}
+
+float* ratio_pixels_area(unsigned* area,Rect* rects,size_t len){
+  float* ratio = malloc(len * sizeof(float));
+  for (size_t i = 0; i < len; i++) {
+    float x = rects[i].a1.x - rects[i].a2.x;
+    float y = rects[i].a1.y - rects[i].a2.y;
+    ratio[i] = (float)area[i] / (x * y);
+  }
+  return ratio;
+}
+
+float* mean_hor_len(unsigned* origin,unsigned* transitions,size_t len){
+  float* hor_len = malloc(len * sizeof(float));
+  for (size_t i = 0; i < len; i++) {
+    hor_len[i] = (float)origin[i] / (float)transitions[i];
+  }
+  return hor_len;
+}
+
+unsigned* get_class(Rect* rects,float* hor_len,float* eccent,size_t len){
+  unsigned* class = malloc(len * sizeof(unsigned));
+  unsigned dy;
+  float c21 = 30.0;
+  float c22 = 40.0;
+  float c23 = 50.0;
+  for (size_t i = 0; i < len; i++) {
+    dy = rects[i].a2.y - rects[i].a1.y;
+    if (dy < 4000000000) {
+      if (dy < c22) {
+        if (hor_len[i] > 0) {
+          if (hor_len[i] < c21) {
+            class[i] = 1;
+          }
+          else{
+            class[i] = 2;
+          }
+        }
+      }
+      else{
+        if (eccent[i] > 1 / c23) {
+          class[i] = 3;
+        }
+        else{
+          class[i] = 4;
+        }
+      }
+    }
+  }
+  return class;
+}
+
+void eraserect(UnsignedMatrix *mat,Rect rect){
   for (size_t i = rect.a1.x; i < rect.a2.x; i++) {
     for (size_t j = rect.a1.y; j < rect.a2.y; j++) {
       mat->data[i * mat->cols + j] = 0;
     }
   }
 }
+
 void get_items_height(UnsignedMatrix* mat,unsigned coef,
   size_t thval1,size_t thval2){
-
 
   Coordinates coord[coef];
   for (size_t i = 0; i < coef; i++) {
@@ -322,8 +408,7 @@ void get_items_height(UnsignedMatrix* mat,unsigned coef,
  free(heights);
 }
 
-UnsignedMatrix* eraseimage(UnsignedMatrix *matrix,unsigned maxpixel){
-
+UnsignedMatrix* eraseimage(UnsignedMatrix *matrix){
 
   int coefh = 200;
   int coefv = 200;
@@ -333,20 +418,32 @@ UnsignedMatrix* eraseimage(UnsignedMatrix *matrix,unsigned maxpixel){
   UnsignedMatrix* matrlsa = rlsa(mat,coefh,coefv);
   UnsignedMatrix* matecc = ecc(matrlsa,&coef);
 
+
   unsigned* areas = get_all_areas(matecc,coef);
   Rect* rects = get_all_rects(matecc,areas,coef);
-  //unsigned* origin = original_black(mat,matecc,rects,coef);
+  unsigned* origin = original_black(mat/*,matecc*/,rects,coef);
+  unsigned* transitions = white_black_transition(mat,rects,coef);
+  float* eccentricities = get_eccentricity(rects,coef);
+  float* ratio = ratio_pixels_area(areas,rects,coef);
+  float* hor_len = mean_hor_len(origin,transitions,coef);
+  unsigned* class = get_class(rects,hor_len,eccentricities,coef);
 
+  for (size_t i = 0; i < coef; i++) {
 
+  }
 
   for (size_t i = 2; i < coef; i++) {
-    if(areas[i] > maxpixel){
+    if(class[i] == 3){
       eraserect(mat,rects[i]);
     }
   }
 
-
-
+  free(class);
+  free(hor_len);
+  free(ratio);
+  free(eccentricities);
+  free(origin);
+  free(transitions);
   //free(areas);
   free(rects);
   free_unsigned_matrix(matrlsa);
