@@ -455,17 +455,26 @@ void saveNr(Network net)
 }
 */
 //open a .nr file to get a previouly saved network : WORK IN PROGRESS
-Network openNr()
+Network openNr(char *fileName)
 {
 	FILE *nr;
-	nr = fopen("REMOVEME!neuralNetwork.nr", "r");
     Network net;
+	nr = fopen(fileName, "r");
   	if (nr == NULL) {
-    	printf("Fail to retrive neural network from file,\
-				creating a new one : \n");
     	net.len = -1;
     	return net;
     }
+    //Work in progess
+    char tmp[8];
+    printf("%s\n", fileName);
+    if(fgets(tmp, 8, nr) != NULL){
+    	for (int i = 0; i < 8; ++i)
+    	{
+    		printf("yolo : %d\n", tmp[i]);
+    	}
+    }
+
+
     fclose(nr);
     return net;
 }

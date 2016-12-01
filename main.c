@@ -14,6 +14,9 @@
 # include "image_op/sdl_fct.h"
 # include "images/database.h"
 
+//neural NetWork
+# include "NeuralNetWork/nr.h"
+
 const char usage[] =
   "<image path> <op>\n"
   "Take only a bmp image\n"
@@ -23,9 +26,40 @@ const char usage[] =
   "\t\t3 : XY-cut\n"
   "\t\t4 : Run Length Smoothing\n"
   "\t\t5 : Related component\n"
-  "\t\t6 : Erase image (with experimental value)\n";
+  "\t\t6 : Erase image (with experimental value)\n"
+  "For Network :\n"
+  "\t <filePath>\n"
+  "\t\tif <filePath> contain a Neural Network : use it.\n"
+  "\t\telse : create one, train it and then save it.\n";
 
 int main(int argc, char *argv[]) {
+  //neural Network
+  if(argc == 2){
+    //give a filePath, if it does not contain one neuralNetwork : create one
+    char *filePath = argv[1];
+    Network net = openNr(filePath);
+    if (net.len == -1) //no previously saved network fail :/
+    {
+      int len = 3;// set number of layers
+      int nbPixels = 900; // set number of input neurons
+      int type = 2; //see setNetwork funct to see why
+
+
+      net = makeNetWork(len, setNetwork(type, nbPixels)); //create network
+      printf("Created network :\n");
+      printNetwork(net);
+      //improving it :
+
+      //storing it:
+      printf("Improved Network :\n");
+      printNetwork(net);
+      saveNr(net, filePath);
+      printf("Network saved.\n");
+      freeNetwork(net);
+    }
+    printf("This network was already stored :\n");
+    printNetwork(net);
+  }
   if(argc != 3)
     errx(1, "%s", usage);
   unsigned op = strtoul(argv[2], NULL, 10);
