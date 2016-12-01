@@ -137,7 +137,6 @@ void eight_connexe_forth(UnsignedMatrix *mat,size_t x,size_t y,int *isok){
 
  }
 
-
 void eight_connexe_back(UnsignedMatrix *mat,size_t x,size_t y,int *isok){
   unsigned data[5];
 
@@ -418,7 +417,6 @@ UnsignedMatrix* eraseimage(UnsignedMatrix *matrix){
   UnsignedMatrix* matrlsa = rlsa(mat,coefh,coefv);
   UnsignedMatrix* matecc = ecc(matrlsa,&coef);
 
-
   unsigned* areas = get_all_areas(matecc,coef);
   Rect* rects = get_all_rects(matecc,areas,coef);
   unsigned* origin = original_black(mat/*,matecc*/,rects,coef);
@@ -427,10 +425,6 @@ UnsignedMatrix* eraseimage(UnsignedMatrix *matrix){
   float* ratio = ratio_pixels_area(areas,rects,coef);
   float* hor_len = mean_hor_len(origin,transitions,coef);
   unsigned* class = get_class(rects,hor_len,eccentricities,coef);
-
-  for (size_t i = 0; i < coef; i++) {
-
-  }
 
   for (size_t i = 2; i < coef; i++) {
     if(class[i] == 3){
