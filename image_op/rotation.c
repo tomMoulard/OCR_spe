@@ -19,15 +19,15 @@ UnsignedMatrix *rotation(UnsignedMatrix *mat, double angle)
       dest->data[i * ly + j] = 0;
   for(size_t i = 0; i < mat->lines; i++)
   {
-    size_t distx = i - midx;
+    int distx = i - midx;
     for(size_t j = 0; j < mat->cols; j++)
     {
-      size_t disty = j - midy;
-      size_t x = distx * cos_angle - disty * sin_angle + midx;
-      size_t y = distx * sin_angle + disty * cos_angle + midy;
+      int disty = j - midy;
+      size_t x = (size_t)(distx * cos_angle - disty * sin_angle + midx);
+      size_t y = (size_t)(distx * sin_angle + disty * cos_angle + midy);
       dest->data[x * ly + y] = mat->data[i * mat->cols + j];
     }
   }
-  free_unsigned_matrix(mat);
+  //free_unsigned_matrix(mat);
   return dest;
 }
