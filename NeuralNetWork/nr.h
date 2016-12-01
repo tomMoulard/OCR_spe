@@ -94,3 +94,7 @@ void saveNr(Network net, char *fileName);
 Network openNr(char *fileName);
 
 int *setNetwork(int type, int nbPixels);
+
+//Personized Main :3
+
+int mainNetwork(char *filepath)
