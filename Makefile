@@ -16,6 +16,7 @@ SRC=	types/pixel.c   \
 	types/matrix.c		\
 	types/matbintree.c	\
 	matrix_op/xycut.c   \
+    image_op/rotation.c \
 	NeuralNetWork/nr.c
 
 OBJ= ${SRC:.c=.o}

@@ -13,6 +13,7 @@
 # include "matrix_op/xycut.h"
 # include "image_op/sdl_fct.h"
 # include "images/database.h"
+# include "image_op/rotation.h"
 
 //neural NetWork
 # include "NeuralNetWork/nr.h"
@@ -95,6 +96,7 @@ int main(int argc, char *argv[]) {
   UnsignedMatrix *mat = new_unsigned_matrix(lines, cols);
   binarize(image, mat);
   free_pixel_matrix(image);
+  mat = rotation(mat, 90.0);
   if(op == 1)
   {
     surf = unsignedMatrix_to_pict(mat, 1);
