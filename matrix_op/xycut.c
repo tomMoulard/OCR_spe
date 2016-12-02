@@ -174,6 +174,29 @@ void xycut(MatBinTree * mbt, int hor,int ver,size_t h){
   }
 }
 
+void split_column(MatBinTree *mbt) {
+  if (mbt) {
+    int a = ver_cut(mbt,1);
+    if (a) {
+      split_column(mbt->left);
+      split_column(mbt->right);
+    }
+  }
+}
+
+void split_lines(MatBinTree *mbt) {
+  if (mbt) {
+    int a = hor_cut(mbt,1);
+    if (a) {
+      split_lines(mbt->left);
+      split_lines(mbt->right);
+    }
+    else{
+      split_column(mbt);
+    }
+  }
+}
+
 void xycut_test(MatBinTree *mbt, int hor,int ver,size_t coef){
   if (mbt && (hor || ver)) {
     if (hor) {
@@ -204,16 +227,5 @@ void xycut_test(MatBinTree *mbt, int hor,int ver,size_t coef){
       }
     }
   }
-}
-
-void split_blocks(MatBinTree *mbt) {
-  if (mbt) {
-    if (!mbt->right && !mbt->left) {
-      xycut_test(mbt,1,0,1);
-    }
-    else{
-      split_blocks(mbt->right);
-      split_blocks(mbt->left);
-    }
-  }
+  split_lines(mbt);
 }
