@@ -21,4 +21,5 @@ void mbt_print(MatBinTree *mbt, size_t h);
 void display_leaves(MatBinTree* mbt);
 unsigned get_all_rect(MatBinTree* mbt, UnsignedMatrix *mat, unsigned h);
 void get_leaves(MatBinTree* mbt,UnsignedMatrix *mat,unsigned h);
+UnsignedMatrix** get_letters(MatBinTree *mbt,size_t *len);
 #endif

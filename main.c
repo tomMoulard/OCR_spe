@@ -154,10 +154,23 @@ int main(int argc, char *argv[]) {
     xycut_test(mbt,1,1,10);
     surf = unsignedMatrix_to_pict(matrix, 0xffffffff);
     img = display_image(surf);
-    display_leaves(mbt);
+    size_t len = 0;
+    UnsignedMatrix **mats = get_letters(mbt,&len);
+
+    for (size_t i = 0; i < len; i++) {
+      surf = unsignedMatrix_to_pict(mats[i], 0xffffffff);
+      img = display_image(surf);
+    }
+    for (size_t i = 0; i < len; i++) {
+      free_unsigned_matrix(mats[i]);
+    }
+
+
+    free(mats);
 
     //free_unsigned_matrix(matrix);
     free_matbintree(mbt);
+
     SDL_FreeSurface(surf);
     SDL_FreeSurface(img);
     free_unsigned_matrix(mat);
