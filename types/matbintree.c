@@ -1,4 +1,5 @@
 # include "matbintree.h"
+# include "../matrix_op/xycut.h"
 
 MatBinTree* new_matbintree(UnsignedMatrix* mat){
     MatBinTree *mbt = malloc(sizeof(MatBinTree));
@@ -68,4 +69,35 @@ unsigned get_all_rect(MatBinTree* mbt,UnsignedMatrix *mat,unsigned h){
     unsigned r = get_all_rect(mbt->right,mat,h + 1);
     return (h > l) && (h > r)? h :(l > r? l : r);
   }
+}
+
+void get_lets(MatBinTree *mbt,UnsignedMatrix **mats,size_t *len){
+  if (mbt) {
+    if(!mbt->left){
+      if(!mbt->right){
+        mats[*len] = mbt->key;
+        *len += 1;
+      }
+      else{
+        get_lets(mbt->right,mats,len);
+      }
+    }
+    else{
+      get_lets(mbt->left,mats,len);
+      if(mbt->right){
+        get_lets(mbt->right,mats,len);
+      }
+    }
+  }
+}
+
+UnsignedMatrix** get_letters(MatBinTree *mbt,size_t *len){
+  UnsignedMatrix **mats = malloc(10000 * sizeof(UnsignedMatrix));
+  get_lets(mbt,mats,len);
+  UnsignedMatrix **matrix = malloc(*len * sizeof(UnsignedMatrix));
+  for (size_t i = 0; i < *len; i++) {
+    matrix[i] = expand_mat(mats[i],30,30);
+  }
+  free(mats);
+  return matrix;
 }

@@ -113,9 +113,14 @@ void printBashint(Bashint b)
 { //explicit content
     printf("#~~~~~~~~~~ Test ~~~~~~~~~#\n");
     printf("|res : %f            |\n|Input : ", b.res);
-    for (int i = 0; i < 2; ++i)
+    int i = 0, j = 0;
+    for (i = 0; i < 30; ++i)
     {
-        printf("%f ", b.input[i]);
+        for (j = 0; i < 30; ++i)
+        {
+        printf("%f ", b.input[i + j]);
+        }
+        printf("\n");
     }
     printf("|\n#~~~~~~~~~~~~~~~~~~~~~~~~~~#\n");
 }
@@ -403,7 +408,7 @@ double evaluate(Bashint *test_data, int len_test_data, Network net)
     for (int i = 0; i < len_test_data; ++i)
     {
 //printf("evaluate : x = %f et y = %f\n", test_result[i][0], test_result[i][1]);
-        if (test_result[i][0] == test_result[i][1])
+        if (test_result[i][0] + 97 == test_result[i][1])
             res += 1;
     }
     freedouble2star(test_result, len_test_data);
@@ -632,12 +637,26 @@ int main(int argc, char *argv[])
     return 0;
 }*/
 
+void append(char *a, char *b){
+    for(size_t i = 0; b[i]; ++i){
+        *a += b[i];
+    }
+}
 
 char *useNetwork(Network net, Bashint input){
-    char *res = "a";
+    char *res = "";
     net.weight = net.biases;
     input.input = input.input;
+    
     return res;
+}
+
+Network trainNet(Network net){
+    //open all [0-3] .bmp files located on : /NeuralNetWork/trainingData/*.bmp
+    //open resolution on /NeuralNetWork/trainingData/res.txt
+    //put them on a Bashint* and then shuffle this list
+    //make them go thru th neural network and recover data to improve it
+    return net;
 }
 
 int mainNetwork(char *filePath, int argc, Bashint *input, 
@@ -658,7 +677,7 @@ int mainNetwork(char *filePath, int argc, Bashint *input,
       printf("Created network :\n");
       //printNetwork(net);
       //improving it :
-      
+      net = trainNet(net);
       //storing it:
       printf("Improved Network :\n");
       //printNetwork(net);
@@ -670,18 +689,22 @@ int mainNetwork(char *filePath, int argc, Bashint *input,
     printf("This network was already stored :\n");
     printNetwork(net);
     int rep = 0;
-    if((argc = scanf("Do you want to improve it ? %d", &rep)) == 0){
+    printf("Do you want to improve it ? \n");
+    if((argc = scanf("%d", &rep)) == 0){
       errx(1, "Not an valid input");
     }
     else{
       if(rep){ //want to improve it cf l660
-
+        net = trainNet(net);
+        saveNr(net, filePath);
+        printf("Network saved.\n");
+        freeNetwork(net);
       }
       else{ // nop use it !
         char *res = "";
         for (size_t i = 0; i < lenInpout; ++i)
         {
-            strcpy(res, useNetwork(net, input[i]));
+            append(res, useNetwork(net, input[i]));
         }
         //USE RES!!!
 
