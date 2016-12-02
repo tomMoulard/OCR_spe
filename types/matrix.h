@@ -2,6 +2,7 @@
 # define MATRIX_H_
 
 # include <stdlib.h>
+# include "../NeuralNetWork/nr.h"
 
 typedef struct _UnsignedMatrix{
     size_t lines;
@@ -23,4 +24,5 @@ UnsignedMatrix* expand_mat(UnsignedMatrix *matrix,
                            size_t xdest,
                            size_t ydest);
 
+Bashint unsignedmatToBashint(UnsignedMatrix *matrix);
 # endif
