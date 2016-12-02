@@ -496,17 +496,54 @@ Network openNr(char *fileName)
     	net.len = -1;
     	return net;
     }
-    char tmp[8];
-    printf("%s\n", fileName);
-    if(fgets(tmp, 8, nr) != NULL){
-    	for (int i = 0; i < 8; ++i)
-    	{
-    		printf("yolo : %d\n", tmp[i]);
-    	}
-    }
+    //INITIATING NETWORK !
+	int    *numLayers;  //number of neurons by layers
+	int     lenlayers;  //len of numLayers
+	time_t  seed;       //seed to initiate random
+	int    *sizes;      //list of bite of the letter
+	int     len;        //len of size
+	double *biases;     //list of biases for neurons
+	int     lenbiases;  //nb neurons
+	double *weight;     //list of weights for neurons
+	int     lenweight;  //nb neurons //useless len biases == lenweights
 
-
+	fscanf(nr, "%d\n", &lenlayers);
+	int i, j=0;
+	numLayers = malloc(sizeof(int) * lenlayers);
+	for(i = 0; i < lenlayers; ++i){
+		fscanf(nr, "%d\n", &numLayers[i]);
+		j += numLayers[i];
+	}
+	fscanf(nr, "\n%ld\n", &seed);
+	fscanf(nr, "%d\n", &en);
+	sizes = malloc(sizeof(int) * len)
+	for (i = 0; i < len; ++i)
+	{
+		fscanf(nr, "%d\n", &sizes[i]);
+	}
+	fscanf(nr, "\n%d\n", j + &lenbiases);
+	biases = malloc(sizeof(double) * lenbiases);
+	for (i = 0; i < lenbiases + j; ++i)
+	{
+		fscanf(nr, "%f\n", &biases[i]);
+	}
+	fscanf(nr, "\n%d\n", &lenweight);
+	weight = malloc(sizeof(double) * lenweight);
+	for (i = 0; i < lenweight; ++i)
+	{
+		fscanf(nr, "%f\n", &weight[i]);
+	}
     fclose(nr);
+
+	net.numLayers = numLayers;
+	net.lenlayers = lenlayers;
+	net.seed = seed;
+	net.sizes = sizes;
+	net.len = len;
+	net.biases = biases;
+	net.lenbiases = lenbiases;
+	net.weight = weight;
+	net.lenweight = lenweight;
     return net;
 }
 
@@ -610,12 +647,12 @@ int mainNetwork(char *filePath, int argc, Bashint *input, size_t lenInpout, int 
 
       net = makeNetWork(len, setNetwork(type, nbPixels)); //create network
       printf("Created network :\n");
-      printNetwork(net);
+      //printNetwork(net);
       //improving it :
       
       //storing it:
       printf("Improved Network :\n");
-      printNetwork(net);
+      //printNetwork(net);
       saveNr(net, filePath);
       printf("Network saved.\n");
       freeNetwork(net);
