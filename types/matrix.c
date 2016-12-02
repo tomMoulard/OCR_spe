@@ -1,4 +1,5 @@
 # include "matrix.h"
+# include <stdio.h>
 
 UnsignedMatrix *new_unsigned_matrix(size_t lines, size_t cols){
     UnsignedMatrix *matrix;
@@ -35,6 +36,9 @@ return mat;
 UnsignedMatrix* expand_mat(UnsignedMatrix *matrix,
 size_t xdest,size_t ydest){
 
+  if (xdest < matrix->lines || ydest < matrix->cols) {
+    return matrix;
+  }
   UnsignedMatrix *mat = new_unsigned_matrix(xdest,ydest);
   for (size_t i = 0; i < matrix->lines; i++) {
     for (size_t j = 0; j < matrix->cols; j++) {
@@ -50,33 +54,6 @@ size_t xdest,size_t ydest){
 
   return mat;
 }
-
-
-/****** Avec de la chance ca compile <3 ******/
-
-Bashint *unsignedmatToBashint(UnsignedMatrix *matrix)
-{
-  Bashint *basht;
-  basht = malloc(sizeof(Bashint));
-  int size = ((matrix->lines)*(matrix->cols));
-  if (size != 841)
-    {
-      printf("Error = matrix not in the required format");
-    }
-  
-  for (int i = 0; i<841; i++)
-    {
-      basht->input[i] = matrix->data[i];
-    }
-  free(matrix->data);
-  free(matrix);
-  return basht;
-}
-
-
-
-
-
 
 void free_unsigned_matrix(UnsignedMatrix *matrix)
 {

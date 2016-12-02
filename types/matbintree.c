@@ -94,10 +94,14 @@ void get_lets(MatBinTree *mbt,UnsignedMatrix **mats,size_t *len){
 UnsignedMatrix** get_letters(MatBinTree *mbt,size_t *len){
   UnsignedMatrix **mats = malloc(10000 * sizeof(UnsignedMatrix));
   get_lets(mbt,mats,len);
+
   UnsignedMatrix **matrix = malloc(*len * sizeof(UnsignedMatrix));
+
   for (size_t i = 0; i < *len; i++) {
     matrix[i] = expand_mat(mats[i],30,30);
   }
+
+
   free(mats);
   return matrix;
 }
