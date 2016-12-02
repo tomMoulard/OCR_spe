@@ -61,7 +61,7 @@ int main(int argc, char *argv[]) {
   UnsignedMatrix *mat = new_unsigned_matrix(lines, cols);
   binarize(image, mat);
   free_pixel_matrix(image);
-  //mat = rotation(mat, 90.0);
+  mat = rotation(mat, 90);
   if(op == 1)
   {
     surf = unsignedMatrix_to_pict(mat, 1);

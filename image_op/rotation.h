@@ -8,6 +8,7 @@
 # include <stdio.h>
 
 # include "../types/matrix.h"
+# include "../matrix_op/xycut.h"
 
 UnsignedMatrix *rotation(UnsignedMatrix *mat, double angle);
 
