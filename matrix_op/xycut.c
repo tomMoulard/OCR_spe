@@ -205,3 +205,15 @@ void xycut_test(MatBinTree *mbt, int hor,int ver,size_t coef){
     }
   }
 }
+
+void split_blocks(MatBinTree *mbt) {
+  if (mbt) {
+    if (!mbt->right && !mbt->left) {
+      xycut_test(mbt,1,0,1);
+    }
+    else{
+      split_blocks(mbt->right);
+      split_blocks(mbt->left);
+    }
+  }
+}

@@ -18,4 +18,6 @@ void xycut(MatBinTree * mbt, int hor,int ver,size_t h);
 UnsignedMatrix* supprbord(UnsignedMatrix *mat);
 
 void xycut_test(MatBinTree * mbt, int hor,int ver,size_t h);
+
+void split_blocks(MatBinTree *mbt);
 # endif
