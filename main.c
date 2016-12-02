@@ -158,7 +158,7 @@ int main(int argc, char *argv[]) {
     UnsignedMatrix **mats = get_letters(mbt,&len);
 	Bashint **bashts = malloc(len*sizeof(Bashint));
 	/**********INCHALLAH*********/
-	for (sizet i=0; i < len; i++)
+	for (size_t i=0; i < len; i++)
 	{
 		bashts[i] = unsignedmatToBashint(mats[i]);
 	}

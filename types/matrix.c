@@ -54,12 +54,11 @@ size_t xdest,size_t ydest){
 
 /****** Avec de la chance ca compile <3 ******/
 
-Bashint unsignedmatToBashint(UnsignedMatrix *matrix)
+Bashint *unsignedmatToBashint(UnsignedMatrix *matrix)
 {
   Bashint *basht;
   basht = malloc(sizeof(Bashint));
-  basht->res = NULL;
-  int size = ((matrix->lignes)*(matrix->cols));
+  int size = ((matrix->lines)*(matrix->cols));
   if (size != 841)
     {
       printf("Error = matrix not in the required format");
@@ -71,6 +70,7 @@ Bashint unsignedmatToBashint(UnsignedMatrix *matrix)
     }
   free(matrix->data);
   free(matrix);
+  return basht;
 }
 
 

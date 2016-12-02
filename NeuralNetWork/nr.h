@@ -1,3 +1,6 @@
+# ifndef NR_H_
+# define NR_H_
+
 #include <stdio.h>
 #include <math.h>
 #include <err.h>
@@ -102,3 +105,5 @@ int mainNetwork(char *filePath, int argc, Bashint *input, size_t lenInpout, int 
 
 //to use network:
 char *useNetwork(Network net, Bashint input);
+
+# endif
