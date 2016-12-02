@@ -156,7 +156,13 @@ int main(int argc, char *argv[]) {
     img = display_image(surf);
     size_t len = 0;
     UnsignedMatrix **mats = get_letters(mbt,&len);
-
+	Bashint **bashts = malloc(len*sizeof(Bashint));
+	/**********INCHALLAH*********/
+	for (sizet i=0; i < len; i++)
+	{
+		bashts[i] = unsignedmatToBashint(mats[i]);
+	}
+	/*****ca marche*****/
     for (size_t i = 0; i < len; i++) {
       surf = unsignedMatrix_to_pict(mats[i], 0xffffffff);
       img = display_image(surf);
