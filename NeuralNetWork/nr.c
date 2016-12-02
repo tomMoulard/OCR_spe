@@ -507,34 +507,35 @@ Network openNr(char *fileName)
 	double *weight;     //list of weights for neurons
 	int     lenweight;  //nb neurons //useless len biases == lenweights
 
-	fscanf(nr, "%d\n", &lenlayers);
-	int i, j=0;
+	int i, j=0, res = 0;
+	res = fscanf(nr, "%d\n", &lenlayers);
 	numLayers = malloc(sizeof(int) * lenlayers);
-	for(i = 0; i < lenlayers; ++i){
-		fscanf(nr, "%d\n", &numLayers[i]);
+	for(i = 0; i < lenlayers; ++i)
+	{
+		res = fscanf(nr, "%d\n", &numLayers[i]);
 		j += numLayers[i];
 	}
-	fscanf(nr, "\n%ld\n", &seed);
-	fscanf(nr, "%d\n", &en);
-	sizes = malloc(sizeof(int) * len)
+	res = fscanf(nr, "\n%ld\n", &seed);
+	res = fscanf(nr, "%d\n", &len);
+	sizes = malloc(sizeof(int) * len);
 	for (i = 0; i < len; ++i)
 	{
-		fscanf(nr, "%d\n", &sizes[i]);
+		res = fscanf(nr, "%d\n", &sizes[i]);
 	}
-	fscanf(nr, "\n%d\n", j + &lenbiases);
+	res = fscanf(nr, "\n%d\n", j + &lenbiases);
 	biases = malloc(sizeof(double) * lenbiases);
 	for (i = 0; i < lenbiases + j; ++i)
 	{
-		fscanf(nr, "%f\n", &biases[i]);
+		res = fscanf(nr, "%lf\n", &biases[i]);
 	}
-	fscanf(nr, "\n%d\n", &lenweight);
+	res = fscanf(nr, "\n%d\n", &lenweight);
 	weight = malloc(sizeof(double) * lenweight);
 	for (i = 0; i < lenweight; ++i)
 	{
-		fscanf(nr, "%f\n", &weight[i]);
+		res = fscanf(nr, "%lf\n", &weight[i]);
 	}
     fclose(nr);
-
+    res += 1;
 	net.numLayers = numLayers;
 	net.lenlayers = lenlayers;
 	net.seed = seed;
@@ -637,7 +638,6 @@ int mainNetwork(char *filePath, int argc, Bashint *input, size_t lenInpout, int 
 		return 0;
 	}
 	Network net = openNr(filePath);
-    net.len = -1; //REMOVE ME !!
     if (net.len == -1) //no previously saved network fail :/
     {
       int len = 3;// set number of layers
@@ -669,10 +669,10 @@ int mainNetwork(char *filePath, int argc, Bashint *input, size_t lenInpout, int 
 
       }
       else{ // nop use it !
-      	char *res;
+      	char *res = "";
       	for (size_t i = 0; i < lenInpout; ++i)
       	{
-      		strcp(res, useNetwork(net, input[i]));
+      		strcpy(res, useNetwork(net, input[i]));
       	}
       	//USE RES!!!
 

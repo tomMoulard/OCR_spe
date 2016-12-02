@@ -4,6 +4,7 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <time.h>
+#include <string.h>
 
 typedef struct Network Network;
 struct Network{
