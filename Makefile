@@ -22,6 +22,8 @@ SRC=	types/pixel.c   \
 OBJ= ${SRC:.c=.o}
 DEP= ${SRC:.c=.d}
 
+
+#For "make" instead of "make main"
 all: main
 
 -include ${DEP}
