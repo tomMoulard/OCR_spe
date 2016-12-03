@@ -29,35 +29,23 @@ const char usage[] =
   "\t\t5 : Related component\n"
   "\t\t6 : Erase image (with experimental value)\n"
   "\t\t7 : tests\n"
-  "For Network :\n"
-  "\t <filePath>\n"
-  "\t\tif <filePath> contain a Neural Network : use it.\n"
-  "\t\telse : create one, train it and then save it.\n";
+  "\t\t8 : train neural network stored in <path>.";
 
 int main(int argc, char *argv[]) {
   //neural Network
   if(argc == 2){
-    //give a filePath, if it does not contain one neuralNetwork : create one
-    char *filePath        = argv[1];
-    size_t len            = 0;
-    UnsignedMatrix **mats = from_img_to_letters(filePath,&len);
-    Bashint *input        = malloc(sizeof(Bashint) * len);
-    for(size_t i = 0; i < len; ++i){
-      input[i]  = unsignedmatToBashint(mats[i]);
-    }
-    char* res   = "";
+    printf("getting the network from file\n");
     Network net = getNetwork();
-
-    printf("%s\n", res);
-    freeNetwork(net);
-    free(mats);
+    printf("let's train the network\n");
+    net = trainNet(net);
+    printf("let's save the network\n");
+    saveNr(net, argv[1]);
     return 0;
-
   }
   if(argc != 3)
     errx(1, "%s", usage);
   unsigned op = strtoul(argv[2], NULL, 10);
-  if(op == 0 || op > 7)
+  if(op == 0 || op > 8)
     errx(1, "%s", usage);
   size_t lines        = bmpWidth(argv[1]);
   size_t cols         = bmpHeight(argv[1]);

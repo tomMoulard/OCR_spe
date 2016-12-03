@@ -522,7 +522,6 @@ Network openNr(char *fileName)
 
     int i, j=0, res = 0;
     res = fscanf(nr, "%d\n", &lenlayers);
-    printf("lenlayers : %d\n", lenlayers);
     numLayers = malloc(sizeof(int) * lenlayers);
     for(i = 0; i < lenlayers; ++i)
     {
@@ -530,9 +529,7 @@ Network openNr(char *fileName)
         j += numLayers[i];
     }
     res = fscanf(nr, "\n%ld\n", &seed);
-    printf("seed : %ld\n", seed);
     res = fscanf(nr, "%d\n", &len);
-    printf("len : %d\n", len);
     sizes = malloc(sizeof(int) * len);
     for (i = 0; i < len; ++i)
     {
@@ -540,7 +537,6 @@ Network openNr(char *fileName)
     }
     res = fscanf(nr, "\n%d\n", &lenbiases);
     lenbiases -= j;
-    printf("lenbiases : %d\n", lenbiases);
     biases = malloc(sizeof(double) * lenbiases);
     for (i = 0; i < lenbiases; ++i)
     {
@@ -548,7 +544,6 @@ Network openNr(char *fileName)
         //printf("%d : %d\n", lenbiases, i);
     }
     res = fscanf(nr, "\n%d\n", &lenweight);
-    printf("lenweight : %d\n", lenweight);
     weight = malloc(sizeof(double) * lenweight);
     for (i = 0; i < lenweight; ++i)
     {
@@ -565,13 +560,13 @@ Network openNr(char *fileName)
     net.lenbiases = lenbiases;
     net.weight    = weight;
     net.lenweight = lenweight;
-    printf("openNr : 8\n");
     return net;
 }
 
 Bashint unsignedmatToBashint(UnsignedMatrix *matrix){
   Bashint basht;
   basht.input      = malloc(sizeof(double) * 900);
+  printf("lines : %zu ; cols %zu\n", matrix->lines, matrix->cols);
   for(size_t i = 0; i < 900; ++i){
     basht.input[i] = (double)matrix->data[i];
   }
@@ -585,12 +580,10 @@ UnsignedMatrix **from_img_to_letters(char *filepath,size_t *len){
   size_t cols = bmpHeight(filepath);
   SDL_Surface *surf;
   init_sdl();
-  SDL_Surface *img;
   PixelMatrix *image = new_pixel_matrix(lines, cols);
   //printf("Display image : %s\n", filepath);
   surf = load_image(filepath);
-  img = display_image(surf);
-  save_image(img, image);
+  save_image(surf, image);
   UnsignedMatrix *mat = new_unsigned_matrix(lines, cols);
   binarize(image, mat);
   free_pixel_matrix(image);
@@ -602,7 +595,6 @@ UnsignedMatrix **from_img_to_letters(char *filepath,size_t *len){
   UnsignedMatrix **mats = get_letters(mbt,len);
 
   free_matbintree(mbt);
-  SDL_FreeSurface(img);
   SDL_FreeSurface(surf);
   free_unsigned_matrix(mat);
   return mats;
@@ -633,7 +625,7 @@ int *setNetwork(int type, int nbPixels)
     {
         *res       = nbPixels;
         *(res + 1) = 100; //fixme
-        *(res + 2) = 185;
+        *(res + 2) = 223;
     }
     return res;
 }
@@ -654,7 +646,7 @@ char *get_string(MatBinTree *mbt, Network net){
         //mbt->txt          = "b";
         Bashint input       = unsignedmatToBashint(mat);
         mbt->txt            = useNetwork(net, input);
-        free_unsigned_matrix(mat);
+        //free_unsigned_matrix(mat);
         return mbt->txt;
       }
       else{
@@ -695,37 +687,41 @@ char* appendChar(char *a, char *b){
     //printf("%s\n", res);
 }
 
+char *castIntToCharStar(int arg){
+    char *res = malloc(sizeof(char) * 2);
+    res[0] = arg + 33;
+    res[1] = '\0';
+    return res;
+}
+
 char *useNetwork(Network net, Bashint input){
-    return "b";
     int min_len =
         (net.lenbiases > net.lenweight ? net.lenweight : net.lenbiases);
-    //return (char *)argmax(feedforward(net, input.input), min_len);
+    return castIntToCharStar(argmax(feedforward(net, input.input), min_len));
 }
-
-/*
-Bashint *getLetters(){
-    Bashint *res = malloc
-}
-*/
 
 Network trainNet(Network net){
-    char *res  = malloc(sizeof(char) * 1000);
-    FILE *file = fopen("/NeuralNetWork/trainingData/test.txt", "r");
-    char tmp;
-    size_t i;
-    for(i = 0; fscanf(file, "%c", &tmp); ++i){
+    char *res  = malloc(sizeof(char) * 300);
+    FILE *file = fopen("NeuralNetWork/trainingData/test.txt", "r");
+    char tmp = '0';
+    size_t i = 0;
+    int rep = 0;
+    while(tmp != '\n'){
+        rep += fscanf(file, "%c", &tmp);
         res[i] = tmp;
+        i++;
     }
+    fclose(file);
     res[i + 1] = '\0';
-    printf("%zu : %s\n", strlen(res), res);
     //open test.bmp files located on : /NeuralNetWork/trainingData/test.bmp
     //open resolution on /NeuralNetWork/trainingData/res.txt
-    size_t len1           = strlen(res), len2;
-    char *filePath        = "/NeuralNetWork/trainingData/test.bmp";
+    size_t len1 = strlen(res), len2 = 0;
+    char *filePath        = "NeuralNetWork/trainingData/test.bmp";
     UnsignedMatrix **mats = from_img_to_letters(filePath,&len2);
     Bashint *testBash     = malloc(sizeof(Bashint) * len1);
     for(i = 0; i < len1; ++i){
       testBash[i] = unsignedmatToBashint(mats[i]);
+      printf("coucou %zu : %zu\n", i, len1); 
     }
     suffleBashint(testBash, len1, net.seed);
     //put them on a Bashint* and then shuffle this list
