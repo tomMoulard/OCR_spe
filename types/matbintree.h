@@ -6,6 +6,7 @@
 # include "../image_op/sdl_fct.h"
 # include "matrix.h"
 # include "rectangle.h"
+//# include "../NeuralNetWork/nr.h"
 
 
 typedef struct _MatBinTree{
@@ -23,5 +24,4 @@ void display_leaves(MatBinTree* mbt);
 unsigned get_all_rect(MatBinTree* mbt, UnsignedMatrix *mat, unsigned h);
 void get_leaves(MatBinTree* mbt,UnsignedMatrix *mat,unsigned h);
 UnsignedMatrix** get_letters(MatBinTree *mbt,size_t *len);
-char *get_string(MatBinTree *mbt, Network net);
 #endif

@@ -9,6 +9,11 @@
 #include <time.h>
 #include <string.h>
 #include "../types/matrix.h"
+#include "../image_op/sdl_fct.h"
+#include "../types/matbintree.h"
+#include "../image_op/binarize.h"
+#include "../images/database.h"
+#include "../matrix_op/xycut.h"
 
 
 typedef struct Network Network;
@@ -104,7 +109,6 @@ int *setNetwork(int type, int nbPixels);
 char *appendChar(char *a, char *b);
 
 Bashint unsignedmatToBashint(UnsignedMatrix *matrix);
-void free_unsigned_matrix(UnsignedMatrix *matrix);
 
 //Personized Main :3
 
@@ -114,5 +118,7 @@ int mainNetwork(char *filePath, int argc, Bashint *input, size_t lenInpout, int 
 char useNetwork(Network net, Bashint input);
 
 Network getNetwork();
+
+UnsignedMatrix **from_img_to_letters(char *filepath,size_t *len);
 
 # endif

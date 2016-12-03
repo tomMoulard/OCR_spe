@@ -32,35 +32,7 @@ const char usage[] =
   "For Network :\n"
   "\t <filePath>\n"
   "\t\tif <filePath> contain a Neural Network : use it.\n"
-  "\t\telse : create one, train it and then save it.\n";;;
-
-UnsignedMatrix **from_img_to_letters(char *filepath,size_t *len){
-  size_t lines = bmpWidth(filepath);
-  size_t cols = bmpHeight(filepath);
-  SDL_Surface *surf;
-  init_sdl();
-  SDL_Surface *img;
-  PixelMatrix *image = new_pixel_matrix(lines, cols);
-  //printf("Display image : %s\n", filepath);
-  surf = load_image(filepath);
-  img = display_image(surf);
-  save_image(img, image);
-  UnsignedMatrix *mat = new_unsigned_matrix(lines, cols);
-  binarize(image, mat);
-  free_pixel_matrix(image);
-
-  UnsignedMatrix *matrix = copy_mat(mat);
-
-  MatBinTree *mbt = new_matbintree(matrix);
-  xycut_test(mbt,1,1,10);
-  UnsignedMatrix **mats = get_letters(mbt,len);
-
-  free_matbintree(mbt);
-  SDL_FreeSurface(img);
-  SDL_FreeSurface(surf);
-  free_unsigned_matrix(mat);
-  return mats;
-}
+  "\t\telse : create one, train it and then save it.\n";
 
 int main(int argc, char *argv[]) {
   //neural Network

@@ -1,6 +1,5 @@
 # include "matbintree.h"
 # include "../matrix_op/xycut.h"
-# include "../NeuralNetWork/nr.h"
 
 MatBinTree* new_matbintree(UnsignedMatrix* mat){
     MatBinTree *mbt = malloc(sizeof(MatBinTree));
@@ -107,28 +106,4 @@ UnsignedMatrix** get_letters(MatBinTree *mbt,size_t *len){
 
   free(mats);
   return matrix;
-}
-char *concatenate(char* a,char* b){
-  size_t la = strlen(a);
-  size_t lb = strlen(b);
-  char* res = malloc((la + lb + 1) * sizeof(char));
-  strcpy(res,a);
-  strcat(res,b);
-  return res;
-}
-
-char *get_string(MatBinTree *mbt, Network net){
-    if (mbt) {
-      if (!mbt->left && !mbt->right) {
-        UnsignedMatrix *mat = expand_mat(mbt->key,30,30);
-        mbt->txt = "a";
-        free_unsigned_matrix(mat);
-      }
-      else{
-        mbt->txt = concatenate(get_string(mbt->left, net),get_string(mbt->right, net));
-      }
-      return mbt->txt;
-    }
-    return " ";
-
 }
