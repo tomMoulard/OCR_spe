@@ -59,21 +59,14 @@ UnsignedMatrix* expand_mat(UnsignedMatrix *matr,
   return mat;
 }
 
-Bashint *unsignedmatToBashint(UnsignedMatrix *matrix){
-  Bashint *basht;
-  basht = malloc(sizeof(Bashint));
-  int size = ((matrix->lines)*(matrix->cols));
-  if (size != 841)
-    {
-      printf("Error = matrix not in the required format");
-    }
-
-  for (int i = 0; i<841; i++)
-    {
-      basht->input[i] = matrix->data[i];
-    }
-  free(matrix->data);
-  free(matrix);
+Bashint unsignedmatToBashint(UnsignedMatrix *matrix){
+  Bashint basht;
+  basht.input      = malloc(sizeof(double) * 900);
+  for(size_t i = 0; i < 900; ++i){
+    basht.input[i] = (double)matrix->data[i];  
+  }
+  basht.res = -1;
+  free_unsigned_matrix(matrix);
   return basht;
 }
 

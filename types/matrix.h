@@ -24,5 +24,5 @@ UnsignedMatrix* expand_mat(UnsignedMatrix *matrix,
                            size_t xdest,
                            size_t ydest);
 
-Bashint *unsignedmatToBashint(UnsignedMatrix *matrix);
+Bashint unsignedmatToBashint(UnsignedMatrix *matrix);
 # endif

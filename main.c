@@ -41,7 +41,7 @@ UnsignedMatrix **from_img_to_letters(char *filepath,size_t *len){
   init_sdl();
   SDL_Surface *img;
   PixelMatrix *image = new_pixel_matrix(lines, cols);
-  printf("Display image : %s\n", filepath);
+  //printf("Display image : %s\n", filepath);
   surf = load_image(filepath);
   img = display_image(surf);
   save_image(img, image);
@@ -69,6 +69,11 @@ int main(int argc, char *argv[]) {
     char *filePath = argv[1];
     size_t len =0;
     UnsignedMatrix **mats = from_img_to_letters(filePath,&len);
+    Bashint *input = malloc(sizeof(Bashint) * len);
+    for(size_t i = 0; i < len; ++i){
+      input[i] = unsignedmatToBashint(mats[i]);
+    }
+
     free(mats);
     return 0;
 
