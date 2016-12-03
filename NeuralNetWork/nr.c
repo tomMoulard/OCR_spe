@@ -647,26 +647,28 @@ char *concatenate(char* a,char* b){
   return res;
 }
 
-char *get_string(MatBinTree *mbt){
+char *get_string(MatBinTree *mbt, Network net){
     if (mbt) {
       if (!mbt->left && !mbt->right) {
         UnsignedMatrix *mat = expand_mat(mbt->key,30,30);
-        mbt->txt = "a";
+        mbt->txt            = "b";
+        //Bashint input       = unsignedmatToBashint(mat);
+        //mbt->txt            = useNetwork(net, input);
         free_unsigned_matrix(mat);
         return mbt->txt;
       }
       else{
         if (mbt->ver) {
-          char* temp = concatenate(get_string(mbt->left)," ");
-          mbt->txt = concatenate(temp,get_string(mbt->right));
+          char* temp = concatenate(get_string(mbt->left, net)," ");
+          mbt->txt   = concatenate(temp,get_string(mbt->right, net));
           return mbt->txt;
         }
         if (mbt->hor) {
-          char *temp = concatenate(get_string(mbt->left),"\n");
-          mbt->txt = concatenate(temp,get_string(mbt->right));
+          char *temp = concatenate(get_string(mbt->left, net),"\n");
+          mbt->txt   = concatenate(temp,get_string(mbt->right, net));
           return mbt->txt;
         }
-        mbt->txt = concatenate(get_string(mbt->left),get_string(mbt->right));
+        mbt->txt = concatenate(get_string(mbt->left, net),get_string(mbt->right, net));
         return mbt->txt;
 
         //free(temp);
@@ -678,25 +680,26 @@ char *get_string(MatBinTree *mbt){
 }
 char* appendChar(char *a, char *b){
     size_t la , lb ;
-    la = strlen(a);
-    lb = strlen(b);
-
+    la        = strlen(a);
+    lb        = strlen(b);
+    
     printf("la : %zu,lb : %zu\n",la,lb );
     char* res = malloc((la + lb + 1) * sizeof(char));
-
+    
     strcpy(res,a);
     printf("%s\n", a);
     strcat(res ,b);
-
+    
     return res;
 
     //printf("%s\n", res);
 }
 
-char useNetwork(Network net, Bashint input){
+char *useNetwork(Network net, Bashint input){
+    return "b";
     int min_len =
         (net.lenbiases > net.lenweight ? net.lenweight : net.lenbiases);
-    return (char)argmax(feedforward(net, input.input), min_len);
+    //return (char *)argmax(feedforward(net, input.input), min_len);
 }
 
 /*

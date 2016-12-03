@@ -115,12 +115,12 @@ Bashint unsignedmatToBashint(UnsignedMatrix *matrix);
 int mainNetwork(char *filePath, int argc, Bashint *input, size_t lenInpout, int noMessinfWithNetworks);
 
 //to use network:
-char useNetwork(Network net, Bashint input);
+char *useNetwork(Network net, Bashint input);
 
 Network getNetwork();
 
 UnsignedMatrix **from_img_to_letters(char *filepath,size_t *len);
 
-char *get_string(MatBinTree *mbt);//, Network net);
+char *get_string(MatBinTree *mbt, Network net);
 
 # endif

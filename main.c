@@ -38,16 +38,16 @@ int main(int argc, char *argv[]) {
   //neural Network
   if(argc == 2){
     //give a filePath, if it does not contain one neuralNetwork : create one
-    char *filePath = argv[1];
-    size_t len =0;
+    char *filePath        = argv[1];
+    size_t len            = 0;
     UnsignedMatrix **mats = from_img_to_letters(filePath,&len);
-    Bashint *input = malloc(sizeof(Bashint) * len);
+    Bashint *input        = malloc(sizeof(Bashint) * len);
     for(size_t i = 0; i < len; ++i){
-      input[i] = unsignedmatToBashint(mats[i]);
+      input[i]  = unsignedmatToBashint(mats[i]);
     }
-    char* res = "";
+    char* res   = "";
     Network net = getNetwork();
-
+    
     printf("%s\n", res);
     freeNetwork(net);
     free(mats);
@@ -59,15 +59,15 @@ int main(int argc, char *argv[]) {
   unsigned op = strtoul(argv[2], NULL, 10);
   if(op == 0 || op > 7)
     errx(1, "%s", usage);
-  size_t lines = bmpWidth(argv[1]);
-  size_t cols = bmpHeight(argv[1]);
+  size_t lines        = bmpWidth(argv[1]);
+  size_t cols         = bmpHeight(argv[1]);
   SDL_Surface *surf;
   init_sdl();
   SDL_Surface *img;
-  PixelMatrix *image = new_pixel_matrix(lines, cols);
+  PixelMatrix *image  = new_pixel_matrix(lines, cols);
   printf("Display image : %s\n", argv[1]);
-  surf = load_image(argv[1]);
-  img = display_image(surf);
+  surf                = load_image(argv[1]);
+  img                 = display_image(surf);
   save_image(img, image);
   UnsignedMatrix *mat = new_unsigned_matrix(lines, cols);
   binarize(image, mat);
@@ -76,7 +76,7 @@ int main(int argc, char *argv[]) {
   if(op == 1)
   {
     surf = unsignedMatrix_to_pict(mat, 1);
-    img = display_image(surf);
+    img  = display_image(surf);
     SDL_FreeSurface(surf);
     SDL_FreeSurface(img);
     free_unsigned_matrix(mat);
@@ -85,11 +85,11 @@ int main(int argc, char *argv[]) {
   if(op == 2)
   {
     UnsignedMatrix* matrix = copy_mat(mat);
-    size_t len = 0;
-    Rect* rects = allrect(matrix,4,5,10000,&len);
+    size_t len             = 0;
+    Rect* rects            = allrect(matrix,4,5,10000,&len);
     displayrects(mat,rects,len,255);
-    surf = unsignedMatrix_to_pict(mat, 0xffffffff);
-    img = display_image(surf);
+    surf                   = unsignedMatrix_to_pict(mat, 0xffffffff);
+    img                    = display_image(surf);
     SDL_FreeSurface(surf);
     SDL_FreeSurface(img);
     free_unsigned_matrix(matrix);
@@ -99,12 +99,12 @@ int main(int argc, char *argv[]) {
   if(op == 3)
   {
     UnsignedMatrix* matrix = cut(mat,0,1024,0,95);
-    surf = unsignedMatrix_to_pict(matrix, 5);
-    img = display_image(surf);
-    MatBinTree *mbt = new_matbintree(matrix);
+    surf                   = unsignedMatrix_to_pict(matrix, 5);
+    img                    = display_image(surf);
+    MatBinTree *mbt        = new_matbintree(matrix);
     xycut(mbt,1,1,0);
-    surf = unsignedMatrix_to_pict(matrix, 0xffffffff);
-    img = display_image(surf);
+    surf                   = unsignedMatrix_to_pict(matrix, 0xffffffff);
+    img                    = display_image(surf);
     display_leaves(mbt);
     free_matbintree(mbt);
     SDL_FreeSurface(surf);
@@ -114,15 +114,15 @@ int main(int argc, char *argv[]) {
   }
   if(op == 4)
   {
-    UnsignedMatrix *math = horizontal(mat,200);
-    UnsignedMatrix *matv = vertical(mat,200);
+    UnsignedMatrix *math    = horizontal(mat,200);
+    UnsignedMatrix *matv    = vertical(mat,200);
     UnsignedMatrix *matrlsa = rlsa(mat,200,200);
-    surf = unsignedMatrix_to_pict(math, 1);
-    img = display_image(surf);
-    surf = unsignedMatrix_to_pict(matv, 1);
-    img = display_image(surf);
-    surf = unsignedMatrix_to_pict(matrlsa, 1);
-    img = display_image(surf);
+    surf                    = unsignedMatrix_to_pict(math, 1);
+    img                     = display_image(surf);
+    surf                    = unsignedMatrix_to_pict(matv, 1);
+    img                     = display_image(surf);
+    surf                    = unsignedMatrix_to_pict(matrlsa, 1);
+    img                     = display_image(surf);
     free_unsigned_matrix(math);
     free_unsigned_matrix(matv);
     free_unsigned_matrix(matrlsa);
@@ -134,12 +134,12 @@ int main(int argc, char *argv[]) {
   if(op == 5)
   {
     UnsignedMatrix *matrlsa = rlsa(mat,200,200);
-    unsigned coef = 0;
-    UnsignedMatrix *matecc = ecc(matrlsa,&coef);
-    surf = unsignedMatrix_to_pict(matrlsa, 1);
-    img = display_image(surf);
-    surf = unsignedMatrix_to_pict(matecc, coef);
-    img = display_image(surf);
+    unsigned coef           = 0;
+    UnsignedMatrix *matecc  = ecc(matrlsa,&coef);
+    surf                    = unsignedMatrix_to_pict(matrlsa, 1);
+    img                     = display_image(surf);
+    surf                    = unsignedMatrix_to_pict(matecc, coef);
+    img                     = display_image(surf);
     free_unsigned_matrix(matrlsa);
     free_unsigned_matrix(matecc);
     SDL_FreeSurface(surf);
@@ -149,8 +149,8 @@ int main(int argc, char *argv[]) {
   }
   if(op == 6){
     UnsignedMatrix *mattexte = eraseimage(mat);
-    surf = unsignedMatrix_to_pict(mattexte, 1);
-    img = display_image(surf);
+    surf                     = unsignedMatrix_to_pict(mattexte, 1);
+    img                      = display_image(surf);
     SDL_FreeSurface(surf);
     SDL_FreeSurface(img);
     free_unsigned_matrix(mat);
@@ -158,25 +158,25 @@ int main(int argc, char *argv[]) {
   }
 
   if (op == 7) {
-    UnsignedMatrix *matrix = copy_mat(mat);
+    UnsignedMatrix *matrix   = copy_mat(mat);
     //UnsignedMatrix *matrix = eraseimage(mat);
-    surf = unsignedMatrix_to_pict(matrix, 1);
-    img = display_image(surf);
-
-    MatBinTree *mbt = new_matbintree(matrix);
-
+    surf                     = unsignedMatrix_to_pict(matrix, 1);
+    img                      = display_image(surf);
+    
+    MatBinTree *mbt          = new_matbintree(matrix);
+    
     xycut_test(mbt,1,1,10);
     //display_leaves(mbt);
-
-    surf = unsignedMatrix_to_pict(matrix, 0xffffffff);
-    img = display_image(surf);;
-    //Network net = getNetwork("network.nr");
-    char *txt = get_string(mbt);//, net);
+    
+    surf                     = unsignedMatrix_to_pict(matrix, 0xffffffff);
+    img                      = display_image(surf);;
+    Network net              = getNetwork("network.nr");
+    char *txt                = get_string(mbt, net);
     printf("%s\n",txt );
-
+    
     //free_unsigned_matrix(matrix);
     //free_matbintree(mbt);
-
+    
     SDL_FreeSurface(surf);
     SDL_FreeSurface(img);
     free_unsigned_matrix(mat);
