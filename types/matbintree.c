@@ -119,7 +119,9 @@ char *concatenate(char* a,char* b){
 char *get_string(MatBinTree *mbt){
     if (mbt) {
       if (!mbt->left && !mbt->right) {
+        UnsignedMatrix *mat = expand_mat(mbt->key,30,30);
         mbt->txt = "a";
+        free_unsigned_matrix(mat);
       }
       else{
         mbt->txt = concatenate(get_string(mbt->left),get_string(mbt->right));
