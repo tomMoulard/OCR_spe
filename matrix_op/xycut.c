@@ -185,8 +185,8 @@ void xycut(MatBinTree * mbt, int hor,int ver,size_t h){
 
 void split_column(MatBinTree *mbt) {
   if (mbt) {
-    int a = ver_cut(mbt,0);
-    if (a) {
+    mbt->ver = ver_cut(mbt,0);
+    if (mbt->ver) {
       split_column(mbt->left);
       split_column(mbt->right);
     }
@@ -195,8 +195,8 @@ void split_column(MatBinTree *mbt) {
 
 void split_lines(MatBinTree *mbt) {
   if (mbt) {
-    int a = hor_cut(mbt,0);
-    if (a) {
+    mbt->hor = hor_cut(mbt,0);
+    if (mbt->hor) {
       split_lines(mbt->left);
       split_lines(mbt->right);
     }

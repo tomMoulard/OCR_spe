@@ -47,7 +47,7 @@ int main(int argc, char *argv[]) {
     }
     char* res = "";
     Network net = getNetwork();
-    
+
     printf("%s\n", res);
     freeNetwork(net);
     free(mats);
@@ -166,12 +166,12 @@ int main(int argc, char *argv[]) {
     MatBinTree *mbt = new_matbintree(matrix);
 
     xycut_test(mbt,1,1,10);
-    //mbt_print(mbt,0);
+    //display_leaves(mbt);
 
     surf = unsignedMatrix_to_pict(matrix, 0xffffffff);
     img = display_image(surf);;
-    Network net = getNetwork("network.nr");
-    char *txt = get_string(mbt, net);
+    //Network net = getNetwork("network.nr");
+    char *txt = get_string(mbt);//, net);
     printf("%s\n",txt );
 
     //free_unsigned_matrix(matrix);

@@ -264,7 +264,7 @@ double **backprop(Network *network, double *x, double y) //may be done .....
     }
     //feedforward
     double *activation = x;
-    int min_len = 
+    int min_len =
         (net.lenbiases > net.lenweight ? net.lenweight : net.lenbiases);
     double **activations = malloc(sizeof(double *) * min_len);
     double *zs           = malloc(sizeof(double) * min_len);
@@ -372,7 +372,7 @@ Bashint *update_mini_bash(Bashint *mini_bash, size_t len_mini_bash,
 }
 double *feedforward(Network net, double *x)
 {
-    int min_len = 
+    int min_len =
         (net.lenbiases > net.lenweight ? net.lenweight : net.lenbiases);
     for (int i = 0; i < min_len; ++i)
     {
@@ -394,7 +394,7 @@ double evaluate(Bashint *test_data, int len_test_data, Network net)
 {
     double res = 0;
     double **test_result = malloc(sizeof(double *) * len_test_data);
-    int min_len = 
+    int min_len =
         (net.lenbiases > net.lenweight ? net.lenweight : net.lenbiases);
     //building test_result
     for (int i = 0; i < len_test_data; ++i)
@@ -573,7 +573,7 @@ Bashint unsignedmatToBashint(UnsignedMatrix *matrix){
   Bashint basht;
   basht.input      = malloc(sizeof(double) * 900);
   for(size_t i = 0; i < 900; ++i){
-    basht.input[i] = (double)matrix->data[i];  
+    basht.input[i] = (double)matrix->data[i];
   }
   basht.res = -1;
   free_unsigned_matrix(matrix);
@@ -647,22 +647,35 @@ char *concatenate(char* a,char* b){
   return res;
 }
 
-char *get_string(MatBinTree *mbt, Network net){
+char *get_string(MatBinTree *mbt){
     if (mbt) {
       if (!mbt->left && !mbt->right) {
         UnsignedMatrix *mat = expand_mat(mbt->key,30,30);
         mbt->txt = "a";
         free_unsigned_matrix(mat);
+        return mbt->txt;
       }
       else{
-        mbt->txt = concatenate(get_string(mbt->left, net),get_string(mbt->right, net));
+        if (mbt->ver) {
+          char* temp = concatenate(get_string(mbt->left)," ");
+          mbt->txt = concatenate(temp,get_string(mbt->right));
+          return mbt->txt;
+        }
+        if (mbt->hor) {
+          char *temp = concatenate(get_string(mbt->left),"\n");
+          mbt->txt = concatenate(temp,get_string(mbt->right));
+          return mbt->txt;
+        }
+        mbt->txt = concatenate(get_string(mbt->left),get_string(mbt->right));
+        return mbt->txt;
+
+        //free(temp);
       }
-      return mbt->txt;
+
     }
-    return " ";
+    return "";
 
 }
-
 char* appendChar(char *a, char *b){
     size_t la , lb ;
     la = strlen(a);
@@ -681,7 +694,7 @@ char* appendChar(char *a, char *b){
 }
 
 char useNetwork(Network net, Bashint input){
-    int min_len = 
+    int min_len =
         (net.lenbiases > net.lenweight ? net.lenweight : net.lenbiases);
     return (char)argmax(feedforward(net, input.input), min_len);
 }
@@ -735,7 +748,7 @@ Network getNetwork(char *filePath){
     return net;
 }
 /*
-int mainNetwork(char *filePath, int argc, Bashint *input, 
+int mainNetwork(char *filePath, int argc, Bashint *input,
     size_t lenInpout, int noMessinfWithNetworks){
     if(noMessinfWithNetworks){//Not user Friendly :/
         filePath = appendChar(filePath, "01");
@@ -748,7 +761,7 @@ int mainNetwork(char *filePath, int argc, Bashint *input,
       int nbPixels = 900; // set number of input neurons
       int type = 2; //see setNetwork funct to see why
 
-      
+
       net = makeNetWork(len, setNetwork(type, nbPixels)); //create network
       printf("Created network :\n");
       //printNetwork(net);
