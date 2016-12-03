@@ -683,9 +683,11 @@ Network trainNet(Network net){
     //open test.bmp files located on : /NeuralNetWork/trainingData/test.bmp
     //open resolution on /NeuralNetWork/trainingData/res.txt
     size_t len = strlen(res);
-    Bashint *testBash = malloc(sizeof(Bashint) * len);
-    for(size_t i = 0; i < len; ++i){//fill testBash
-
+    char *filePath = "/NeuralNetWork/trainingData/test.bmp";
+    UnsignedMatrix **mats = from_img_to_letters(filePath,&len);
+    Bashint *input = malloc(sizeof(Bashint) * len);
+    for(size_t i = 0; i < len; ++i){
+      input[i] = unsignedmatToBashint(mats[i]);
     }
     suffleBashint(testBash, len, net.seed);
     //put them on a Bashint* and then shuffle this list
@@ -707,7 +709,7 @@ Network getNetwork(char *filePath){
     if (net.len == -1) {//no previously saved network fail :/
         net = createNetwork();
     }
-    net = trainNet(net);
+    //net = trainNet(net);
     return net;
 }
 

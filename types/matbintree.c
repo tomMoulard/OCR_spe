@@ -1,5 +1,6 @@
 # include "matbintree.h"
 # include "../matrix_op/xycut.h"
+# include "../NeuralNetWork/nr.h"
 
 MatBinTree* new_matbintree(UnsignedMatrix* mat){
     MatBinTree *mbt = malloc(sizeof(MatBinTree));
