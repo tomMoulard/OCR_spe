@@ -663,10 +663,12 @@ Network trainNet(Network net){
 
 int mainNetwork(char *filePath, int argc, Bashint *input, 
     size_t lenInpout, int noMessinfWithNetworks){
+    printf("yolo1\n");
     if(noMessinfWithNetworks){//Not user Friendly :/
 
         return 0;
     }
+    printf("yolo2\n");
     Network net = openNr(filePath);
     if (net.len == -1) //no previously saved network fail :/
     {
@@ -688,6 +690,7 @@ int mainNetwork(char *filePath, int argc, Bashint *input,
       freeNetwork(net);
       return 0;
     }
+    printf("yolo3\n");
     printf("This network was already stored :\n");
     printNetwork(net);
     int rep = 0;
