@@ -651,9 +651,9 @@ char *get_string(MatBinTree *mbt, Network net){
     if (mbt) {
       if (!mbt->left && !mbt->right) {
         UnsignedMatrix *mat = expand_mat(mbt->key,30,30);
-        mbt->txt            = "b";
-        //Bashint input       = unsignedmatToBashint(mat);
-        //mbt->txt            = useNetwork(net, input);
+        //mbt->txt          = "b";
+        Bashint input       = unsignedmatToBashint(mat);
+        mbt->txt            = useNetwork(net, input);
         free_unsigned_matrix(mat);
         return mbt->txt;
       }
