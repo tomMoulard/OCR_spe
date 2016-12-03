@@ -154,11 +154,11 @@ Network makeNetWork(int len, int *sizes)
         net.lenbiases += sizes[i];
     }
     //len
-    net.len = len;
+    net.len   = len;
     //sizes
     net.sizes = sizes;
     //seed
-    net.seed = time(NULL);
+    net.seed  = time(NULL);
     srand(net.seed);
     //*biases
     net.biases = malloc(sizeof(double) * net.lenbiases);
@@ -267,11 +267,11 @@ double **backprop(Network *network, double *x, double y) //may be done .....
     int min_len = 
         (net.lenbiases > net.lenweight ? net.lenweight : net.lenbiases);
     double **activations = malloc(sizeof(double *) * min_len);
-    double *zs = malloc(sizeof(double) * min_len);
+    double *zs           = malloc(sizeof(double) * min_len);
     double z;
-    int thisLayerWieght = 0;
-    int nbneuronsleft = net.numLayers[0];
-    int posmininweight = 0;
+    int thisLayerWieght  = 0;
+    int nbneuronsleft    = net.numLayers[0];
+    int posmininweight   = 0;
     double *resT;
     for(i = 0; i < min_len - 1; ++i)
     {
@@ -283,11 +283,11 @@ double **backprop(Network *network, double *x, double y) //may be done .....
         posmininweight += 1;
         resT = cutarray(net.weight, posmininweight,
             posmininweight + net.numLayers[thisLayerWieght]);
-        z = dotdouble(activation[i], resT, net.numLayers[thisLayerWieght]);
-        z +=+ net.biases[i];
-        nbneuronsleft -= 1;
-        zs[i] = z;
-        activation[i] = sigmoid(z);
+        z              = dotdouble(activation[i], resT, net.numLayers[thisLayerWieght]);
+        z              += net.biases[i];
+        nbneuronsleft  -= 1;
+        zs[i]          = z;
+        activation[i]  = sigmoid(z);
         activations[i] = activation;
     }
     double delta = (activations[0][min_len - 1] - y )
@@ -295,17 +295,17 @@ double **backprop(Network *network, double *x, double y) //may be done .....
     double sp;
     for (int l = 2; l < net.lenlayers; ++l)
     {
-        z = zs[min_len - l];
-        sp = sigmoidPrime(z);
+        z                    = zs[min_len - l];
+        sp                   = sigmoidPrime(z);
         //no transposition : useless....
-        delta = dotdouble(delta, net.weight, net.lenweight - l - 1) * sp;
+        delta                = dotdouble(delta, net.weight, net.lenweight - l - 1) * sp;
         nabla_b[min_len - l] = delta;
         nabla_w[min_len - l] = dotdouble(delta, activations[l],
             min_len - l - 1) * sp;
     }
     //building result
-    res[0] = nabla_b;
-    res[1] = nabla_w;
+    res[0]   = nabla_b;
+    res[1]   = nabla_w;
     //free
     *network = net;
     free(activations);
@@ -522,6 +522,7 @@ Network openNr(char *fileName)
 
     int i, j=0, res = 0;
     res = fscanf(nr, "%d\n", &lenlayers);
+    printf("lenlayers : %d\n", lenlayers);
     numLayers = malloc(sizeof(int) * lenlayers);
     for(i = 0; i < lenlayers; ++i)
     {
@@ -529,35 +530,42 @@ Network openNr(char *fileName)
         j += numLayers[i];
     }
     res = fscanf(nr, "\n%ld\n", &seed);
+    printf("seed : %ld\n", seed);
     res = fscanf(nr, "%d\n", &len);
+    printf("len : %d\n", len);
     sizes = malloc(sizeof(int) * len);
     for (i = 0; i < len; ++i)
     {
         res = fscanf(nr, "%d\n", &sizes[i]);
     }
-    res = fscanf(nr, "\n%d\n", j + &lenbiases);
+    res = fscanf(nr, "\n%d\n", &lenbiases);
+    lenbiases -= j;
+    printf("lenbiases : %d\n", lenbiases);
     biases = malloc(sizeof(double) * lenbiases);
-    for (i = 0; i < lenbiases + j; ++i)
+    for (i = 0; i < lenbiases; ++i)
     {
         res = fscanf(nr, "%lf\n", &biases[i]);
+        //printf("%d : %d\n", lenbiases, i);
     }
     res = fscanf(nr, "\n%d\n", &lenweight);
+    printf("lenweight : %d\n", lenweight);
     weight = malloc(sizeof(double) * lenweight);
     for (i = 0; i < lenweight; ++i)
     {
         res = fscanf(nr, "%lf\n", &weight[i]);
     }
     fclose(nr);
-    res += 1;
+    res           += 1;
     net.numLayers = numLayers;
     net.lenlayers = lenlayers;
-    net.seed = seed;
-    net.sizes = sizes;
-    net.len = len;
-    net.biases = biases;
+    net.seed      = seed;
+    net.sizes     = sizes;
+    net.len       = len;
+    net.biases    = biases;
     net.lenbiases = lenbiases;
-    net.weight = weight;
+    net.weight    = weight;
     net.lenweight = lenweight;
+    printf("openNr : 8\n");
     return net;
 }
 
@@ -658,17 +666,17 @@ Network trainNet(Network net){
     //open resolution on /NeuralNetWork/trainingData/res.txt
     //put them on a Bashint* and then shuffle this list
     //make them go thru th neural network and recover data to improve it
+    net.biases[0] += 1;
     return net;
 }
 
+
 int mainNetwork(char *filePath, int argc, Bashint *input, 
     size_t lenInpout, int noMessinfWithNetworks){
-    printf("yolo1\n");
     if(noMessinfWithNetworks){//Not user Friendly :/
 
         return 0;
     }
-    printf("yolo2\n");
     Network net = openNr(filePath);
     if (net.len == -1) //no previously saved network fail :/
     {
@@ -690,7 +698,6 @@ int mainNetwork(char *filePath, int argc, Bashint *input,
       freeNetwork(net);
       return 0;
     }
-    printf("yolo3\n");
     printf("This network was already stored :\n");
     printNetwork(net);
     int rep = 0;
