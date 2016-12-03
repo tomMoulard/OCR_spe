@@ -117,7 +117,7 @@ char *concatenate(char* a,char* b){
   return res;
 }
 
-char *get_string(MatBinTree *mbt){
+char *get_string(MatBinTree *mbt, Network net){
     if (mbt) {
       if (!mbt->left && !mbt->right) {
         UnsignedMatrix *mat = expand_mat(mbt->key,30,30);
@@ -125,7 +125,7 @@ char *get_string(MatBinTree *mbt){
         free_unsigned_matrix(mat);
       }
       else{
-        mbt->txt = concatenate(get_string(mbt->left),get_string(mbt->right));
+        mbt->txt = concatenate(get_string(mbt->left, net),get_string(mbt->right, net));
       }
       return mbt->txt;
     }

@@ -73,13 +73,10 @@ int main(int argc, char *argv[]) {
     for(size_t i = 0; i < len; ++i){
       input[i] = unsignedmatToBashint(mats[i]);
     }
-    char *temp = "";
-    char* res;
+    char* res = "";
     Network net = getNetwork();
     
     printf("%s\n", res);
-    free(res);
-    free(temp);
     freeNetwork(net);
     free(mats);
     return 0;
@@ -200,8 +197,9 @@ int main(int argc, char *argv[]) {
     //mbt_print(mbt,0);
 
     surf = unsignedMatrix_to_pict(matrix, 0xffffffff);
-    img = display_image(surf);
-    char *txt = get_string(mbt);
+    img = display_image(surf);;
+    Network net = getNetwork("network.nr");
+    char *txt = get_string(mbt, net);
     printf("%s\n",txt );
 
     //free_unsigned_matrix(matrix);

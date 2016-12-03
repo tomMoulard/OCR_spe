@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
+#include "../types/matrix.h"
 
 typedef struct Network Network;
 struct Network{
@@ -106,7 +107,8 @@ char *appendChar(char *a, char *b);
 int mainNetwork(char *filePath, int argc, Bashint *input, size_t lenInpout, int noMessinfWithNetworks);
 
 //to use network:
-char *useNetwork(Network net, Bashint input);
+char useNetwork(Network net, Bashint input);
+
 Network getNetwork();
 
 # endif

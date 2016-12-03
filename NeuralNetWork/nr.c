@@ -599,52 +599,6 @@ int *setNetwork(int type, int nbPixels)
     return res;
 }
 
-/*
-//convert A char to int : A = strtoul(A, NULL, 10);
-int main(int argc, char *argv[])
-{
-    //if (argc < 2)
-    //  errx(1, "Please input a valid input :\n
-    //- number of pixel in width\n  - list of pixels\n");
-    argv[0]++; // warning removers
-    argc++;
-    int len = 3;// set number of layers
-    int nbPixels = 900; // set number of input neurons
-    size_t lenTest = 1000; //set number of test to occure
-    int epoch = 100; //see tuto
-    int mini_bash_size = 100; //see tuto
-    double eta = 3.0;
-    char *fileName = "neuralNetwork.nr";
-    char *filenakeFAKE = "fileName.temporary";
-    Network net = openNr(filenakeFAKE); // to open the previously saved Network
-    if (net.len == -1) //no previously saved network
-    {
-        int type = 2; //see setNetwork funct to see why
-        net = makeNetWork(len, setNetwork(type, nbPixels)); //create network
-        printf("Creating \n");
-    }
-    else{
-        printf("Loaded this network :\n");
-        //printNetwork(net);    
-    }
-    printf("Improving Network : \n");
-    Bashint *testBash = makeBAshXor(lenTest, net);
-    printf("created Bashint\n");
-    // create a Bashint List to improve the network
-    net = SGD(net, testBash, lenTest,
-            epoch, mini_bash_size,
-            eta, testBash, mini_bash_size); // update network
-    printf("Improved network :\n");
-    printNetwork(net);
-    saveNr(net, fileName);
-    printf("Network Saved :)\n");
-    net = openNr(fileName);
-    printf("Saved Network : \n");
-    printNetwork(net);
-    freeNetwork(net);
-    return 0;
-}*/
-
 char* appendChar(char *a, char *b){
     size_t la , lb ;
     la = strlen(a);
@@ -663,7 +617,9 @@ char* appendChar(char *a, char *b){
 }
 
 char useNetwork(Network net, Bashint input){
-    return (char)feedforward(net, input.input);
+    int min_len = 
+        (net.lenbiases > net.lenweight ? net.lenweight : net.lenbiases);
+    return (char)argmax(feedforward(net, input.input), min_len);
 }
 
 /*
@@ -673,23 +629,25 @@ Bashint *getLetters(){
 */
 
 Network trainNet(Network net){
-    char *res = malloc(sizeof(char) * 1000);
-    FILE *file = fopen("/NeuralNetWork/trainingData/test.txt");
-    do{
-        *res++ = (char)fgets(file);
-    }while (*p != EOF)
-    *p = "\0";
-    printf("%s\n", p);
+    char *res  = malloc(sizeof(char) * 1000);
+    FILE *file = fopen("/NeuralNetWork/trainingData/test.txt", "r");
+    char tmp;
+    size_t i;
+    for(i = 0; fscanf(file, "%c", &tmp); ++i){
+        res[i] = tmp;
+    }
+    res[i + 1] = '\0';
+    printf("%zu : %s\n", strlen(res), res);
     //open test.bmp files located on : /NeuralNetWork/trainingData/test.bmp
     //open resolution on /NeuralNetWork/trainingData/res.txt
-    size_t len = strlen(res);
-    char *filePath = "/NeuralNetWork/trainingData/test.bmp";
-    UnsignedMatrix **mats = from_img_to_letters(filePath,&len);
-    Bashint *input = malloc(sizeof(Bashint) * len);
-    for(size_t i = 0; i < len; ++i){
-      input[i] = unsignedmatToBashint(mats[i]);
+    size_t len1           = strlen(res), len2;
+    char *filePath        = "/NeuralNetWork/trainingData/test.bmp";
+    UnsignedMatrix **mats = from_img_to_letters(filePath,&len2);
+    Bashint *testBash     = malloc(sizeof(Bashint) * len1);
+    for(i = 0; i < len1; ++i){
+      testBash[i] = unsignedmatToBashint(mats[i]);
     }
-    suffleBashint(testBash, len, net.seed);
+    suffleBashint(testBash, len1, net.seed);
     //put them on a Bashint* and then shuffle this list
     //make them go thru th neural network and recover data to improve it
     net.biases[0] += 1;
@@ -712,7 +670,7 @@ Network getNetwork(char *filePath){
     //net = trainNet(net);
     return net;
 }
-
+/*
 int mainNetwork(char *filePath, int argc, Bashint *input, 
     size_t lenInpout, int noMessinfWithNetworks){
     if(noMessinfWithNetworks){//Not user Friendly :/
@@ -726,7 +684,7 @@ int mainNetwork(char *filePath, int argc, Bashint *input,
       int nbPixels = 900; // set number of input neurons
       int type = 2; //see setNetwork funct to see why
 
-
+      
       net = makeNetWork(len, setNetwork(type, nbPixels)); //create network
       printf("Created network :\n");
       //printNetwork(net);
@@ -758,7 +716,7 @@ int mainNetwork(char *filePath, int argc, Bashint *input,
         char *res = "";
         for (size_t i = 0; i < lenInpout; ++i)
         {
-            appendChar(res, useNetwork(net, input[i]));
+            //appendChar(res, useNetwork(net, input[i]));
         }
         //USE RES!!!
 
@@ -768,3 +726,4 @@ int mainNetwork(char *filePath, int argc, Bashint *input,
     //freeNetwork(net);
     return 0;
 }
+*/
