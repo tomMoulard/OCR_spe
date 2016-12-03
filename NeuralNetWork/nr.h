@@ -121,4 +121,6 @@ Network getNetwork();
 
 UnsignedMatrix **from_img_to_letters(char *filepath,size_t *len);
 
+char *get_string(MatBinTree *mbt, Network net);
+
 # endif
