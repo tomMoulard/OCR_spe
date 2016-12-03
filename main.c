@@ -73,12 +73,14 @@ int main(int argc, char *argv[]) {
     for(size_t i = 0; i < len; ++i){
       input[i] = unsignedmatToBashint(mats[i]);
     }
-    char *res = "";
-    for(size_t i = 0; i < len; ++i){
-      printf("i : %zu\n",i);
-      mainNetwork(res, argc, &input[i], 1, 1);
-    }
+    char *temp = "";
+    char* res;
+    Network net = getNetwork();
+    
     printf("%s\n", res);
+    free(res);
+    free(temp);
+    freeNetwork(net);
     free(mats);
     return 0;
 
