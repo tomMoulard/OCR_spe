@@ -77,7 +77,7 @@ void freedouble2star(double **a, int len);
 
 Bashint *makeBAshXor(int len, Network net);
 
-Bashint *suffleBashint(Bashint *bash, int len, time_t seed);
+void suffleBashint(Bashint *bash, int len, time_t seed);
 
 double *cutarray(double *array, int posmin, int posmax);;
 
