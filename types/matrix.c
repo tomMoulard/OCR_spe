@@ -1,6 +1,7 @@
 # include "matrix.h"
 # include "../matrix_op/xycut.h"
 # include <stdio.h>
+# include "../NeuralNetWork/nr.h"
 
 UnsignedMatrix *new_unsigned_matrix(size_t lines, size_t cols){
     UnsignedMatrix *matrix;
