@@ -644,13 +644,14 @@ void appendChar(char *a, char *b){
 }
 
 char *useNetwork(Network net, Bashint input){
-    char *res = "";
-    net.weight = net.biases;
-    input.input = input.input;
-    //net = SGD();
-    appendChar(res, " ");
-    return res;
+    return (char *)feedforward(net, input.input);
 }
+
+/*
+Bashint *getLetters(){
+    Bashint *res = malloc
+}
+*/
 
 Network trainNet(Network net){
     //open all [0-3] .bmp files located on : /NeuralNetWork/trainingData/*.bmp
