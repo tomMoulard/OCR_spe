@@ -73,7 +73,7 @@ int main(int argc, char *argv[]) {
     for(size_t i = 0; i < len; ++i){
       input[i] = unsignedmatToBashint(mats[i]);
     }
-
+    //printBashintArray(input, len);
     free(mats);
     return 0;
 
