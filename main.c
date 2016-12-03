@@ -199,23 +199,11 @@ int main(int argc, char *argv[]) {
 
     surf = unsignedMatrix_to_pict(matrix, 0xffffffff);
     img = display_image(surf);
-    size_t len = 0;
-    UnsignedMatrix **mats = get_letters(mbt,&len);
-
-    for (size_t i = 0; i < len; i++) {
-      surf = unsignedMatrix_to_pict(mats[i], 0xffffffff);
-      img = display_image(surf);
-    }
-
-    for (size_t i = 0; i < len; i++) {
-      free_unsigned_matrix(mats[i]);
-    }
-
-
-    free(mats);
+    char *txt = get_string(mbt);
+    printf("%s\n",txt );
 
     //free_unsigned_matrix(matrix);
-    free_matbintree(mbt);
+    //free_matbintree(mbt);
 
     SDL_FreeSurface(surf);
     SDL_FreeSurface(img);

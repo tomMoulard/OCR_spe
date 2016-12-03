@@ -11,6 +11,7 @@
 typedef struct _MatBinTree{
   UnsignedMatrix     *key;
   Rect               pos;
+  char               *txt;
   struct _MatBinTree *left;
   struct _MatBinTree *right;
 }MatBinTree;
@@ -22,4 +23,5 @@ void display_leaves(MatBinTree* mbt);
 unsigned get_all_rect(MatBinTree* mbt, UnsignedMatrix *mat, unsigned h);
 void get_leaves(MatBinTree* mbt,UnsignedMatrix *mat,unsigned h);
 UnsignedMatrix** get_letters(MatBinTree *mbt,size_t *len);
+char *get_string(MatBinTree *mbt);
 #endif

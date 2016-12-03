@@ -4,6 +4,7 @@
 MatBinTree* new_matbintree(UnsignedMatrix* mat){
     MatBinTree *mbt = malloc(sizeof(MatBinTree));
     mbt->key = mat;
+    mbt->txt = NULL;
     mbt->left = NULL;
     mbt->right = NULL;
     return mbt;
@@ -12,6 +13,7 @@ MatBinTree* new_matbintree(UnsignedMatrix* mat){
 void free_matbintree(MatBinTree* mbt){
   if(mbt){
     free_unsigned_matrix(mbt->key);
+    if(mbt->txt){free(mbt->txt);}
     free_matbintree(mbt->left);
     free_matbintree(mbt->right);
   }
@@ -94,7 +96,7 @@ void get_lets(MatBinTree *mbt,UnsignedMatrix **mats,size_t *len){
 UnsignedMatrix** get_letters(MatBinTree *mbt,size_t *len){
   UnsignedMatrix **mats = malloc(10000 * sizeof(UnsignedMatrix));
   get_lets(mbt,mats,len);
-  
+
   UnsignedMatrix **matrix = malloc(*len * sizeof(UnsignedMatrix));
 
   for (size_t i = 0; i < *len; i++) {
@@ -104,4 +106,26 @@ UnsignedMatrix** get_letters(MatBinTree *mbt,size_t *len){
 
   free(mats);
   return matrix;
+}
+char *concatenate(char* a,char* b){
+  size_t la = strlen(a);
+  size_t lb = strlen(b);
+  char* res = malloc((la + lb + 1) * sizeof(char));
+  strcpy(res,a);
+  strcat(res,b);
+  return res;
+}
+
+char *get_string(MatBinTree *mbt){
+    if (mbt) {
+      if (!mbt->left && !mbt->right) {
+        mbt->txt = "a";
+      }
+      else{
+        mbt->txt = concatenate(get_string(mbt->left),get_string(mbt->right));
+      }
+      return mbt->txt;
+    }
+    return " ";
+
 }
