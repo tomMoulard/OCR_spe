@@ -637,7 +637,7 @@ int main(int argc, char *argv[])
     return 0;
 }*/
 
-void append(char *a, char *b){
+void appendChar(char *a, char *b){
     for(size_t i = 0; b[i]; ++i){
         *a += b[i];
     }
@@ -647,7 +647,8 @@ char *useNetwork(Network net, Bashint input){
     char *res = "";
     net.weight = net.biases;
     input.input = input.input;
-    
+    //net = SGD();
+    appendChar(res, " ");
     return res;
 }
 
@@ -704,7 +705,7 @@ int mainNetwork(char *filePath, int argc, Bashint *input,
         char *res = "";
         for (size_t i = 0; i < lenInpout; ++i)
         {
-            append(res, useNetwork(net, input[i]));
+            appendChar(res, useNetwork(net, input[i]));
         }
         //USE RES!!!
 
