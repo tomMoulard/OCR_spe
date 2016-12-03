@@ -645,35 +645,25 @@ int main(int argc, char *argv[])
     return 0;
 }*/
 
-char *appendChar(char *a, char *b){
-    size_t la = 0, lb = 0;
-    while(a[la]){
-        la++;
-    }
-    while(b[lb])
-        lb++;
-    char *tmp = malloc((la + lb + 1) * sizeof(char));
-    if(! tmp){
-        warn("realloc failed"); 
-        return NULL;
-    }
-    else{       
-        for(size_t i =0; i < la; ++i){
-            tmp[i] = a[i];
-        }
-        a = tmp; 
-        for(size_t i = 0; b[i]; ++i){
-            printf("i : %zu et a : %s\n", i, a);
-            //printf(a);
-            printf("\n");
-            a[i + la]= b[i];
-        }
-        return(tmp);
-    }
+char* appendChar(char *a, char *b){
+    size_t la , lb ;
+    la = strlen(a);
+    lb = strlen(b);
+
+    printf("la : %zu,lb : %zu\n",la,lb );
+    char* res = malloc((la + lb + 1) * sizeof(char));
+
+    strcpy(res,a);
+    printf("%s\n", a);
+    strcat(res ,b);
+
+    return res;
+
+    //printf("%s\n", res);
 }
 
-char *useNetwork(Network net, Bashint input){
-    return (char *)feedforward(net, input.input);
+char useNetwork(Network net, Bashint input){
+    return (char)feedforward(net, input.input);
 }
 
 /*
@@ -683,14 +673,43 @@ Bashint *getLetters(){
 */
 
 Network trainNet(Network net){
-    //open all [0-3] .bmp files located on : /NeuralNetWork/trainingData/*.bmp
+    char *res = malloc(sizeof(char) * 1000);
+    FILE *file = fopen("/NeuralNetWork/trainingData/test.txt");
+    do{
+        *res++ = (char)fgets(file);
+    }while (*p != EOF)
+    *p = "\0";
+    printf("%s\n", p);
+    //open test.bmp files located on : /NeuralNetWork/trainingData/test.bmp
     //open resolution on /NeuralNetWork/trainingData/res.txt
+    size_t len = strlen(res);
+    Bashint *testBash = malloc(sizeof(Bashint) * len);
+    for(size_t i = 0; i < len; ++i){//fill testBash
+
+    }
+    suffleBashint(testBash, len, net.seed);
     //put them on a Bashint* and then shuffle this list
     //make them go thru th neural network and recover data to improve it
     net.biases[0] += 1;
     return net;
 }
 
+Network createNetwork(){
+    int len = 3;// set number of layers
+    int nbPixels = 900; // set number of input neurons
+    int type = 2; //see setNetwork funct to see why
+    Network net = makeNetWork(len, setNetwork(type, nbPixels)); //create network
+    return net;
+}
+
+Network getNetwork(char *filePath){
+    Network net = openNr(filePath);
+    if (net.len == -1) {//no previously saved network fail :/
+        net = createNetwork();
+    }
+    net = trainNet(net);
+    return net;
+}
 
 int mainNetwork(char *filePath, int argc, Bashint *input, 
     size_t lenInpout, int noMessinfWithNetworks){
@@ -737,7 +756,7 @@ int mainNetwork(char *filePath, int argc, Bashint *input,
         char *res = "";
         for (size_t i = 0; i < lenInpout; ++i)
         {
-            res = appendChar(res, useNetwork(net, input[i]));
+            appendChar(res, useNetwork(net, input[i]));
         }
         //USE RES!!!
 

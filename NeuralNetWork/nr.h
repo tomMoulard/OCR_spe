@@ -107,5 +107,6 @@ int mainNetwork(char *filePath, int argc, Bashint *input, size_t lenInpout, int 
 
 //to use network:
 char *useNetwork(Network net, Bashint input);
+Network getNetwork();
 
 # endif
