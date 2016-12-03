@@ -47,7 +47,7 @@ int main(int argc, char *argv[]) {
     }
     char* res   = "";
     Network net = getNetwork();
-    
+
     printf("%s\n", res);
     freeNetwork(net);
     free(mats);
@@ -67,8 +67,8 @@ int main(int argc, char *argv[]) {
   PixelMatrix *image  = new_pixel_matrix(lines, cols);
   printf("Display image : %s\n", argv[1]);
   surf                = load_image(argv[1]);
-  img                 = display_image(surf);
-  save_image(img, image);
+  //img                 = display_image(surf);
+  save_image(surf, image);
   UnsignedMatrix *mat = new_unsigned_matrix(lines, cols);
   binarize(image, mat);
   free_pixel_matrix(image);
@@ -160,23 +160,18 @@ int main(int argc, char *argv[]) {
   if (op == 7) {
     UnsignedMatrix *matrix   = copy_mat(mat);
     //UnsignedMatrix *matrix = eraseimage(mat);
-    surf                     = unsignedMatrix_to_pict(matrix, 1);
-    img                      = display_image(surf);
-    
     MatBinTree *mbt          = new_matbintree(matrix);
-    
+
     xycut_test(mbt,1,1,10);
     //display_leaves(mbt);
-    
-    surf                     = unsignedMatrix_to_pict(matrix, 0xffffffff);
-    img                      = display_image(surf);;
+
     Network net              = getNetwork("network.nr");
     char *txt                = get_string(mbt, net);
     printf("%s\n",txt );
-    
+
     //free_unsigned_matrix(matrix);
     //free_matbintree(mbt);
-    
+
     SDL_FreeSurface(surf);
     SDL_FreeSurface(img);
     free_unsigned_matrix(mat);
