@@ -645,9 +645,30 @@ int main(int argc, char *argv[])
     return 0;
 }*/
 
-void appendChar(char *a, char *b){
-    for(size_t i = 0; b[i]; ++i){
-        *a += b[i];
+char *appendChar(char *a, char *b){
+    size_t la = 0, lb = 0;
+    while(a[la]){
+        la++;
+    }
+    while(b[lb])
+        lb++;
+    char *tmp = malloc((la + lb + 1) * sizeof(char));
+    if(! tmp){
+        warn("realloc failed"); 
+        return NULL;
+    }
+    else{       
+        for(size_t i =0; i < la; ++i){
+            tmp[i] = a[i];
+        }
+        a = tmp; 
+        for(size_t i = 0; b[i]; ++i){
+            printf("i : %zu et a : %s\n", i, a);
+            //printf(a);
+            printf("\n");
+            a[i + la]= b[i];
+        }
+        return(tmp);
     }
 }
 
@@ -674,7 +695,7 @@ Network trainNet(Network net){
 int mainNetwork(char *filePath, int argc, Bashint *input, 
     size_t lenInpout, int noMessinfWithNetworks){
     if(noMessinfWithNetworks){//Not user Friendly :/
-
+        filePath = appendChar(filePath, "01");
         return 0;
     }
     Network net = openNr(filePath);
@@ -716,7 +737,7 @@ int mainNetwork(char *filePath, int argc, Bashint *input,
         char *res = "";
         for (size_t i = 0; i < lenInpout; ++i)
         {
-            appendChar(res, useNetwork(net, input[i]));
+            res = appendChar(res, useNetwork(net, input[i]));
         }
         //USE RES!!!
 

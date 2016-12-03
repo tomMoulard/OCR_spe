@@ -99,6 +99,8 @@ Network openNr(char *fileName);
 
 int *setNetwork(int type, int nbPixels);
 
+char *appendChar(char *a, char *b);
+
 //Personized Main :3
 
 int mainNetwork(char *filePath, int argc, Bashint *input, size_t lenInpout, int noMessinfWithNetworks);
