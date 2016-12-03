@@ -10,6 +10,7 @@
 #include <string.h>
 #include "../types/matrix.h"
 
+
 typedef struct Network Network;
 struct Network{
   int    *numLayers;  //number of neurons by layers
@@ -101,6 +102,9 @@ Network openNr(char *fileName);
 int *setNetwork(int type, int nbPixels);
 
 char *appendChar(char *a, char *b);
+
+Bashint unsignedmatToBashint(UnsignedMatrix *matrix);
+void free_unsigned_matrix(UnsignedMatrix *matrix);
 
 //Personized Main :3
 

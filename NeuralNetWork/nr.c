@@ -569,6 +569,22 @@ Network openNr(char *fileName)
     return net;
 }
 
+Bashint unsignedmatToBashint(UnsignedMatrix *matrix){
+  Bashint basht;
+  basht.input      = malloc(sizeof(double) * 900);
+  for(size_t i = 0; i < 900; ++i){
+    basht.input[i] = (double)matrix->data[i];  
+  }
+  basht.res = -1;
+  free_unsigned_matrix(matrix);
+  return basht;
+}
+
+void free_unsigned_matrix(UnsignedMatrix *matrix){
+    free(matrix->data);
+    free(matrix);
+}
+
 int *setNetwork(int type, int nbPixels)
 {
     int *res = malloc(sizeof(int) * 3);
