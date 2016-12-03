@@ -49,7 +49,7 @@ UnsignedMatrix **from_img_to_letters(char *filepath,size_t *len){
   binarize(image, mat);
   free_pixel_matrix(image);
 
-  UnsignedMatrix *matrix = eraseimage(mat);
+  UnsignedMatrix *matrix = copy_mat(mat);
 
   MatBinTree *mbt = new_matbintree(matrix);
   xycut_test(mbt,1,1,10);
