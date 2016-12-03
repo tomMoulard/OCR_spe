@@ -15,7 +15,7 @@ UnsignedMatrix* copy_mat(UnsignedMatrix *matrix);
 void free_unsigned_matrix(UnsignedMatrix *matrix);
 
 UnsignedMatrix* cut(UnsignedMatrix *matrix,
-                    size_t x1, 
+                    size_t x1,
                     size_t x2,
                     size_t y1,
                     size_t y2);

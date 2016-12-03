@@ -140,23 +140,32 @@ int ver_cut(MatBinTree *mbt,size_t coef){
 
 UnsignedMatrix* supprbord(UnsignedMatrix *mat){
   size_t x1 = 0;
-  while (iswhitestripesver(mat,x1 * mat->cols)) {
+  while (iswhitestripesver(mat,x1 * mat->cols) && x1 < mat->lines) {
     x1++;
   }
   size_t x2 = mat->lines;
-  while (iswhitestripesver(mat,x2 * mat->cols)) {
+  while (iswhitestripesver(mat,x2 * mat->cols) && x2 > 0) {
     x2--;
   }
   size_t y1 = 0;
 
-  while (iswhitestripeshor(mat,y1)) {
+  while (iswhitestripeshor(mat,y1) && y1 < mat->cols) {
     y1++;
   }
-  size_t y2 =mat->cols;
-  while (iswhitestripeshor(mat,y2)) {
+  size_t y2 = mat->cols;
+  while (iswhitestripeshor(mat,y2) && y2 > 0) {
     y2--;
   }
+  if (x1 >= mat->lines || x2 <= 0 || y1 >= mat->cols || y2 <= 0) {
+    return new_unsigned_matrix(1,1);
+  }
+
+  if (y2 - y1 > 30) {
+      y2 = y1 + 30;
+    }
+
   return cut(mat,x1,x2,y1,y2);
+
 }
 
 void xycut(MatBinTree * mbt, int hor,int ver,size_t h){

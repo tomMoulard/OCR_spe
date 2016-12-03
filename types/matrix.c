@@ -1,4 +1,5 @@
 # include "matrix.h"
+# include "../matrix_op/xycut.h"
 # include <stdio.h>
 
 UnsignedMatrix *new_unsigned_matrix(size_t lines, size_t cols){
@@ -24,20 +25,22 @@ UnsignedMatrix* cut(UnsignedMatrix *matrix,
 }
 
 UnsignedMatrix* copy_mat(UnsignedMatrix *matrix){
-UnsignedMatrix *mat = new_unsigned_matrix(matrix->lines,matrix->cols);
-for (size_t i = 0; i < matrix->lines; i++) {
-  for (size_t j = 0; j < matrix->cols; j++) {
-    mat->data[i * mat->cols + j] = matrix->data[i * matrix->cols + j];
+  UnsignedMatrix *mat = new_unsigned_matrix(matrix->lines,matrix->cols);
+  for (size_t i = 0; i < matrix->lines; i++) {
+    for (size_t j = 0; j < matrix->cols; j++) {
+      mat->data[i * mat->cols + j] = matrix->data[i * matrix->cols + j];
+    }
   }
-}
-return mat;
+  return mat;
 }
 
-UnsignedMatrix* expand_mat(UnsignedMatrix *matrix,
-size_t xdest,size_t ydest){
+UnsignedMatrix* expand_mat(UnsignedMatrix *matr,
+  size_t xdest,size_t ydest){
+
+  UnsignedMatrix *matrix = supprbord(matr);
 
   if (xdest < matrix->lines || ydest < matrix->cols) {
-    return matrix;
+    return copy_mat(matrix);
   }
   UnsignedMatrix *mat = new_unsigned_matrix(xdest,ydest);
   for (size_t i = 0; i < matrix->lines; i++) {
@@ -51,12 +54,12 @@ size_t xdest,size_t ydest){
       mat->data[i * mat->cols + j] = 0;
     }
   }
+  free(matrix);
 
   return mat;
 }
 
-Bashint *unsignedmatToBashint(UnsignedMatrix *matrix)
-{
+Bashint *unsignedmatToBashint(UnsignedMatrix *matrix){
   Bashint *basht;
   basht = malloc(sizeof(Bashint));
   int size = ((matrix->lines)*(matrix->cols));
@@ -64,7 +67,7 @@ Bashint *unsignedmatToBashint(UnsignedMatrix *matrix)
     {
       printf("Error = matrix not in the required format");
     }
-  
+
   for (int i = 0; i<841; i++)
     {
       basht->input[i] = matrix->data[i];
@@ -74,8 +77,7 @@ Bashint *unsignedmatToBashint(UnsignedMatrix *matrix)
   return basht;
 }
 
-void free_unsigned_matrix(UnsignedMatrix *matrix)
-{
+void free_unsigned_matrix(UnsignedMatrix *matrix){
     free(matrix->data);
     free(matrix);
 }

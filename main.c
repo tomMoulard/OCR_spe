@@ -34,14 +34,44 @@ const char usage[] =
   "\t\tif <filePath> contain a Neural Network : use it.\n"
   "\t\telse : create one, train it and then save it.\n";;;
 
+UnsignedMatrix **from_img_to_letters(char *filepath,size_t *len){
+  size_t lines = bmpWidth(filepath);
+  size_t cols = bmpHeight(filepath);
+  SDL_Surface *surf;
+  init_sdl();
+  SDL_Surface *img;
+  PixelMatrix *image = new_pixel_matrix(lines, cols);
+  printf("Display image : %s\n", filepath);
+  surf = load_image(filepath);
+  img = display_image(surf);
+  save_image(img, image);
+  UnsignedMatrix *mat = new_unsigned_matrix(lines, cols);
+  binarize(image, mat);
+  free_pixel_matrix(image);
+
+  UnsignedMatrix *matrix = eraseimage(mat);
+
+  MatBinTree *mbt = new_matbintree(matrix);
+  xycut_test(mbt,1,1,10);
+  UnsignedMatrix **mats = get_letters(mbt,len);
+
+  free_matbintree(mbt);
+  SDL_FreeSurface(img);
+  SDL_FreeSurface(surf);
+  free_unsigned_matrix(mat);
+  return mats;
+}
+
 int main(int argc, char *argv[]) {
   //neural Network
   if(argc == 2){
     //give a filePath, if it does not contain one neuralNetwork : create one
     char *filePath = argv[1];
-    size_t lenInput = 0; //FIX ME !
-    Bashint *input = malloc(sizeof(Bashint) * lenInput); //FILL ME SENPAI!
-    return mainNetwork(filePath, argc, input, lenInput, 0);
+    size_t len =0;
+    UnsignedMatrix **mats = from_img_to_letters(filePath,&len);
+    free(mats);
+    return 0;
+
   }
   if(argc != 3)
     errx(1, "%s", usage);
@@ -61,7 +91,7 @@ int main(int argc, char *argv[]) {
   UnsignedMatrix *mat = new_unsigned_matrix(lines, cols);
   binarize(image, mat);
   free_pixel_matrix(image);
-  mat = rotation(mat, 90);
+  //mat = rotation(mat, 90);
   if(op == 1)
   {
     surf = unsignedMatrix_to_pict(mat, 1);
@@ -145,28 +175,28 @@ int main(int argc, char *argv[]) {
     free_unsigned_matrix(mat);
     return 0;
   }
+
   if (op == 7) {
-    UnsignedMatrix *matrix = eraseimage(mat);
+    UnsignedMatrix *matrix = copy_mat(mat);
+    //UnsignedMatrix *matrix = eraseimage(mat);
     surf = unsignedMatrix_to_pict(matrix, 1);
     img = display_image(surf);
 
     MatBinTree *mbt = new_matbintree(matrix);
+
     xycut_test(mbt,1,1,10);
+    //mbt_print(mbt,0);
+
     surf = unsignedMatrix_to_pict(matrix, 0xffffffff);
     img = display_image(surf);
     size_t len = 0;
     UnsignedMatrix **mats = get_letters(mbt,&len);
-	Bashint **bashts = malloc(len*sizeof(Bashint));
-	/**********INCHALLAH*********/
-	for (size_t i=0; i < len; i++)
-	{
-		bashts[i] = unsignedmatToBashint(mats[i]);
-	}
-	/*****ca marche*****/
+
     for (size_t i = 0; i < len; i++) {
       surf = unsignedMatrix_to_pict(mats[i], 0xffffffff);
       img = display_image(surf);
     }
+
     for (size_t i = 0; i < len; i++) {
       free_unsigned_matrix(mats[i]);
     }
@@ -182,8 +212,4 @@ int main(int argc, char *argv[]) {
     free_unsigned_matrix(mat);
     return 0;
   }
-  SDL_FreeSurface(surf);
-  SDL_FreeSurface(img);
-  free_unsigned_matrix(mat);
-  return 0;
 }
