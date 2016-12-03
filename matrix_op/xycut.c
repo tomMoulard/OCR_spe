@@ -209,29 +209,29 @@ void split_lines(MatBinTree *mbt) {
 void xycut_test(MatBinTree *mbt, int hor,int ver,size_t coef){
   if (mbt && (hor || ver)) {
     if (hor) {
-      int a = hor_cut(mbt,coef);
-      if (a) {
-        xycut_test(mbt->left,a,ver,coef);
-        xycut_test(mbt->right,a,ver,coef);
+      mbt->hor = hor_cut(mbt,coef);
+      if (mbt->hor) {
+        xycut_test(mbt->left,mbt->hor,ver,coef);
+        xycut_test(mbt->right,mbt->hor,ver,coef);
       }
       else{
-          a = ver_cut(mbt,coef);
-          xycut_test(mbt->left,0,a,coef);
-          xycut_test(mbt->right,0,a,coef);
+          mbt->ver = ver_cut(mbt,coef);
+          xycut_test(mbt->left,0,mbt->ver,coef);
+          xycut_test(mbt->right,0,mbt->ver,coef);
       }
 
     }
     else{
       if (ver) {
-        int a = ver_cut(mbt,coef);
-        if (a) {
-          xycut_test(mbt->left,hor,a,coef);
-          xycut_test(mbt->right,hor,a,coef);
+        mbt->ver = ver_cut(mbt,coef);
+        if (mbt->ver) {
+          xycut_test(mbt->left,hor,mbt->ver,coef);
+          xycut_test(mbt->right,hor,mbt->ver,coef);
         }
         else{
-            a = hor_cut(mbt,coef);
-            xycut_test(mbt->left,a,0,coef);
-            xycut_test(mbt->right,a,0,coef);
+            mbt->hor = hor_cut(mbt,coef);
+            xycut_test(mbt->left,mbt->hor,0,coef);
+            xycut_test(mbt->right,mbt->hor,0,coef);
         }
       }
     }

@@ -4,6 +4,8 @@
 MatBinTree* new_matbintree(UnsignedMatrix* mat){
     MatBinTree *mbt = malloc(sizeof(MatBinTree));
     mbt->key = mat;
+    mbt->hor = 0;
+    mbt->ver = 0;
     mbt->txt = NULL;
     mbt->left = NULL;
     mbt->right = NULL;

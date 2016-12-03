@@ -12,6 +12,8 @@
 typedef struct _MatBinTree{
   UnsignedMatrix     *key;
   Rect               pos;
+  int                 hor;
+  int                 ver;
   char               *txt;
   struct _MatBinTree *left;
   struct _MatBinTree *right;
