@@ -124,3 +124,17 @@ void save_image(SDL_Surface *img, PixelMatrix *image)
             image->data[i * image->cols + j] = new_pixel(r, g, b);
         }
 }
+
+void save_bin(SDL_Surface *img, UnsignedMatrix *image)
+{
+    Uint32 pixel;
+    for(size_t i = 0; i < image->lines; i++)
+        for(size_t j = 0; j < image->cols; j++)
+        {
+            pixel = getpixel(img, i, j);
+            if(pixel == 0xffffffff)
+              image->data[i * image->cols + j] = 1;
+            else
+              image->data[i * image->cols + j] = 0;
+        }
+}
