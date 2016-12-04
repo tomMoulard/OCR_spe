@@ -125,9 +125,9 @@ int main(int argc, char *argv[]) {
     unsigned coef           = 0;
     UnsignedMatrix *matecc  = ecc(matrlsa,&coef);
     surf                    = unsignedMatrix_to_pict(matrlsa, 1);
-    SDL_Surface *img        = display_image(surf);
+    //SDL_Surface *img        = display_image(surf);
     surf                    = unsignedMatrix_to_pict(matecc, coef);
-    img                     = display_image(surf);
+    //img                     = display_image(surf);
     free_unsigned_matrix(matrlsa);
     free_unsigned_matrix(matecc);
     SDL_FreeSurface(surf);
@@ -170,7 +170,7 @@ int main(int argc, char *argv[]) {
     UnsignedMatrix *matrix   = copy_mat(mat);
     //UnsignedMatrix *matrix = eraseimage(mat);
     MatBinTree *mbt          = new_matbintree(matrix);
-    SDL_Surface *img;
+    //SDL_Surface *img;
 
     xycut_test(mbt,1,1,10);
     size_t len = 0;
@@ -178,7 +178,7 @@ int main(int argc, char *argv[]) {
 
     for (size_t i = 0; i < len; i++) {
       surf = unsignedMatrix_to_pict(mats[i],1);
-      img = display_image(surf);
+      //img = display_image(surf);
     }
 
 
