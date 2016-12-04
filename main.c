@@ -170,20 +170,24 @@ int main(int argc, char *argv[]) {
     UnsignedMatrix *matrix   = copy_mat(mat);
     //UnsignedMatrix *matrix = eraseimage(mat);
     MatBinTree *mbt          = new_matbintree(matrix);
-    //SDL_Surface *img;
+    SDL_Surface *img;
 
     xycut_test(mbt,1,1,10);
     size_t len = 0;
     UnsignedMatrix **mats = get_letters(mbt,&len);
 
     for (size_t i = 0; i < len; i++) {
-      surf = unsignedMatrix_to_pict(mats[i],1);
-      //img = display_image(surf);
+      //printf("i = %zu\n", i);
+      if(i == 467){
+        surf = unsignedMatrix_to_pict(mats[i],1);
+        img = display_image(surf);
+      }
     }
+    //printf("len = %zu\n", len);
 
 
     SDL_FreeSurface(surf);
-    //SDL_FreeSurface(img);
+    SDL_FreeSurface(img);
     free_unsigned_matrix(mat);
     return 0;
   }

@@ -266,7 +266,10 @@ void backprop(Network *network, float **deltas,float *x, float y) //may be done 
     }
     //printf("backprop : 4\n");
     //feedforward
-    float *activation = x;
+    float *activation = malloc(sizeof(float) * 1000);
+    for(i = 0; i < 900; ++i){
+        activation[i] = x[i];
+    }
     int min_len =
         (net.lenbiases > net.lenweight ? net.lenweight : net.lenbiases);
     //printf("min_len = %d\n", min_len);
@@ -332,8 +335,8 @@ void backprop(Network *network, float **deltas,float *x, float y) //may be done 
     //I'm freeeee, from my worries
     //return res;
 }
-Bashint *update_mini_bash(Bashint *mini_bash, size_t len_mini_bash,
-    float eta, Network *network) //done
+void update_mini_bash(Bashint *mini_bash, size_t len_mini_bash,
+    float eta, Network *network, Bashint *res) //done
 {
     //printf("update_mini_bash : 0\n");
     Network net = *network;
@@ -360,10 +363,13 @@ Bashint *update_mini_bash(Bashint *mini_bash, size_t len_mini_bash,
     float **deltas = malloc(sizeof(float *) * 2);
     int j;
     size_t w;
+    for(size_t j = 0; j < len_mini_bash; ++j){
+        res[j] = mini_bash[j];
+    }
     //printf("update_mini_bash : 5\n");
     for (w = 0; w < len_mini_bash; ++w)
     {
-        b = mini_bash[w];
+        b = res[w];
         x = b.input;
         y = b.res;
         //printf("update_mini_bash5.2 w = %zu\n", w);
@@ -400,7 +406,6 @@ Bashint *update_mini_bash(Bashint *mini_bash, size_t len_mini_bash,
     //free
     //free(nabla_b);
     //free(nabla_w);
-    return mini_bash;
 }
 void feedforward(Network net, float *x, float *res)
 {
@@ -423,10 +428,14 @@ int argmax(float *array, int len)
     }
     return res;
 }
-void printList(float *input){
-    size_t i = 0;
-    while(input[i]){
-        printf("%f ", input[i]);
+void printList(float *input, int len){
+    int i = 0;
+    while(i < len){
+        printf("%d : %f ", i, input[i]);
+        i++;
+        if(i % 5 == 0){
+            printf("\n");
+        }
     }
 }
 float evaluate(Bashint *test_data, int len_test_data, Network net)
@@ -438,16 +447,18 @@ float evaluate(Bashint *test_data, int len_test_data, Network net)
     //building test_result
     //printBashintArray(test_data, len_test_data);
     float *tmpFloatList = malloc(sizeof(float) * min_len);
+    float *tmpFloatList2 = malloc(sizeof(float) * min_len);
     for (int i = 0; i < len_test_data; ++i)
     {
         //printf("i : %d len_test_data = %d\n",i, len_test_data);
         test_result[i] = malloc(sizeof(float) * 2);
-        printBashint(test_data[i]);
+        //printBashint(test_data[i]);
         feedforward(net,test_data[i].input, tmpFloatList);
-        printList(tmpFloatList);
-        test_result[i][0] = (float)argmax(tmpFloatList, min_len);
+        tmpFloatList2 = cutarray(tmpFloatList, 100, 126);
+        //printList(tmpFloatList2, 26);
+        test_result[i][0] = (float)argmax(tmpFloatList2, min_len);
         test_result[i][1] = test_data[i].res;
-        printf("Result : %f\n\n\n\n", test_result[i][0]);
+        printf("\nResult : %f", test_result[i][0]);
     }
     free(tmpFloatList);
     //compute test_result
@@ -455,7 +466,7 @@ float evaluate(Bashint *test_data, int len_test_data, Network net)
     for (int i = 0; i < len_test_data; ++i)
     {
         //printf("evaluate : i = %d : x = %f et y = %f\n", i, test_result[i][0], test_result[i][1]);
-        if (test_result[i][0] + 97 == test_result[i][1])
+        if (test_result[i][0] == test_result[i][1])
             res += 1;
     }
     freefloat2star(test_result, len_test_data);
@@ -472,45 +483,45 @@ Bashint *cutarrayBashint(Bashint *b, int posmin, int posmax)
     return res;
 }
 Network SGD(Network net, Bashint *training_data, size_t len_training_data,
-    int epoch, int mini_bash_size, float eta, Bashint *test_data,
-    size_t len_test_data)//V2
+    int epoch, int mini_bash_size, float eta, int test_data)//V2
 {
-    //printf("SGD : 0\n");
-    size_t n_test = len_test_data;
+    size_t n_test = mini_bash_size;
     size_t n = len_training_data;
     Bashint **mini_batches = malloc(sizeof(Bashint) * epoch * n);
-    //printf("SGD : 1\n");
     size_t k;
     size_t l;
-    //printf("SGD : 2\n");
     for (int j = 0; j < epoch; ++j)
     {
         //printBashintArray(training_data, len_training_data);
-        //printf("SGD : 3\n");
+        printf("SGD : 3\n");
         suffleBashint(training_data, len_training_data, net.seed);
-        //printf("SGD : 4\n");
+        printf("SGD : 4\n");
         //printBashintArray(training_data, len_training_data);
         for (k = 0; k < n; k += mini_bash_size)
         {
             mini_batches[j + k] = cutarrayBashint(training_data,\
                 k,k+mini_bash_size);
         }
-        //printf("SGD : 5\n");
+        printf("SGD : 5\n");
         for (l = 0; l < n / mini_bash_size; ++l)
         {
-            mini_batches[l] = update_mini_bash(training_data,\
-                mini_bash_size,eta,&net);
+            update_mini_bash(training_data, mini_bash_size,eta,&net,\
+                mini_batches[l]);
         }
-        //printf("SGD : 6\n");
+        printf("SGD : 6\n");
         if(test_data)
         {
-            printf("%2d: %f / %zu\n",j,evaluate(test_data,\
-                len_test_data,net),n_test);
+            size_t x = 0;
+            while(mini_batches[x]){
+                x++;
+            }
+            printf("%2d: %f / %zu\n",j,evaluate(mini_batches[x],\
+                n_test,net),n_test);
         }
         else{
             printf("Epoch %d complete.\n", j);
         }
-        //printf("SGD : 7(the end)\n");
+        printf("SGD : 7(the end)\n");
     }
     return net;
 }
@@ -683,7 +694,7 @@ int *setNetwork(int type, int nbPixels)
         //*(res + 2) = 223;
         res[0] = nbPixels;
         res[1] = 100;
-        res[2] = 223;
+        res[2] = 26;
     }
     return res;
 }
@@ -781,7 +792,7 @@ char *useNetwork(Network net, Bashint input){
  * @return     The improved network ;)
  */
 Network trainNet(Network net){
-    char *res  = malloc(sizeof(char) * 300);
+    char *res  = malloc(sizeof(char) * 500);
     FILE *file = fopen("NeuralNetWork/trainingData/test.txt", "r");
     char tmp = '0';
     size_t i = 0;
@@ -803,13 +814,14 @@ Network trainNet(Network net){
         testBash[i] = *unsignedmatToBashint(mats[i]);
         testBash[i].res = i;
     }
+    //printBashintArray(testBash, len2);
     suffleBashint(testBash, len2, net.seed);
     //put them on a Bashint* and then shuffle this list
     //make them go thru th neural network and recover data to improve it
-    int epoch = 30;
+    int epoch = 1;
     float eta = 3.0;
 
-    net = SGD(net, testBash, len2, epoch, 30, eta, testBash, len2 );
+    net = SGD(net, testBash, len2, epoch, 16, eta, 1);
     return net;
 }
 
