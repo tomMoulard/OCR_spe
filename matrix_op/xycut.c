@@ -10,8 +10,10 @@
 int iswhitestripeshor(UnsignedMatrix *mat,size_t y){
   size_t max = mat->lines * mat->cols;
   while (y < max && mat->data[y] == 0) {
+    //printf("%u", mat->data[y]);
     y += mat->cols;
   }
+  //printf("\n");
   return y >= max;
 }
 
@@ -152,18 +154,20 @@ UnsignedMatrix* supprbord(UnsignedMatrix *mat){
   while (iswhitestripeshor(mat,y1) && y1 < mat->cols) {
     y1++;
   }
-  size_t y2 = mat->cols;
-  while (iswhitestripeshor(mat,y2) && y2 > 0) {
+  size_t y2 = mat->cols > 1 ?mat->cols - 1 : 1;
+  while (iswhitestripeshor(mat, y2) && y2 > 0) {
     y2--;
   }
+  
+
   if (x1 >= mat->lines || x2 <= 0 || y1 >= mat->cols || y2 <= 0) {
     return new_unsigned_matrix(1,1);
   }
-
+/*
   if (y2 - y1 > 30) {
       y2 = y1 + 30;
     }
-
+*/
   return cut(mat,x1,x2,y1,y2);
 
 }

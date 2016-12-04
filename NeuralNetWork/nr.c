@@ -691,19 +691,33 @@ char *concatenate(char* a,char* b){
   return res;
 }
 
+char* add_spaces(char* a,size_t n){
+  size_t len = strlen(a);
+  char *new = malloc((len + n) * sizeof(char));
+  strcpy(new,a);
+  if (n == 0) {
+    return new;
+  }
+  for (size_t i = len - 1; i < len + n; i++) {
+    new[i] = ' ';
+  }
+  new[len + n - 1] = '\0';
+  return new;
+}
+
 char *get_string(MatBinTree *mbt, Network net){
     if (mbt) {
       if (!mbt->left && !mbt->right) {
         UnsignedMatrix *mat = expand_mat(mbt->key,30,30);
-        //mbt->txt          = "b";
-        Bashint input       = unsignedmatToBashint(mat);
-        mbt->txt            = useNetwork(net, input);
+        mbt->txt          = "b";
+        //Bashint input       = unsignedmatToBashint(mat);
+        //mbt->txt            = useNetwork(net, input);
         //free_unsigned_matrix(mat);
         return mbt->txt;
       }
       else{
         if (mbt->ver) {
-          char* temp = concatenate(get_string(mbt->left, net)," ");
+          char* temp = add_spaces(get_string(mbt->left, net),mbt->ver / 10);
           mbt->txt   = concatenate(temp,get_string(mbt->right, net));
           return mbt->txt;
         }

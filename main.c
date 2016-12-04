@@ -165,4 +165,25 @@ int main(int argc, char *argv[]) {
     free_unsigned_matrix(mat);
     return 0;
   }
+  if (op == 8) {
+    UnsignedMatrix *matrix   = copy_mat(mat);
+    //UnsignedMatrix *matrix = eraseimage(mat);
+    MatBinTree *mbt          = new_matbintree(matrix);
+    SDL_Surface *img;
+
+    xycut_test(mbt,1,1,10);
+    size_t len = 0;
+    UnsignedMatrix **mats = get_letters(mbt,&len);
+
+    for (size_t i = 0; i < len; i++) {
+      surf = unsignedMatrix_to_pict(mats[i],1);
+      img = display_image(surf);
+    }
+
+
+    SDL_FreeSurface(surf);
+    //SDL_FreeSurface(img);
+    free_unsigned_matrix(mat);
+    return 0;
+  }
 }
