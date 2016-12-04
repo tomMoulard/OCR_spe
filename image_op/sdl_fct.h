@@ -14,6 +14,7 @@ void init_sdl(void);
 SDL_Surface* load_image(char *path);
 SDL_Surface* display_image(SDL_Surface *img);
 void save_image(SDL_Surface *img, PixelMatrix *image);
+void save_bin(SDL_Surface *img, UnsignedMatrix *image);
 SDL_Surface* unsignedMatrix_to_pict(UnsignedMatrix *mat, unsigned coef);
 
 # endif
