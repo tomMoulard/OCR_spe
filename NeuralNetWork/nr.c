@@ -11,27 +11,28 @@ int nand(int a, int b)
 }
 
 //ulitity
-double sigmoid(double z)
+float sigmoid(float z)
 {  //explicit content
     return 1.0 / (1.0 + exp(z));
 }
-double *sigmoidStar(double *z, int len)
+float *sigmoidStar(float *z, int len)
 {  //explicit content
-    double *res = malloc(sizeof(double) * len);
+    float *res = malloc(sizeof(float) * len);
     for (int i = 0; i < len; ++i)
     {
         res[i] = sigmoid(z[i]);
     }
     return res;
 }
-double sigmoidPrime(double z)
+float sigmoidPrime(float z)
 {  //explicit content
     return sigmoid(z) * (1 - sigmoid(z));
 }
-double dotdouble(double coeff, double *a, int len)
+
+float dotfloat(float coeff, float *a, int len)
 {  //do a dot mathematical function :3 coucou
     //printf("dot : %f  len = %d", coeff, len);
-    double res = 0;
+    float res = 0;
     if (coeff == 0 || len == 0)
         return 0;
     for (int i = 0; i < len; ++i)
@@ -42,9 +43,9 @@ double dotdouble(double coeff, double *a, int len)
     //printf(" ) = %f\n", res);
     return res;
 }
-double *append(double *a, double *b, int lenA, int lenB)
+float *append(float *a, float *b, int lenA, int lenB)
 {  //To append two list a and b.
-    double *res = malloc(sizeof(a) * lenA + sizeof(b) * lenB);
+    float *res = malloc(sizeof(a) * lenA + sizeof(b) * lenB);
     res = a;
     for (int i = lenA; i < lenB; ++i)
     {
@@ -137,7 +138,7 @@ void printBashintArray(Bashint *a, int len)
         printBashint(a[i]);
     }
 }
-void printdoublearray(double *array)
+void printfloatarray(float *array)
 {
     while(*array)
     {
@@ -166,10 +167,10 @@ Network makeNetWork(int len, int *sizes)
     net.seed  = time(NULL);
     srand(net.seed);
     //*biases
-    net.biases = malloc(sizeof(double) * net.lenbiases);
+    net.biases = malloc(sizeof(float) * net.lenbiases);
     for (int i = 0; i < net.lenbiases; ++i)
     {
-        net.biases[i] = ((double)rand()/(double)RAND_MAX);
+        net.biases[i] = ((float)rand()/(float)RAND_MAX);
     }
     //lenweight
     //len first  = [0] * [1]
@@ -180,10 +181,10 @@ Network makeNetWork(int len, int *sizes)
         net.lenweight += net.numLayers[i] * net.numLayers[i + 1];
     }
     //*weight
-    net.weight = malloc(sizeof(double) * net.lenweight);
+    net.weight = malloc(sizeof(float) * net.lenweight);
     for (int j = 0; j < net.lenweight; ++j)
     {
-        net.weight[j] = ((double)rand()/(double)RAND_MAX);
+        net.weight[j] = ((float)rand()/(float)RAND_MAX);
     }
     //lenweight
     return net;
@@ -198,7 +199,7 @@ void freeBashint(Bashint b)
 { //explicit content
     free(b.input);
 }
-void freedouble2star(double **a, int len)
+void freefloat2star(float **a, int len)
 {
     for (int i = 0; i < len; ++i)
     {
@@ -215,7 +216,7 @@ Bashint *makeBAshXor(int len, Network net)
     for (int i = 0; i < len; ++i)
     {
         Bashint b;
-        double *tmp = malloc(sizeof(double) * 2);
+        float *tmp = malloc(sizeof(float) * 2);
         *tmp = rand()%2;
         *(tmp + 1) = rand()%2;
         b.res = xor(*tmp, *(tmp + 1));
@@ -239,52 +240,51 @@ void suffleBashint(Bashint *bash, int len, time_t seed)
         bash[len - i - 1] = tmp;
     }
 }
-double *cutarray(double *array, int posmin, int posmax)
+float *cutarray(float *array, int posmin, int posmax)
 {
     //printf("cut : %d, %d\n", posmin, posmax);
-    //printdoublearray(array);
+    //printfloatarray(array);
     int len = posmax - posmin;
-    double *res = malloc(sizeof(double) * len);
+    float *res = malloc(sizeof(float) * len);
     for (int i = 0; i < len; ++i)
     {
         res[i] = array[i + posmin];
     }
     return res;
 }
-double **backprop(Network *network, double *x, double y) //may be done .....
+float **backprop(Network *network, float *x, float y) //may be done .....
 {
-    printf("backprop : 0\n");
-    double **res = malloc(sizeof(double *) * 2);
     Network net = *network;
-    printf("backprop : 1\n");
     //init:
-    double *nabla_b = malloc(sizeof(double) * net.lenbiases);
+    printf("net.lenbiases = %d\n", net.lenbiases);
+    float *nabla_b = malloc(sizeof(float) * net.lenbiases);
+    printf("passed\n");
     int i;
-    printf("backprop : 2\n");
+    //printf("backprop : 2\n");
     for(i = 0; i < net.lenbiases; ++i)
     {
         nabla_b[i] = 0;
     }
-    printf("backprop : 3\n");
-    double *nabla_w = malloc(sizeof(double) * net.lenweight);
+    //printf("backprop : 3\n");
+    float *nabla_w = malloc(sizeof(float) * net.lenweight);
     for(i = 0; i <net.lenweight; ++i)
     {
         nabla_w[i] = 0;
     }
-    printf("backprop : 4\n");
+    //printf("backprop : 4\n");
     //feedforward
-    double *activation = x;
+    float *activation = x;
     int min_len =
         (net.lenbiases > net.lenweight ? net.lenweight : net.lenbiases);
-    printf("min_len = %d\n", min_len);
-    double **activations = malloc(sizeof(double *) * min_len * 900);
-    double *zs           = malloc(sizeof(double) * min_len);
-    double z;
+    //printf("min_len = %d\n", min_len);
+    float **activations = malloc(sizeof(float *) * min_len * 900);
+    float *zs           = malloc(sizeof(float) * min_len);
+    float z;
     int thisLayerWieght  = 0;
     int nbneuronsleft    = net.numLayers[0];
     int posmininweight   = 0;
-    double *resT;
-    printf("backprop : 5\n");
+    float *resT;
+    //printf("backprop : 5\n");
     for(i = 0; i < min_len - 1; ++i)
     {
         if(nbneuronsleft <= 0)
@@ -292,43 +292,47 @@ double **backprop(Network *network, double *x, double y) //may be done .....
             thisLayerWieght += 1;
             nbneuronsleft = net.numLayers[thisLayerWieght];
         }
-        printf("backprop : 6.0.%d nbleft = %d, posmininweight = %d, this = %d, pos = %d\n", i, nbneuronsleft, posmininweight, net.numLayers[thisLayerWieght], thisLayerWieght);
+        //printf("backprop : 6.0.%d nbleft = %d, posmininweight = %d, this = %d, pos = %d\n", i, nbneuronsleft, posmininweight, net.numLayers[thisLayerWieght], thisLayerWieght);
         posmininweight += 1;
         resT = cutarray(net.weight, posmininweight,
             posmininweight + net.numLayers[thisLayerWieght]);
-        printf("backprop : 6.1.%d activation[%d] = %f\n", i, i, x[i]);
-        z = dotdouble(activation[i], resT, net.numLayers[thisLayerWieght]);
+        //printf("backprop : 6.1.%d activation[%d] = %f\n", i, i, x[i]);
+        z = dotfloat(activation[i], resT, net.numLayers[thisLayerWieght]);
         z              += net.biases[i];
-        printf("backprop : 6.2.%d\n", i);
+        //printf("backprop : 6.2.%d\n", i);
         nbneuronsleft  -= 1;
         zs[i]          = z;
-        printf("backprop : 6.3.%d\n", i);
+        //printf("backprop : 6.3.%d\n", i);
         activation[i]  = sigmoid(z);
-        printf("backprop : 6.4.%d\n", i);
+        //printf("backprop : 6.4.%d\n", i);
         activations[i] = activation;
-        printf("backprop : 6.5.%d\n", i);
+        //printf("backprop : 6.5.%d\n", i);
     }
-    printf("backprop : 6\n");
-    double delta = (activations[0][min_len - 1] - y )
+    //printf("backprop : 6\n");
+    float delta = (activations[0][min_len - 1] - y )
         * sigmoidPrime(zs[min_len - 1]);
-    double sp;
-    printf("backprop : 7\n");
+    float sp;
+    //printf("backprop : 7\n");
     for (int l = 2; l < net.lenlayers; ++l)
     {
         z                    = zs[min_len - l];
         sp                   = sigmoidPrime(z);
         //no transposition : useless....
-        delta                = dotdouble(delta, net.weight, net.lenweight - l - 1) * sp;
+        delta = dotfloat(delta, net.weight, net.lenweight - l - 1) * sp;
         nabla_b[min_len - l] = delta;
-        nabla_w[min_len - l] = dotdouble(delta, activations[l],
+        nabla_w[min_len - l] = dotfloat(delta, activations[l],
             min_len - l - 1) * sp;
 
-        printf("backprop : 7.%d\n", l);
+        //printf("backprop : 7.%d\n", l);
     }
-    printf("backprop : 8\n");
+    //printf("backprop : 8\n");
     //building result
-    res[0]   = nabla_b;
-    res[1]   = nabla_w;
+    
+    printf("backprop : 0\n");
+    float **res = {nabla_b,nabla_w};//malloc(sizeof(float *) * 2);
+    printf("backprop : 1\n");
+    //res[0]   = nabla_b;
+    //res[1]   = nabla_w;
     //free
     *network = net;
     free(activations);
@@ -339,91 +343,85 @@ double **backprop(Network *network, double *x, double y) //may be done .....
     return res;
 }
 Bashint *update_mini_bash(Bashint *mini_bash, size_t len_mini_bash,
-    double eta, Network *network) //done
+    float eta, Network *network) //done
 {
-    printf("update_mini_bash : 0\n");
+    //printf("update_mini_bash : 0\n");
     Network net = *network;
     //initialization:
-    double *nabla_b = malloc(sizeof(double) * net.lenbiases);
+    float *nabla_b = malloc(sizeof(float) * net.lenbiases);
     int i;
-    printf("update_mini_bash : 1\n");
+    //printf("update_mini_bash : 1\n");
     for (i = 0; i < net.lenbiases; ++i)
     {
         nabla_b[i] = 0;
-        printf("update_mini_bash : 2 : i = %d\n", i);
+        //printf("update_mini_bash : 2 : i = %d\n", i);
     }
-    double *nabla_w = malloc(sizeof(double) * net.lenweight);
+    float *nabla_w = malloc(sizeof(float) * net.lenweight);
     for (i = 0; i < net.lenweight; ++i)
     {
         nabla_w[i] = 0;
-        printf("update_mini_bash : 3 : i = %d\n", i);
+        //printf("update_mini_bash : 3 : i = %d\n", i);
     }
     //loop
-    printf("update_mini_bash : 4\n");
+    //printf("update_mini_bash : 4\n");
     Bashint b;
-    double *x;
-    double y;
-    double **deltas = malloc(sizeof(double *) * 2);
+    float *x;
+    float y;
+    float **deltas = malloc(sizeof(float *) * 2);
     int j;
     size_t w;
-    printf("update_mini_bash : 5\n");
+    //printf("update_mini_bash : 5\n");
     for (w = 0; w < len_mini_bash; ++w)
     {
         b = mini_bash[w];
         x = b.input;
         y = b.res;
-        printf("update_mini_bash5.2 w = %zu\n", w);
-        printBashint(b);
-        printf("update_mini_bash : 5.5\n");
+        //printf("update_mini_bash5.2 w = %zu\n", w);
+        //printBashint(b);
+        //printf("update_mini_bash : 5.5\n");
         deltas = backprop(network, x, y);
         //deltas[0] == delta_nabla_b and deltas[1] == delta_nabla_w
-        printf("update_mini_bash : 6 w = %zu\n", w);
+        //printf("update_mini_bash : 6 w = %zu\n", w);
         for(j = 0; j < net.lenbiases; ++j)
         {
             nabla_b[j] += deltas[0][j];
         }
-        printf("update_mini_bash : 6.5\n");
-
-    if (!deltas[1])
-    {
-        printf("grokonar");
-    }
-    printf("yolo");
+        //printf("update_mini_bash : 6.5\n");
         for(j = 0; j < net.lenweight; ++j)
         {
-            printf("j = %d %f\n", j, deltas[1][j]);
+            //printf("j = %d %f\n", j, deltas[1][j]);
             nabla_w[j] += deltas[1][j];
         }
     }
-    printf("update_mini_bash : 7\n");
+    //printf("update_mini_bash : 7\n");
     int k;
     for (k = 0; k < net.lenweight; ++k)
     {
         net.weight[k] = net.weight[k] - (eta / len_mini_bash) * nabla_w[k];
     }
-    printf("update_mini_bash : 8\n");
+    //printf("update_mini_bash : 8\n");
     for(k = 0; k < net.lenbiases; ++k)
     {
         net.biases[k] = net.biases[k] - (eta / len_mini_bash) * nabla_b[k];
     }
-    printf("update_mini_bash : 9\n");
+    //printf("update_mini_bash : 9\n");
     *network = net;
     //free
     free(nabla_b);
     free(nabla_w);
     return mini_bash;
 }
-double *feedforward(Network net, double *x)
+float *feedforward(Network net, float *x)
 {
     int min_len =
         (net.lenbiases > net.lenweight ? net.lenweight : net.lenbiases);
     for (int i = 0; i < min_len; ++i)
     {
-        x[i] = sigmoid(dotdouble(net.weight[i], x, min_len) + net.biases[i]);
+        x[i] = sigmoid(dotfloat(net.weight[i], x, min_len) + net.biases[i]);
     }
     return x;
 }
-int argmax(double *array, int len)
+int argmax(float *array, int len)
 {
     int res = 0;
     for (int i = 1; i < len; ++i)
@@ -433,17 +431,17 @@ int argmax(double *array, int len)
     }
     return res;
 }
-double evaluate(Bashint *test_data, int len_test_data, Network net)
+float evaluate(Bashint *test_data, int len_test_data, Network net)
 {
-    double res = 0;
-    double **test_result = malloc(sizeof(double *) * len_test_data);
+    float res = 0;
+    float **test_result = malloc(sizeof(float *) * len_test_data);
     int min_len =
         (net.lenbiases > net.lenweight ? net.lenweight : net.lenbiases);
     //building test_result
     for (int i = 0; i < len_test_data; ++i)
     {
-        test_result[i] = malloc(sizeof(double) * 2);
-        test_result[i][0] = (double)argmax(feedforward(net,
+        test_result[i] = malloc(sizeof(float) * 2);
+        test_result[i][0] = (float)argmax(feedforward(net,
             test_data[i].input), min_len);
         test_result[i][1] = test_data[i].res;
     }
@@ -454,7 +452,7 @@ double evaluate(Bashint *test_data, int len_test_data, Network net)
         if (test_result[i][0] + 97 == test_result[i][1])
             res += 1;
     }
-    freedouble2star(test_result, len_test_data);
+    freefloat2star(test_result, len_test_data);
     return res;
 }
 Bashint *cutarrayBashint(Bashint *b, int posmin, int posmax)
@@ -468,36 +466,36 @@ Bashint *cutarrayBashint(Bashint *b, int posmin, int posmax)
     return res;
 }
 Network SGD(Network net, Bashint *training_data, size_t len_training_data,
-    int epoch, int mini_bash_size, double eta, Bashint *test_data,
+    int epoch, int mini_bash_size, float eta, Bashint *test_data,
     size_t len_test_data)//V2
 {
-    printf("SGD : 0\n");
+    //printf("SGD : 0\n");
     size_t n_test = len_test_data;
     size_t n = len_training_data;
     Bashint **mini_batches = malloc(sizeof(Bashint) * epoch * n);
-    printf("SGD : 1\n");
+    //printf("SGD : 1\n");
     size_t k;
     size_t l;
-    printf("SGD : 2\n");
+    //printf("SGD : 2\n");
     for (int j = 0; j < epoch; ++j)
     {
-        printBashintArray(training_data, len_training_data);
-        printf("SGD : 3\n");
+        //printBashintArray(training_data, len_training_data);
+        //printf("SGD : 3\n");
         suffleBashint(training_data, len_training_data, net.seed);
-        printf("SGD : 4\n");
+        //printf("SGD : 4\n");
         //printBashintArray(training_data, len_training_data);
         for (k = 0; k < n; k += mini_bash_size)
         {
             mini_batches[j + k] = cutarrayBashint(training_data,\
                 k,k+mini_bash_size);
         }
-        printf("SGD : 5\n");
+        //printf("SGD : 5\n");
         for (l = 0; l < n / mini_bash_size; ++l)
         {
             mini_batches[l] = update_mini_bash(training_data,\
                 mini_bash_size,eta,&net);
         }
-        printf("SGD : 6\n");
+        //printf("SGD : 6\n");
         if(test_data)
         {
             printf("%2d: %f / %zu\n",j,evaluate(test_data,\
@@ -554,8 +552,8 @@ void saveNr(Network net, char *fileName)
 Network openNr(char *fileName)
 {
     FILE *nr;
-    Network net;
     nr = fopen(fileName, "r");
+    Network net;
     if (nr == NULL) {
         net.len = -1;
         return net;
@@ -566,9 +564,9 @@ Network openNr(char *fileName)
     time_t  seed;       //seed to initiate random
     int    *sizes;      //list of bite of the letter
     int     len;        //len of size
-    double *biases;     //list of biases for neurons
+    float *biases;     //list of biases for neurons
     int     lenbiases;  //nb neurons
-    double *weight;     //list of weights for neurons
+    float *weight;     //list of weights for neurons
     int     lenweight;  //nb neurons //useless len biases == lenweights
 
     int i, j=0, res = 0;
@@ -588,17 +586,17 @@ Network openNr(char *fileName)
     }
     res = fscanf(nr, "\n%d\n", &lenbiases);
     lenbiases -= j;
-    biases = malloc(sizeof(double) * lenbiases);
+    biases = malloc(sizeof(float) * lenbiases);
     for (i = 0; i < lenbiases; ++i)
     {
-        res = fscanf(nr, "%lf\n", &biases[i]);
+        res = fscanf(nr, "%f\n", &biases[i]);
         //printf("%d : %d\n", lenbiases, i);
     }
     res = fscanf(nr, "\n%d\n", &lenweight);
-    weight = malloc(sizeof(double) * lenweight);
+    weight = malloc(sizeof(float) * lenweight);
     for (i = 0; i < lenweight; ++i)
     {
-        res = fscanf(nr, "%lf\n", &weight[i]);
+        res = fscanf(nr, "%f\n", &weight[i]);
     }
     fclose(nr);
     res           += 1;
@@ -616,16 +614,16 @@ Network openNr(char *fileName)
 
 Bashint unsignedmatToBashint(UnsignedMatrix *matrix){
   Bashint basht;
-  basht.input      = malloc(sizeof(double) * 900);
+  basht.input      = malloc(sizeof(float) * 900);
   for(size_t i = 0; i < 900; ++i){
-    basht.input[i] = (double)matrix->data[i];
+    basht.input[i] = (float)matrix->data[i];
   }
   basht.res = -1;
   free_unsigned_matrix(matrix);
   return basht;
 }
 
-UnsignedMatrix **from_img_to_letters(char *filepath,size_t *len){
+UnsignedMatrix **from_img_to_letters(char *filepath, size_t *len){
   size_t lines = bmpWidth(filepath);
   size_t cols = bmpHeight(filepath);
   SDL_Surface *surf;
@@ -769,10 +767,10 @@ Network trainNet(Network net){
     res[i + 1] = '\0';
     //open test.bmp files located on : /NeuralNetWork/trainingData/test.bmp
     //open resolution on /NeuralNetWork/trainingData/res.txt
-    size_t len1 = strlen(res), len2 = 0;
+    size_t len2 = 0;
     char *filePath        = "NeuralNetWork/trainingData/test.bmp";
     UnsignedMatrix **mats = from_img_to_letters(filePath,&len2);
-    Bashint *testBash     = malloc(sizeof(Bashint) * len1);
+    Bashint *testBash     = malloc(sizeof(Bashint) * len2 * 2);
     for(i = 0; i < len2; ++i){
       testBash[i] = unsignedmatToBashint(mats[i]);
       testBash[i].res = i;
@@ -781,7 +779,7 @@ Network trainNet(Network net){
     //put them on a Bashint* and then shuffle this list
     //make them go thru th neural network and recover data to improve it
     int epoch = 30;
-    double eta = 3.0;
+    float eta = 3.0;
 
     net = SGD(net, testBash, len2, epoch, 30, eta, testBash, len2 );
     return net;

@@ -2,7 +2,7 @@
 
 CC=gcc
 CPPFLAGS= -MMD -D_XOPEN_SOURCE=500 `pkg-config --cflags sdl`
-CFLAGS= -Wall -Wextra -std=c99 -O2
+CFLAGS= -Wall -Wextra -std=c99 -g
 LDFLAGS=
 LDLIBS= `pkg-config --libs sdl` -lSDL_image -lm
 

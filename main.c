@@ -35,7 +35,7 @@ int main(int argc, char *argv[]) {
   //neural Network
   if(argc == 2){
     printf("getting the network from file\n");
-    Network net = getNetwork();
+    Network net = getNetwork(argv[1]);
     printf("let's train the network\n");
     net = trainNet(net);
     printf("let's save the network\n");

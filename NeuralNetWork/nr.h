@@ -23,16 +23,16 @@ struct Network{
   time_t  seed;       //seed to initiate random
   int    *sizes;      //list of bite of the letter
   int     len;        //len of size
-  double *biases;     //list of biases for neurons
+  float *biases;     //list of biases for neurons
   int     lenbiases;  //nb neurons
-  double *weight;     //list of weights for neurons
+  float *weight;     //list of weights for neurons
   int     lenweight;  //nb neurons //useless len biases == lenweights
 };
 
 typedef struct Bashint Bashint;
 struct Bashint{
-  double *input;
-  double  res;
+  float *input;
+  float  res;
 };
 
 //########################################################
@@ -41,15 +41,15 @@ int xor(int a, int b);
 
 int nand(int a, int b);
 
-double sigmoid(double z);
+float sigmoid(float z);
 
-double *sigmoidStar(double *z, int len);
+float *sigmoidStar(float *z, int len);
 
-double sigmoidPrime(double z);
+float sigmoidPrime(float z);
 
-double dotdouble(double coeff, double *a, int len);
+float dotfloat(float coeff, float *a, int len);
 
-double *append(double *a, double *b, int lenA, int lenB);
+float *append(float *a, float *b, int lenA, int lenB);
 
 //########################prints#################################
 void printArrayIntLen(int *array, int len);
@@ -65,7 +65,7 @@ void printBashint(Bashint b);
 
 void printBashintArray(Bashint *a, int len);
 
-void printdoublearray(double *array);
+void printfloatarray(float *array);
 
 Network makeNetWork(int len, int *sizes);
 
@@ -73,29 +73,29 @@ void freeNetwork(Network net);
 
 void freeBashint(Bashint b);
 
-void freedouble2star(double **a, int len);
+void freefloat2star(float **a, int len);
 
 Bashint *makeBAshXor(int len, Network net);
 
 void suffleBashint(Bashint *bash, int len, time_t seed);
 
-double *cutarray(double *array, int posmin, int posmax);;
+float *cutarray(float *array, int posmin, int posmax);;
 
-double **backprop(Network *network, double *x, double y);
+float **backprop(Network *network, float *x, float y);
 
 Bashint *update_mini_bash(Bashint *mini_bash, size_t len_mini_bash,
-  double eta, Network *network);
+  float eta, Network *network);
 
-double *feedforward(Network net, double *x);
+float *feedforward(Network net, float *x);
 
-int argmax(double *array, int len);
+int argmax(float *array, int len);
 
-double evaluate(Bashint *test_data, int len_test_data, Network net);
+float evaluate(Bashint *test_data, int len_test_data, Network net);
 
 Bashint *cutarrayBashint(Bashint *b, int posmin, int posmax);
 
 Network SGD(Network net, Bashint *training_data, size_t len_training_data,
-  int epoch, int mini_bash_size, double eta, Bashint *test_data,
+  int epoch, int mini_bash_size, float eta, Bashint *test_data,
   size_t len_test_data);
 
 void fprintArrayIntLen(FILE *nr, int *array, int len);
@@ -119,7 +119,7 @@ char *useNetwork(Network net, Bashint input);
 
 Network trainNet(Network net);
 
-Network getNetwork();
+Network getNetwork(char *filename);
 
 UnsignedMatrix **from_img_to_letters(char *filepath,size_t *len);
 
