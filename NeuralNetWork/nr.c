@@ -155,11 +155,7 @@ Network makeNetWork(int len, int *sizes)
     //numlayers
     net.numLayers = sizes;
     //lenbiases
-    net.lenbiases = sizes[0];
-    for (int i = 1; i < len; ++i)
-    {
-        net.lenbiases += sizes[i];
-    }
+    net.lenbiases = sizes[1] + sizes[2];
     //len
     net.len   = len;
     //sizes
@@ -176,11 +172,7 @@ Network makeNetWork(int len, int *sizes)
     //lenweight
     //len first  = [0] * [1]
     //len second = [1] * [2]
-    net.lenweight = 0;
-    for (int i = 0; i < net.lenlayers - 1; ++i)
-    {
-        net.lenweight += net.numLayers[i] * net.numLayers[i + 1];
-    }
+    net.lenweight = sizes[0] * sizes[1] + sizes[1] * sizes[2];
     //*weight
     net.weight = malloc(sizeof(float) * net.lenweight);
     for (int j = 0; j < net.lenweight; ++j)
@@ -343,12 +335,12 @@ void backprop(Network *network, float **deltas,float *x, float y) //may be done 
 Bashint *update_mini_bash(Bashint *mini_bash, size_t len_mini_bash,
     float eta, Network *network) //done
 {
-    printf("update_mini_bash : 0\n");
+    //printf("update_mini_bash : 0\n");
     Network net = *network;
     //initialization:
     float *nabla_b = malloc(sizeof(float) * net.lenbiases);
     int i;
-    printf("update_mini_bash : 1\n");
+    //printf("update_mini_bash : 1\n");
     for (i = 0; i < net.lenbiases; ++i)
     {
         nabla_b[i] = 0;
@@ -361,14 +353,14 @@ Bashint *update_mini_bash(Bashint *mini_bash, size_t len_mini_bash,
         //printf("update_mini_bash : 3 : i = %d\n", i);
     }
     //loop
-    printf("update_mini_bash : 4\n");
+    //printf("update_mini_bash : 4\n");
     Bashint b;
     float *x;
     float y;
     float **deltas = malloc(sizeof(float *) * 2);
     int j;
     size_t w;
-    printf("update_mini_bash : 5\n");
+    //printf("update_mini_bash : 5\n");
     for (w = 0; w < len_mini_bash; ++w)
     {
         b = mini_bash[w];
@@ -392,18 +384,18 @@ Bashint *update_mini_bash(Bashint *mini_bash, size_t len_mini_bash,
             nabla_w[j] += deltas[1][j];
         }
     }
-    printf("update_mini_bash : 7\n");
+    //printf("update_mini_bash : 7\n");
     int k;
     for (k = 0; k < net.lenweight; ++k)
     {
         net.weight[k] = net.weight[k] - (eta / len_mini_bash) * nabla_w[k];
     }
-    printf("update_mini_bash : 8\n");
+    //printf("update_mini_bash : 8\n");
     for(k = 0; k < net.lenbiases; ++k)
     {
         net.biases[k] = net.biases[k] - (eta / len_mini_bash) * nabla_b[k];
     }
-    printf("update_mini_bash : 9(the end)\n");
+    //printf("update_mini_bash : 9(the end)\n");
     *network = net;
     //free
     //free(nabla_b);
@@ -418,7 +410,7 @@ void feedforward(Network net, float *x, float *res)
     {
         float y = dotfloat(net.weight[i], x, min_len);
         res[i] = sigmoid(y + net.biases[i]);
-        printf("feed : y = %f b[%d] = %f res = %f\n", y, i, net.biases[i], res[i]);
+        //printf("feed : y = %f b[%d] = %f res = %f\n", y, i, net.biases[i], res[i]);
     }
 }
 int argmax(float *array, int len)
@@ -454,7 +446,7 @@ float evaluate(Bashint *test_data, int len_test_data, Network net)
     //printBashintArray(test_data, len_test_data);
     for (int i = 0; i < len_test_data; ++i)
     {
-        printf("evaluate : i = %d : x = %f et y = %f\n", i, test_result[i][0], test_result[i][1]);
+        //printf("evaluate : i = %d : x = %f et y = %f\n", i, test_result[i][0], test_result[i][1]);
         if (test_result[i][0] + 97 == test_result[i][1])
             res += 1;
     }
@@ -475,14 +467,14 @@ Network SGD(Network net, Bashint *training_data, size_t len_training_data,
     int epoch, int mini_bash_size, float eta, Bashint *test_data,
     size_t len_test_data)//V2
 {
-    printf("SGD : 0\n");
+    //printf("SGD : 0\n");
     size_t n_test = len_test_data;
     size_t n = len_training_data;
     Bashint **mini_batches = malloc(sizeof(Bashint) * epoch * n);
-    printf("SGD : 1\n");
+    //printf("SGD : 1\n");
     size_t k;
     size_t l;
-    printf("SGD : 2\n");
+    //printf("SGD : 2\n");
     for (int j = 0; j < epoch; ++j)
     {
         //printBashintArray(training_data, len_training_data);
@@ -501,7 +493,7 @@ Network SGD(Network net, Bashint *training_data, size_t len_training_data,
             mini_batches[l] = update_mini_bash(training_data,\
                 mini_bash_size,eta,&net);
         }
-        printf("SGD : 6\n");
+        //printf("SGD : 6\n");
         if(test_data)
         {
             printf("%2d: %f / %zu\n",j,evaluate(test_data,\
@@ -510,7 +502,7 @@ Network SGD(Network net, Bashint *training_data, size_t len_training_data,
         else{
             printf("Epoch %d complete.\n", j);
         }
-        printf("SGD : 7(the end)\n");
+        //printf("SGD : 7(the end)\n");
     }
     return net;
 }
@@ -678,9 +670,12 @@ int *setNetwork(int type, int nbPixels)
     }
     if (type == 2)//picture recognition UTF08
     {
-        *res       = nbPixels;
-        *(res + 1) = 100; //fixme
-        *(res + 2) = 223;
+        //*res       = nbPixels;
+        //*(res + 1) = 100; //fixme
+        //*(res + 2) = 223;
+        res[0] = nbPixels;
+        res[1] = 100;
+        res[2] = 223;
     }
     return res;
 }
