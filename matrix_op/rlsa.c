@@ -248,7 +248,7 @@ unsigned* get_all_areas(UnsignedMatrix *mat,size_t len){
   return values;
 }
 
-Rect* get_all_rects(UnsignedMatrix *mat,unsigned *values,size_t len){
+Rect* get_all_rects(UnsignedMatrix *mat,size_t len){
   Rect* rects = malloc(len * sizeof(Rect));
   for (size_t i = 0; i < len; i++) {
     rects[i].a1.x = mat->lines;
