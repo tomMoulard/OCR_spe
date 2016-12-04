@@ -423,6 +423,12 @@ int argmax(float *array, int len)
     }
     return res;
 }
+void printList(float *input){
+    size_t i = 0;
+    while(input[i]){
+        printf("%f ", input[i]);
+    }
+}
 float evaluate(Bashint *test_data, int len_test_data, Network net)
 {
     float res = 0;
@@ -438,9 +444,10 @@ float evaluate(Bashint *test_data, int len_test_data, Network net)
         test_result[i] = malloc(sizeof(float) * 2);
         printBashint(test_data[i]);
         feedforward(net,test_data[i].input, tmpFloatList);
+        printList(tmpFloatList);
         test_result[i][0] = (float)argmax(tmpFloatList, min_len);
         test_result[i][1] = test_data[i].res;
-        printf("Result : %f\n", test_result[i][0]);
+        printf("Result : %f\n\n\n\n", test_result[i][0]);
     }
     free(tmpFloatList);
     //compute test_result
