@@ -86,7 +86,7 @@ void backprop(Network *network,float **deltas, float *x, float y);
 Bashint *update_mini_bash(Bashint *mini_bash, size_t len_mini_bash,
   float eta, Network *network);
 
-float *feedforward(Network net, float *x);
+void feedforward(Network net, float *x);
 
 int argmax(float *array, int len);
 

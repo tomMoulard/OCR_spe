@@ -415,7 +415,7 @@ Bashint *update_mini_bash(Bashint *mini_bash, size_t len_mini_bash,
     free(nabla_w);
     return mini_bash;
 }
-float *feedforward(Network net, float *x)
+void feedforward(Network net, float *x)
 {
     int min_len =
         (net.lenbiases > net.lenweight ? net.lenweight : net.lenbiases);
@@ -423,7 +423,6 @@ float *feedforward(Network net, float *x)
     {
         x[i] = sigmoid(dotfloat(net.weight[i], x, min_len) + net.biases[i]);
     }
-    return x;
 }
 int argmax(float *array, int len)
 {
@@ -442,14 +441,13 @@ float evaluate(Bashint *test_data, int len_test_data, Network net)
     int min_len =
         (net.lenbiases > net.lenweight ? net.lenweight : net.lenbiases);
     //building test_result
-    
     printBashintArray(test_data, len_test_data);
     for (int i = 0; i < len_test_data; ++i)
     {
         printf("i : %d len_test_data = %d\n",i, len_test_data);
         test_result[i] = malloc(sizeof(float) * 2);
-        test_result[i][0] = (float)argmax(feedforward(net,
-            test_data[i].input), min_len);
+        feedforward(net,test_data[i].input);
+        test_result[i][0] = (float)argmax(test_data[i].input, min_len);
         test_result[i][1] = test_data[i].res;
     }
     //compute test_result
@@ -768,7 +766,10 @@ char *castIntToCharStar(int arg){
 char *useNetwork(Network net, Bashint input){
     int min_len =
         (net.lenbiases > net.lenweight ? net.lenweight : net.lenbiases);
-    return castIntToCharStar(argmax(feedforward(net, input.input), min_len));
+    feedforward(net, input.input);
+    int res = argmax(input.input, min_len);
+    char *resFinal = castIntToCharStar(res);
+    return resFinal;
 }
 /**
  * Easy training of the neural Network !
@@ -812,7 +813,8 @@ Network createNetwork(){
     int len = 3;// set number of layers
     int nbPixels = 900; // set number of input neurons
     int type = 2; //see setNetwork funct to see why
-    Network net = makeNetWork(len, setNetwork(type, nbPixels)); //create network
+    int *typeOfNet = setNetwork(type, nbPixels);
+    Network net = makeNetWork(len, typeOfNet); //create network
     return net;
 }
 
