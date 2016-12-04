@@ -28,8 +28,6 @@ void hor_cut_pos(UnsignedMatrix *mat,size_t *y1,size_t *y2){
         t2++;
         i++;
       }
-
-
       if (t2 - t1 > *y2 - *y1) {
         *y1 = t1;
         *y2 = t2;
@@ -158,16 +156,12 @@ UnsignedMatrix* supprbord(UnsignedMatrix *mat){
   while (iswhitestripeshor(mat, y2) && y2 > 0) {
     y2--;
   }
-  
+
 
   if (x1 >= mat->lines || x2 <= 0 || y1 >= mat->cols || y2 <= 0) {
     return new_unsigned_matrix(1,1);
   }
-/*
-  if (y2 - y1 > 30) {
-      y2 = y1 + 30;
-    }
-*/
+
   return cut(mat,x1,x2,y1,y2);
 
 }

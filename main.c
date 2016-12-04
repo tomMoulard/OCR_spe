@@ -125,9 +125,9 @@ int main(int argc, char *argv[]) {
     unsigned coef           = 0;
     UnsignedMatrix *matecc  = ecc(matrlsa,&coef);
     surf                    = unsignedMatrix_to_pict(matrlsa, 1);
-    //img                     = display_image(surf);
+    SDL_Surface *img        = display_image(surf);
     surf                    = unsignedMatrix_to_pict(matecc, coef);
-    //img                     = display_image(surf);
+    img                     = display_image(surf);
     free_unsigned_matrix(matrlsa);
     free_unsigned_matrix(matecc);
     SDL_FreeSurface(surf);
@@ -137,10 +137,10 @@ int main(int argc, char *argv[]) {
   }
   if(op == 6){
     UnsignedMatrix *mattexte = eraseimage(mat);
-    surf                     = unsignedMatrix_to_pict(mattexte, 1);
-    //img                      = display_image(surf);
+    surf                     = unsignedMatrix_to_pict(mattexte, 256);
+    SDL_Surface *img         = display_image(surf);
     SDL_FreeSurface(surf);
-    //SDL_FreeSurface(img);
+    SDL_FreeSurface(img);
     free_unsigned_matrix(mat);
     return 0;
   }
@@ -152,13 +152,14 @@ int main(int argc, char *argv[]) {
 
     xycut_test(mbt,1,1,10);
     //display_leaves(mbt);
-
+/*
     Network net              = getNetwork("network.nr");
     char *txt                = get_string(mbt, net);
-    printf("%s\n",txt );
 
+    printf("%s\n",txt );
+*/
     //free_unsigned_matrix(matrix);
-    //free_matbintree(mbt);
+    free_matbintree(mbt);
 
     SDL_FreeSurface(surf);
     //SDL_FreeSurface(img);

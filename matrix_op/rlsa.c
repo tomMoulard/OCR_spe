@@ -84,6 +84,7 @@ UnsignedMatrix* vertical(UnsignedMatrix *matrix, int coef){
 }
 
 UnsignedMatrix* rlsa(UnsignedMatrix *matrix,int coefh,int coefv){
+
   UnsignedMatrix *math = horizontal(matrix,coefh);
   UnsignedMatrix *matv = vertical(matrix,coefv);
   UnsignedMatrix *mat = new_unsigned_matrix(matrix->lines,matrix->cols);
@@ -157,6 +158,28 @@ void eight_connexe_back(UnsignedMatrix *mat,size_t x,size_t y,int *isok){
   }
 }
 
+void reduce_coef(UnsignedMatrix *mat,unsigned *coef){
+  unsigned *list = malloc(sizeof(unsigned) * *coef);
+  for (size_t i = 0; i < *coef; i++) {
+    list[i] = 0;
+  }
+  size_t n = 0;
+  for (size_t i = 0; i < mat->lines; i++) {
+    for (size_t j = 0; j < mat->cols; j++) {
+      if (list[mat->data[i * mat->cols + j]] == 0) {
+        list[mat->data[i * mat->cols + j]] = n++;
+      }
+    }
+  }
+  for (size_t i = 0; i < mat->lines; i++) {
+    for (size_t j = 0; j < mat->cols; j++) {
+      mat->data[i * mat->cols + j] = list[mat->data[i * mat->cols + j]];
+    }
+  }
+  free(list);
+  *coef = n;
+}
+
 UnsignedMatrix* ecc(UnsignedMatrix *matrix,unsigned *coef){
   *coef = 2;
   int isok = 1;
@@ -207,6 +230,8 @@ UnsignedMatrix* ecc(UnsignedMatrix *matrix,unsigned *coef){
      }
    }
   }
+
+  reduce_coef(mat,coef);
   return mat;
 }
 
@@ -243,7 +268,6 @@ Rect* get_all_rects(UnsignedMatrix *mat,unsigned *values,size_t len){
 
     }
   }
-  free(values);
 
   return rects;
 }
@@ -438,7 +462,7 @@ UnsignedMatrix* eraseimage(UnsignedMatrix *matrix){
   free(eccentricities);
   free(origin);
   free(transitions);
-  //free(areas);
+  free(areas);
   free(rects);
   free_unsigned_matrix(matrlsa);
   free_unsigned_matrix(matecc);
