@@ -37,10 +37,10 @@ float dotfloat(float coeff, float *a, int len)
         return 0;
     for (int i = 0; i < len; ++i)
     {
-        //printf("%f , ", a[i]);
+        //printf("dotfloat : i = %d len = %d a[%d] = %f :\n", i, len, i, a[i]);
         res += a[i] * coeff;
     }
-    //printf(" ) = %f\n", res);
+    //printf("res = %f\n", res);
     return res;
 }
 float *append(float *a, float *b, int lenA, int lenB)
@@ -112,8 +112,8 @@ void printNetworkArray(Network *a)
 }
 void printBashint(Bashint b)
 { //explicit content
-    printf("#~~~~~~~~~~ Test ~~~~~~~~~#\n");
-    printf("|res : %f            |\n|Input : \n", b.res);
+    printf("#~~~~~~~~~~~~ Test ~~~~~~~~~~~#\n");
+    printf("|res : %d                     |\n|Input :                       |\n|", (int)b.res);
     int i = 0;
     for (i = 0; i < 900; ++i)
     {
@@ -125,10 +125,11 @@ void printBashint(Bashint b)
             printf(" ");
         }
         if(i%30 == 29){
-            printf("\n");
+            printf("|\n|");
         }
     }
-    printf("|\n#~~~~~~~~~~~~~~~~~~~~~~~~~~#\n");
+    printf("                              |\
+          \n#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#\n");
 }
 void printBashintArray(Bashint *a, int len)
 {
@@ -345,12 +346,12 @@ void backprop(Network *network, float **deltas,float *x, float y) //may be done 
 Bashint *update_mini_bash(Bashint *mini_bash, size_t len_mini_bash,
     float eta, Network *network) //done
 {
-    //printf("update_mini_bash : 0\n");
+    printf("update_mini_bash : 0\n");
     Network net = *network;
     //initialization:
     float *nabla_b = malloc(sizeof(float) * net.lenbiases);
     int i;
-    //printf("update_mini_bash : 1\n");
+    printf("update_mini_bash : 1\n");
     for (i = 0; i < net.lenbiases; ++i)
     {
         nabla_b[i] = 0;
@@ -363,7 +364,7 @@ Bashint *update_mini_bash(Bashint *mini_bash, size_t len_mini_bash,
         //printf("update_mini_bash : 3 : i = %d\n", i);
     }
     //loop
-    //printf("update_mini_bash : 4\n");
+    printf("update_mini_bash : 4\n");
     Bashint b;
     float *x;
     float y;
@@ -372,7 +373,7 @@ Bashint *update_mini_bash(Bashint *mini_bash, size_t len_mini_bash,
     printf("backprop : 1\n");
     int j;
     size_t w;
-    //printf("update_mini_bash : 5\n");
+    printf("update_mini_bash : 5\n");
     for (w = 0; w < len_mini_bash; ++w)
     {
         b = mini_bash[w];
@@ -396,18 +397,18 @@ Bashint *update_mini_bash(Bashint *mini_bash, size_t len_mini_bash,
             nabla_w[j] += deltas[1][j];
         }
     }
-    //printf("update_mini_bash : 7\n");
+    printf("update_mini_bash : 7\n");
     int k;
     for (k = 0; k < net.lenweight; ++k)
     {
         net.weight[k] = net.weight[k] - (eta / len_mini_bash) * nabla_w[k];
     }
-    //printf("update_mini_bash : 8\n");
+    printf("update_mini_bash : 8\n");
     for(k = 0; k < net.lenbiases; ++k)
     {
         net.biases[k] = net.biases[k] - (eta / len_mini_bash) * nabla_b[k];
     }
-    //printf("update_mini_bash : 9\n");
+    printf("update_mini_bash : 9(the end)\n");
     *network = net;
     //free
     free(nabla_b);
@@ -441,18 +442,21 @@ float evaluate(Bashint *test_data, int len_test_data, Network net)
     int min_len =
         (net.lenbiases > net.lenweight ? net.lenweight : net.lenbiases);
     //building test_result
+    
+    printBashintArray(test_data, len_test_data);
     for (int i = 0; i < len_test_data; ++i)
     {
-        printf("i : %d\n",i );
+        printf("i : %d len_test_data = %d\n",i, len_test_data);
         test_result[i] = malloc(sizeof(float) * 2);
         test_result[i][0] = (float)argmax(feedforward(net,
             test_data[i].input), min_len);
         test_result[i][1] = test_data[i].res;
     }
     //compute test_result
+    printBashintArray(test_data, len_test_data);
     for (int i = 0; i < len_test_data; ++i)
     {
-//printf("evaluate : x = %f et y = %f\n", test_result[i][0], test_result[i][1]);
+        printf("evaluate : i = %d : x = %f et y = %f\n", i, test_result[i][0], test_result[i][1]);
         if (test_result[i][0] + 97 == test_result[i][1])
             res += 1;
     }
@@ -473,14 +477,14 @@ Network SGD(Network net, Bashint *training_data, size_t len_training_data,
     int epoch, int mini_bash_size, float eta, Bashint *test_data,
     size_t len_test_data)//V2
 {
-    //printf("SGD : 0\n");
+    printf("SGD : 0\n");
     size_t n_test = len_test_data;
     size_t n = len_training_data;
     Bashint **mini_batches = malloc(sizeof(Bashint) * epoch * n);
-    //printf("SGD : 1\n");
+    printf("SGD : 1\n");
     size_t k;
     size_t l;
-    //printf("SGD : 2\n");
+    printf("SGD : 2\n");
     for (int j = 0; j < epoch; ++j)
     {
         //printBashintArray(training_data, len_training_data);
@@ -508,6 +512,7 @@ Network SGD(Network net, Bashint *training_data, size_t len_training_data,
         else{
             printf("Epoch %d complete.\n", j);
         }
+        printf("SGD : 3(the end)\n");
     }
     return net;
 }
@@ -616,13 +621,13 @@ Network openNr(char *fileName)
     return net;
 }
 
-Bashint unsignedmatToBashint(UnsignedMatrix *matrix){
-  Bashint basht;
-  basht.input      = malloc(sizeof(float) * 1000);
+Bashint *unsignedmatToBashint(UnsignedMatrix *matrix){
+  Bashint *basht = malloc(sizeof(Bashint));
+  basht->input      = malloc(sizeof(float) * 1000);
   for(size_t i = 0; i < 900; ++i){
-    basht.input[i] = (float)matrix->data[i];
+    basht->input[i] = (float)matrix->data[i];
   }
-  basht.res = -1;
+  basht->res = -1;
   free_unsigned_matrix(matrix);
   return basht;
 }
@@ -712,7 +717,7 @@ char *get_string(MatBinTree *mbt, Network net){
         mbt->txt          = "b";
         //Bashint input       = unsignedmatToBashint(mat);
         //mbt->txt            = useNetwork(net, input);
-        //free_unsigned_matrix(mat);
+        free_unsigned_matrix(mat);
         return mbt->txt;
       }
       else{
@@ -790,8 +795,8 @@ Network trainNet(Network net){
     UnsignedMatrix **mats = from_img_to_letters(filePath,&len2);
     Bashint *testBash     = malloc(sizeof(Bashint) * len2 * 2);
     for(i = 0; i < len2; ++i){
-      testBash[i] = unsignedmatToBashint(mats[i]);
-      testBash[i].res = i;
+        testBash[i] = *unsignedmatToBashint(mats[i]);
+        testBash[i].res = i;
     }
     suffleBashint(testBash, len2, net.seed);
     //put them on a Bashint* and then shuffle this list

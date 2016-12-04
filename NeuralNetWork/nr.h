@@ -108,7 +108,7 @@ int *setNetwork(int type, int nbPixels);
 
 char *appendChar(char *a, char *b);
 
-Bashint unsignedmatToBashint(UnsignedMatrix *matrix);
+Bashint *unsignedmatToBashint(UnsignedMatrix *matrix);
 
 //Personized Main :3
 
