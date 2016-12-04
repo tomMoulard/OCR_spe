@@ -442,7 +442,7 @@ UnsignedMatrix* eraseimage(UnsignedMatrix *matrix){
   UnsignedMatrix* matecc = ecc(matrlsa,&coef);
 
   unsigned* areas = get_all_areas(matecc,coef);
-  Rect* rects = get_all_rects(matecc,areas,coef);
+  Rect* rects = get_all_rects(matecc,coef);
   unsigned* origin = original_black(mat/*,matecc*/,rects,coef);
   unsigned* transitions = white_black_transition(mat,rects,coef);
   float* eccentricities = get_eccentricity(rects,coef);
