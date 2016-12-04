@@ -81,7 +81,7 @@ void suffleBashint(Bashint *bash, int len, time_t seed);
 
 float *cutarray(float *array, int posmin, int posmax);;
 
-float **backprop(Network *network, float *x, float y);
+void backprop(Network *network,float **deltas, float *x, float y);
 
 Bashint *update_mini_bash(Bashint *mini_bash, size_t len_mini_bash,
   float eta, Network *network);

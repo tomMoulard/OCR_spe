@@ -252,7 +252,7 @@ float *cutarray(float *array, int posmin, int posmax)
     }
     return res;
 }
-float **backprop(Network *network, float *x, float y) //may be done .....
+void backprop(Network *network, float **deltas,float *x, float y) //may be done .....
 {
     Network net = *network;
     //init:
@@ -327,12 +327,12 @@ float **backprop(Network *network, float *x, float y) //may be done .....
     }
     //printf("backprop : 8\n");
     //building result
-    
+
     printf("backprop : 0\n");
-    float **res = {nabla_b,nabla_w};//malloc(sizeof(float *) * 2);
+    //float **res = malloc(sizeof(float *) * 2);
     printf("backprop : 1\n");
-    //res[0]   = nabla_b;
-    //res[1]   = nabla_w;
+    deltas[0]   = nabla_b;
+    deltas[1]   = nabla_w;
     //free
     *network = net;
     free(activations);
@@ -340,7 +340,7 @@ float **backprop(Network *network, float *x, float y) //may be done .....
     //free(nabla_b);
     //free(nabla_w);
     //I'm freeeee, from my worries
-    return res;
+    //return res;
 }
 Bashint *update_mini_bash(Bashint *mini_bash, size_t len_mini_bash,
     float eta, Network *network) //done
@@ -367,7 +367,9 @@ Bashint *update_mini_bash(Bashint *mini_bash, size_t len_mini_bash,
     Bashint b;
     float *x;
     float y;
+    printf("backprop : 0\n");
     float **deltas = malloc(sizeof(float *) * 2);
+    printf("backprop : 1\n");
     int j;
     size_t w;
     //printf("update_mini_bash : 5\n");
@@ -379,7 +381,8 @@ Bashint *update_mini_bash(Bashint *mini_bash, size_t len_mini_bash,
         //printf("update_mini_bash5.2 w = %zu\n", w);
         //printBashint(b);
         //printf("update_mini_bash : 5.5\n");
-        deltas = backprop(network, x, y);
+        //deltas =
+        backprop(network,deltas, x, y);
         //deltas[0] == delta_nabla_b and deltas[1] == delta_nabla_w
         //printf("update_mini_bash : 6 w = %zu\n", w);
         for(j = 0; j < net.lenbiases; ++j)
@@ -434,12 +437,13 @@ int argmax(float *array, int len)
 float evaluate(Bashint *test_data, int len_test_data, Network net)
 {
     float res = 0;
-    float **test_result = malloc(sizeof(float *) * len_test_data);
+    float **test_result = malloc(sizeof(float*) * len_test_data);
     int min_len =
         (net.lenbiases > net.lenweight ? net.lenweight : net.lenbiases);
     //building test_result
     for (int i = 0; i < len_test_data; ++i)
     {
+        printf("i : %d\n",i );
         test_result[i] = malloc(sizeof(float) * 2);
         test_result[i][0] = (float)argmax(feedforward(net,
             test_data[i].input), min_len);
@@ -501,7 +505,7 @@ Network SGD(Network net, Bashint *training_data, size_t len_training_data,
             printf("%2d: %f / %zu\n",j,evaluate(test_data,\
                 len_test_data,net),n_test);
         }
-        else{  
+        else{
             printf("Epoch %d complete.\n", j);
         }
     }
@@ -614,7 +618,7 @@ Network openNr(char *fileName)
 
 Bashint unsignedmatToBashint(UnsignedMatrix *matrix){
   Bashint basht;
-  basht.input      = malloc(sizeof(float) * 900);
+  basht.input      = malloc(sizeof(float) * 1000);
   for(size_t i = 0; i < 900; ++i){
     basht.input[i] = (float)matrix->data[i];
   }
@@ -722,14 +726,14 @@ char* appendChar(char *a, char *b){
     size_t la , lb ;
     la        = strlen(a);
     lb        = strlen(b);
-    
+
     printf("la : %zu,lb : %zu\n",la,lb );
     char* res = malloc((la + lb + 1) * sizeof(char));
-    
+
     strcpy(res,a);
     printf("%s\n", a);
     strcat(res ,b);
-    
+
     return res;
 
     //printf("%s\n", res);
@@ -750,7 +754,7 @@ char *useNetwork(Network net, Bashint input){
 /**
  * Easy training of the neural Network !
  * @param  Net network to improve
- * @return     The improved network ;) 
+ * @return     The improved network ;)
  */
 Network trainNet(Network net){
     char *res  = malloc(sizeof(char) * 300);
