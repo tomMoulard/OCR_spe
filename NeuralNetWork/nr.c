@@ -415,14 +415,16 @@ Bashint *update_mini_bash(Bashint *mini_bash, size_t len_mini_bash,
     free(nabla_w);
     return mini_bash;
 }
-void feedforward(Network net, float *x)
+float * feedforward(Network net, float *x)
 {
     int min_len =
         (net.lenbiases > net.lenweight ? net.lenweight : net.lenbiases);
+    float *res = malloc(sizeof(float) * min_len);
     for (int i = 0; i < min_len; ++i)
     {
-        x[i] = sigmoid(dotfloat(net.weight[i], x, min_len) + net.biases[i]);
+        res[i] = sigmoid(dotfloat(net.weight[i], x, min_len) + net.biases[i]);
     }
+    return res;
 }
 int argmax(float *array, int len)
 {
