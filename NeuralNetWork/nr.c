@@ -73,10 +73,45 @@ float **dot2star(float **a, float **b){
     return res;
 }
 
-float *dot(float *a, float *b){
-    float *res = malloc(sizeof(float) * );
-    
-    return res;
+float *dot_weights(Network net,int a, float* b){
+    if (a)
+    {
+        float *c = malloc(net.sizes[2] * sizeof(float));
+        for (int i = 0; i < net.sizes[2]; ++i)
+        {
+            c[i] = 0;
+            for (int j = 0; j < net.sizes[1]; ++j)
+            {
+                c[i] += accessWeights(net,a,i,j) * b[j];
+            }
+            c[i] += accessBiases(net,a,i);
+        }
+        return c;
+    }
+    else{
+        float *c = malloc(net.sizes[1] * 1 * sizeof(float));
+        for (int i = 0; i < net.sizes[1]; ++i)
+        {
+            c[i] = 0;
+            for (int j = 0; j < 900; ++j)
+            {
+                c[i] += accessWeights(net,a,i,j) * b[j];
+            }
+            c[i] += accessBiases(net,a,i);
+        }
+        return c;
+
+    }
+}
+
+float *cost_derivate(float* a,float val,int len){
+    float *b = malloc(len * sizeof(float))
+
+    for (int i = 0; i < len; ++i)
+    {
+        b[i] = a[i] - val;
+    }
+    return b;
 }
 
 float *append(float *a, float *b, int lenA, int lenB)
@@ -318,7 +353,7 @@ void backprop(Network *network, float **deltas,float *x, float y) //may be done 
     }
     //printf("backprop : 4\n");
     //feedforward
-    float *activation = malloc(sizeof(float) * 1000);
+    float *activation = malloc(sizeof(float) * 900);
     for(i = 0; i < 900; ++i){
         activation[i] = x[i];
     }
@@ -326,42 +361,31 @@ void backprop(Network *network, float **deltas,float *x, float y) //may be done 
     int min_len =
         (net.lenbiases > net.lenweight ? net.lenweight : net.lenbiases);
     //printf("min_len = %d\n", min_len);
-    float **activations = malloc(sizeof(float *) * min_len);
-    float *zs           = malloc(sizeof(float) * min_len);
-    float z;
+    float **activations = malloc(sizeof(float *) * 3);
+    activations[0]         = activation;
+    float **zs          = malloc(sizeof(float *) * 2);
     int thisLayerWieght  = 0;
     int nbneuronsleft    = net.numLayers[0];
     int posmininweight   = 0;
-    //float *resT;
-    //printf("backprop : 5\n");
-    for(i = 0; i < min_len - 1; ++i)
-    {
-        if(nbneuronsleft <= 0)
-        {
-            thisLayerWieght += 1;
-            nbneuronsleft = net.numLayers[thisLayerWieght];
-        }
-        //printf("backprop : 6.0.%d nbleft = %d, posmininweight = %d, this = %d, pos = %d\n", i, nbneuronsleft, posmininweight, net.numLayers[thisLayerWieght], thisLayerWieght);
-        posmininweight += 1;
-        float *resT = cutarray(net.weight, posmininweight,
-            posmininweight + net.numLayers[thisLayerWieght]);
-        //printf("backprop : 6.1.%d activation[%d] = %f\n", i, i, x[i]);
-        z = dotfloat(activation[i], resT, net.numLayers[thisLayerWieght]);
-        z              += net.biases[i];
-        //printf("backprop : 6.2.%d\n", i);
-        nbneuronsleft  -= 1;
-        zs[i]          = z;
-        //printf("backprop : 6.3.%d\n", i);
-        activation[i]  = sigmoid(z);
-        //printf("backprop : 6.4.%d\n", i);
-        activations[i] = activation;
-        //printf("backprop : 6.5.%d\n", i);
-        free(resT);
-    }
+
+    zs[0] = dot_weights(net,0,activation);
+    activations[1] = sigmoidStar(zs[0],net.sizes[1]);
+    zs[1] = dot_weights(net,1,activations[1]);
+    activations[2] = sigmoidStar(zs[1],net.sizes[2]);
+
     //printf("backprop : 6\n");
-    float delta = (activations[0][min_len - 1] - y )
-        * sigmoidPrime(zs[min_len - 1]);
-    float sp;
+    float* delta = cost_derivate(activation[2],y,net.sizes[2]);
+    for (int i = 0; i < net.sizes[2]; ++i)
+    {
+        delta[i] *= sigmoidPrime(zs[1][i]);
+    }
+
+    for (int i = net.sizes[1]; i < net.lenbiases; ++i)
+    {
+        nabla_b[i] = delta[i];
+    }
+
+    float *temp = dot_weights(delta,)
     //printf("backprop : 7\n");
     for (int l = 2; l < net.lenlayers; ++l)
     {
