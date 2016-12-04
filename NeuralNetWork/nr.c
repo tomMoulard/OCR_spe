@@ -440,6 +440,7 @@ float evaluate(Bashint *test_data, int len_test_data, Network net)
         feedforward(net,test_data[i].input, tmpFloatList);
         test_result[i][0] = (float)argmax(tmpFloatList, min_len);
         test_result[i][1] = test_data[i].res;
+        printf("Result : %f\n", test_result[i][0]);
     }
     free(tmpFloatList);
     //compute test_result
