@@ -43,6 +43,42 @@ float dotfloat(float coeff, float *a, int len)
     //printf("res = %f\n", res);
     return res;
 }
+int lenfloat(float *a){
+    int res = 0;
+    while(a[res]){
+        res++;
+    }
+    return res;
+}
+int lenfloat2(float **a){
+    int res = 0;
+    while (a[res]){
+        res ++;
+    }
+    return res;
+}
+float **dot2star(float **a, float **b){
+    int lena        = lenfloat(a[0]);
+    int lena2       = lenfloat2(a);
+    float **res = malloc(sizeof(float *) * lena2);
+    for(int i = 0; i < lena2; ++i){
+        res[i] = malloc(sizeof(float) * lena);
+        for(int j = 0; j < lena; ++j){
+            res[i][j] = 0;
+            for(int k = 0; k < lena2; ++k){
+                res[i][j] += a[i][k] + b[k][j];
+            }
+        }
+    }
+    return res;
+}
+
+float *dot(float *a, float *b){
+    float *res = malloc(sizeof(float) * );
+    
+    return res;
+}
+
 float *append(float *a, float *b, int lenA, int lenB)
 {  //To append two list a and b.
     float *res = malloc(sizeof(a) * lenA + sizeof(b) * lenB);
@@ -53,6 +89,22 @@ float *append(float *a, float *b, int lenA, int lenB)
     }
     return res;
 }
+
+//########################access################################
+
+float accessBiases(Network net, int a, int b){
+    return net.biases[net.sizes[2] * a + b];
+}
+
+float accessWeights(Network net, int a, int b, int c){
+    if(a == 0){
+        return net.weight[b * net.sizes[0] + c];
+    }
+    else{
+        return net.weight[net.sizes[0] * net.sizes[1] + b * net.sizes[2] + c];
+    }
+}
+
 //########################prints#################################
 void printArrayIntLen(int *array, int len)
 {  //explicit content
@@ -270,6 +322,7 @@ void backprop(Network *network, float **deltas,float *x, float y) //may be done 
     for(i = 0; i < 900; ++i){
         activation[i] = x[i];
     }
+
     int min_len =
         (net.lenbiases > net.lenweight ? net.lenweight : net.lenbiases);
     //printf("min_len = %d\n", min_len);
@@ -411,6 +464,7 @@ void feedforward(Network net, float *x, float *res)
 {
     int min_len =
         (net.lenbiases > net.lenweight ? net.lenweight : net.lenbiases);
+    printf("%d\n", net.lenweight);
     for (int i = 0; i < min_len; ++i)
     {
         float y = dotfloat(net.weight[i], x, min_len);
@@ -447,20 +501,20 @@ float evaluate(Bashint *test_data, int len_test_data, Network net)
     //building test_result
     //printBashintArray(test_data, len_test_data);
     float *tmpFloatList = malloc(sizeof(float) * min_len);
-    float *tmpFloatList2 = malloc(sizeof(float) * min_len);
+    //float *tmpFloatList2 = malloc(sizeof(float) * min_len);
     for (int i = 0; i < len_test_data; ++i)
     {
         //printf("i : %d len_test_data = %d\n",i, len_test_data);
         test_result[i] = malloc(sizeof(float) * 2);
         //printBashint(test_data[i]);
         feedforward(net,test_data[i].input, tmpFloatList);
-        tmpFloatList2 = cutarray(tmpFloatList, 100, 126);
+        //tmpFloatList2 = cutarray(tmpFloatList, 100, 126);
         //printList(tmpFloatList2, 26);
-        test_result[i][0] = (float)argmax(tmpFloatList2, min_len);
+        test_result[i][0] = (float)argmax(tmpFloatList + 100, 26);
         test_result[i][1] = test_data[i].res;
-        printf("\nResult : %f", test_result[i][0]);
+        printf("Result : %f == %f\n", test_result[i][0], test_result[i][1]);
     }
-    free(tmpFloatList);
+    //free(tmpFloatList);
     //compute test_result
     //printBashintArray(test_data, len_test_data);
     for (int i = 0; i < len_test_data; ++i)
@@ -483,7 +537,8 @@ Bashint *cutarrayBashint(Bashint *b, int posmin, int posmax)
     return res;
 }
 Network SGD(Network net, Bashint *training_data, size_t len_training_data,
-    int epoch, int mini_bash_size, float eta, int test_data)//V2
+    int epoch, int mini_bash_size, float eta, Bashint *test_data,\
+    int len_test_data)//V2
 {
     size_t n_test = mini_bash_size;
     size_t n = len_training_data;
@@ -515,8 +570,8 @@ Network SGD(Network net, Bashint *training_data, size_t len_training_data,
             while(mini_batches[x]){
                 x++;
             }
-            printf("%2d: %f / %zu\n",j,evaluate(mini_batches[x],\
-                n_test,net),n_test);
+            printf("%2d: %f / %zu\n",j,evaluate(test_data,\
+                len_test_data,net),n_test);
         }
         else{
             printf("Epoch %d complete.\n", j);
@@ -821,7 +876,12 @@ Network trainNet(Network net){
     int epoch = 1;
     float eta = 3.0;
 
-    net = SGD(net, testBash, len2, epoch, 16, eta, 1);
+    //Bashint *test_data = malloc(sizeof(Bashint) * len2/2);
+    //for(size_t j = 0; j < len2 / 2; ++j){
+    //    test_data[j] = testBash[i];
+    //}
+
+    net = SGD(net, testBash, len2, epoch, 16, eta, testBash, len2/2);
     return net;
 }
 

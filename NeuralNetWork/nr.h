@@ -18,15 +18,15 @@
 
 typedef struct Network Network;
 struct Network{
-  int    *numLayers;  //number of neurons by layers
-  int     lenlayers;  //len of numLayers
-  time_t  seed;       //seed to initiate random
-  int    *sizes;      //list of bite of the letter
-  int     len;        //len of size
-  float *biases;     //list of biases for neurons
-  int     lenbiases;  //nb neurons
-  float *weight;     //list of weights for neurons
-  int     lenweight;  //nb neurons //useless len biases == lenweights
+  int    *numLayers;     //number of neurons by layers
+  int     lenlayers;     //len of numLayers
+  time_t  seed;          //seed to initiate random
+  int    *sizes;         //list of bite of the letter
+  int     len;           //len of size
+  float *biases;         //list of biases for neurons
+  int     lenbiases;     //nb neurons
+  float  *weight;        //list of weights for neurons
+  int     lenweight;     //nb neurons //useless len biases == lenweights
 };
 
 typedef struct Bashint Bashint;
@@ -34,6 +34,7 @@ struct Bashint{
   float *input;
   float  res;
 };
+
 
 //########################################################
 //Usefull fonctions:
@@ -95,7 +96,8 @@ float evaluate(Bashint *test_data, int len_test_data, Network net);
 Bashint *cutarrayBashint(Bashint *b, int posmin, int posmax);
 
 Network SGD(Network net, Bashint *training_data, size_t len_training_data,
-  int epoch, int mini_bash_size, float eta, int test_data);
+  int epoch, int mini_bash_size, float eta, Bashint *test_data,\
+  int len_test_data);
 
 void fprintArrayIntLen(FILE *nr, int *array, int len);
 
