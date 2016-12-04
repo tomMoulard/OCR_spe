@@ -83,10 +83,10 @@ float *cutarray(float *array, int posmin, int posmax);;
 
 void backprop(Network *network,float **deltas, float *x, float y);
 
-Bashint *update_mini_bash(Bashint *mini_bash, size_t len_mini_bash,
-  float eta, Network *network);
+void update_mini_bash(Bashint *mini_bash, size_t len_mini_bash,
+  float eta, Network *network, Bashint *res);
 
-void feedforward(Network net, float *x);
+void feedforward(Network net, float *x, float *tmpFloatList);
 
 int argmax(float *array, int len);
 
@@ -95,8 +95,7 @@ float evaluate(Bashint *test_data, int len_test_data, Network net);
 Bashint *cutarrayBashint(Bashint *b, int posmin, int posmax);
 
 Network SGD(Network net, Bashint *training_data, size_t len_training_data,
-  int epoch, int mini_bash_size, float eta, Bashint *test_data,
-  size_t len_test_data);
+  int epoch, int mini_bash_size, float eta, int test_data);
 
 void fprintArrayIntLen(FILE *nr, int *array, int len);
 
