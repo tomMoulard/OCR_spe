@@ -20,6 +20,7 @@ struct Network{
 	int NumHidden;
 	int NumInput;
 	int NumOutput;
+	int is7;
 
 	double *ranpat;
 	double *deltaO;

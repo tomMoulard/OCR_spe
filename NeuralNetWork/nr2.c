@@ -148,8 +148,8 @@ Network *initNet(){
     srand(time(NULL));
 	Network *net = malloc(sizeof(Network));
 	net->NumInput      = 900;
-	net->NumOutput     = 26;
-	net->NumHidden     = 150;
+	net->NumOutput     = 64;
+	net->NumHidden     = 800;
 	
 	double smallWeight = 0.5;
 
@@ -331,7 +331,7 @@ int main()//int argc, char const *argv[])
 */
 void trainNetFinal(Network *net){
 	char *res  = malloc(sizeof(char) * 500);
-    FILE *file = fopen("NeuralNetWork/trainingData/1.txt", "r");
+    FILE *file = fopen("NeuralNetWork/trainingData/7.txt", "r");
     char tmp = '0';
     size_t i = 0;
     int rep = 0;
@@ -344,11 +344,12 @@ void trainNetFinal(Network *net){
 
     res[i + 1] = '\0';
     size_t len2 = 0;
-    char *filePath        = "NeuralNetWork/trainingData/1.bmp";
+    char *filePath        = "NeuralNetWork/trainingData/7.bmp";
     UnsignedMatrix **mats = from_img_to_letters(filePath,&len2);
-    len2 --;
-    printf("len2 = %zu\n", len2);
-	net->Numpattern    = 26;
+    len2 = 64;
+    //printf("len2 = %zu\n", len2);
+    //printf("%d\n",i );
+	net->Numpattern    = (int)i - 1;
 	double **input  = malloc(sizeof(double *) * net->Numpattern);
 	double **target = malloc(sizeof(double *) * net->Numpattern);
     for(i = 0; i < len2; ++i){
@@ -358,18 +359,29 @@ void trainNetFinal(Network *net){
 		}
     }
     for(size_t j = 0 ; j < len2; ++j){
-		target[j] = calloc(sizeof(double), net->Numpattern);
-		target[j][j % net->Numpattern] = 1;
+		target[j] = calloc(sizeof(double), len2);
+		target[j][j] = 1;
 
     }
-	trainNetwork(net, 1000, 0.0011, 0.9, input, target, 0);
+    /*
+    for(size_t i = 0; i < len2; i++){
+		printf("input : %c\n",res[i]);
+		for(int j = 0; j < 900; j++){
+			printf("%c ", input[i][j]? '#' : ' ');
+			if(j % 30 == 29){
+				printf("\n");
+			}
+		}
+	}*/
+
+	trainNetwork(net, 1000, 0.02, 0.9, input, target, 0);
 }
 
 int useNr(Network *net, double **input){
 	double **target = malloc(sizeof(double *));
 	target[0] = calloc(sizeof(double), net->NumOutput);
 	net->Numpattern = 1;
-	trainNetwork(net, 1, 0.001, 0.9, input, target, 1);
+	trainNetwork(net, 1, 0.01, 0.9, input, target, 1);
 	int res = 0;
 	for(int i = 0; i < net->NumOutput; ++i){
 		//printf("net->Output[0][i] = %f\n", net->Output[0][i]);	
@@ -396,7 +408,7 @@ char* add_spaces(char* a,size_t n){
   if (n == 0) {
     return new;
   }
-  for (size_t i = len - 1; i < len + n; i++) {
+  for (size_t i = len; i < len + n; i++) {
     new[i] = ' ';
   }
   new[len + n - 1] = '\0';
@@ -413,9 +425,33 @@ char *get_string(MatBinTree *mbt, Network *net){
         	input[0][i] = (double)mat->data[i];
         }
 		int res         = useNr(net, input);
-		//printf("%d ", res);
+		printf("%d ", res);
 		mbt->txt        = malloc(sizeof(char) * 2);
-		mbt->txt[0]     = res + 97;
+		mbt->txt[0] = 35;
+		if (res == 63)
+		{
+			mbt->txt[0] = 46;
+		}
+		else{
+			if (res == 62)
+			{
+				mbt->txt[0] = 44;
+			}
+			else{
+				if (res >= 0)
+				{
+					mbt->txt[0] = res + 97;
+				}
+				if(res >= 26){
+					mbt->txt[0] = res + 65 - 26;
+				}
+				if (res >= 52)
+				{
+					mbt->txt[0] = res - 4;
+				}
+			}
+		}
+		//mbt->txt[0]     = res < 26 ?res + 97 : res + 41;
 		mbt->txt[1]     = '\0';
 		//Bashint input = unsignedmatToBashint(mat);
 		//mbt->txt      = useNetwork(net, input);

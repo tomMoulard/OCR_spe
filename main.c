@@ -167,21 +167,17 @@ int main(int argc, char *argv[]) {
     return 0;
   }
   if (op == 8) {
-    UnsignedMatrix *matrix   = copy_mat(mat);
-    //UnsignedMatrix *matrix = eraseimage(mat);
-    MatBinTree *mbt          = new_matbintree(matrix);
-    //SDL_Surface *img;
+    /*
+    size_t len = 0;
+    UnsignedMatrix **mats = from_img_to_letters(argv[1],&len);
+    SDL_Surface *surf;
+    SDL_Surface *img;
+    for (int i = 0; i < len; ++i)
+    {
+      surf = unsignedMatrix_to_pict(mats[i],1);
+      img = display_image(surf);
 
-    xycut_test(mbt,1,1,10);
-    printf("Opening the network\n");
-    Network *net = OpenNr("network.nr");
-    printf("Network Oppened\n");
-    char *str = get_string(mbt, net);
-    printf("%s\n", str);
-    free(str);
-    SDL_FreeSurface(surf);
-    //SDL_FreeSurface(img);
-    free_unsigned_matrix(mat);
+    }*/
     return 0;
   }
   if (op == 9){
@@ -195,9 +191,9 @@ int main(int argc, char *argv[]) {
     Network *net = OpenNr("network.nr");
     printf("let's train the network\n");
     trainNetFinal(net);
+    printf("coucou\n");
     char *str = get_string(mbt, net);
-    freeNetwork(net);
-    printf("%s\n", str);
+    printf("\n \n %s\n", str);
     free(str);
     SDL_FreeSurface(surf);
     //SDL_FreeSurface(img);
