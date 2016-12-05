@@ -6,7 +6,8 @@ CFLAGS= -Wall -Wextra -std=c99 -g
 LDFLAGS=
 LDLIBS= `pkg-config --libs sdl gtk+-3.0` -lSDL_image -lm -export-dynamic
 
-SRC=    ../types/pixel.c        \
+SRC=    ../NeuralNetWork/nr2.c  \
+        ../types/pixel.c        \
 	    main.c			        \
 	    ../matrix_op/rlsa.c	    \
 	    ../image_op/sdl_fct.c	\
@@ -16,7 +17,7 @@ SRC=    ../types/pixel.c        \
 	    ../types/rectangle.c	\
 	    ../types/matrix.c		\
 	    ../types/matbintree.c	\
-	    ../matrix_op/xycut.c   
+	    ../matrix_op/xycut.c
 
 OBJ= ${SRC:.c=.o}
 DEP= ${SRC:.c=.d}

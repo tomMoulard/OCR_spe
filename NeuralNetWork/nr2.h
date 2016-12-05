@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <time.h>
-#include <stdlib.h> 
+#include <stdlib.h>
 #include "../types/matrix.h"
 #include "../image_op/sdl_fct.h"
 #include "../types/matbintree.h"
@@ -50,7 +50,7 @@ void saveNr(Network *net, char *filePath);
 
 void freeNetwork(Network *net); //called in SaveNr
 
-char *get_string(MatBinTree *mbt, Network *net);
+void get_string(MatBinTree *mbt, Network *net);
 
 void printNr(Network *net);
 
