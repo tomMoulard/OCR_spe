@@ -162,7 +162,7 @@ Network *initNet(){
 	net->Error     = 0;
 	net->NumInput  = 900;
 	net->NumOutput = 64;
-	net->NumHidden = 800;
+	net->NumHidden = 100;
 	
 	double smallWeight = 0.5;
 
@@ -202,7 +202,7 @@ Network *initNet(){
 }
 Network *OpenNr(char *filePath){
 	Network *net = OpenNrFromFile(filePath);
-	//net->NumInput = -1;
+	net->NumInput = -1;
 	if (net->NumInput == -1){
 		net = initNet();
 	}
@@ -288,29 +288,23 @@ void trainNetwork(Network *net, size_t _epoch, double eta,\
 		if(epoch % 100 == 99){printf("epoch : %zu -> Error : %f\n", epoch, net->Error);}
 		if(net->Error < 0.0005){break;}
 	}
-	//for(int i = 0; i < net->NumOutput; i++){
-		//printf("input :\n");
-		//for(int j = 0; j < 900; j++){
-		//	//printf("%c ", input[i][j]? '#' : ' ');
-		//	if(j % 30 == 29){
-		//		//printf("\n");
-		//	}
-		//}
-		//printf("\noutput : ");
-		//for(int j = 0; j < net->NumOutput; ++j){
-			//printf("%f ", net->Output[i][j]);
-		//}
-		//printf("\n");
-	//}
+	for(int i = 0; i < net->NumOutput; i++){
+		printf("input :\n");
+		for(int j = 0; j < 900; j++){
+			printf("%c ", input[i][j]? '#' : ' ');
+			if(j % 30 == 29){
+				printf("\n");
+			}
+		}
+		printf("\noutput : ");
+		for(int j = 0; j < net->NumOutput; ++j){
+			printf("%f ", net->Output[i][j]);
+		}
+		printf("\n");
+	}
 
 }
 
-/*
-int useNetwork(Network net, double *input){
-	int res = 0;
-
-	return res;
-}*/
 /*
 int main()//int argc, char const *argv[])
 {
@@ -344,7 +338,7 @@ int main()//int argc, char const *argv[])
 */
 void trainNetFinal(Network *net){
 	char *res  = malloc(sizeof(char) * 500);
-    FILE *file = fopen("NeuralNetWork/trainingData/7.txt", "r");
+    FILE *file = fopen("trainingData/7.txt", "r");
     char tmp = '0';
     size_t i = 0;
     int rep = 0;
@@ -354,10 +348,9 @@ void trainNetFinal(Network *net){
         i++;
     }
     fclose(file);
-
     res[i + 1] = '\0';
     size_t len2 = 0;
-    char *filePath        = "NeuralNetWork/trainingData/7.bmp";
+    char *filePath        = "trainingData/7.bmp";
     UnsignedMatrix **mats = from_img_to_letters(filePath,&len2);
     len2 = 64;
     //printf("len2 = %zu\n", len2);
@@ -376,18 +369,7 @@ void trainNetFinal(Network *net){
 		target[j][j] = 1;
 
     }
-    /*
-    for(size_t i = 0; i < len2; i++){
-		printf("input : %c\n",res[i]);
-		for(int j = 0; j < 900; j++){
-			printf("%c ", input[i][j]? '#' : ' ');
-			if(j % 30 == 29){
-				printf("\n");
-			}
-		}
-	}*/
-
-	trainNetwork(net, 1000, 0.02, 0.9, input, target, 0);
+	trainNetwork(net, 10000, 0.002, 0.9, input, target, 0);
 }
 
 int useNr(Network *net, double **input){
@@ -413,6 +395,61 @@ char *concatenate(char* a,char* b){
   strcat(res,b);
   return res;
 }
+/*
+char* justify(char*a,char* b){
+	size_t max = 0;
+	size_t curr = 0;
+	size_t la = 0,lb = 0;
+	for (size_t i = 0; a[i]; ++i)
+	{
+		if (a[i] == '\n')
+		{
+			max = curr > max?curr : max;
+			curr = 0;
+			la++;
+		}
+		curr++;
+	}
+	max = curr > max?curr : max;
+	curr = 0;
+	la++;
+
+	for (int i = 0; i < b[i]; ++i)
+	{
+		if (a[i] == '\n')
+		{
+			max = curr > max?curr : max;
+			curr = 0;
+			lb++
+		}
+		curr++;
+	}
+	max = curr > max?curr : max;
+	curr = 0;
+	lb++;
+
+	char *c = malloc(sizeof(char) * max * (la + lb));
+	size_t posc = 0,curr = 0;
+	for (int i = 0; a[i]; ++i)
+	{
+		if (a[i] == '\n')
+		{
+			for (int i = 0; i < max - cur; ++i)
+			{
+				c[posc] = ' ';
+				posc++;
+			}
+		}
+
+
+	}
+
+
+
+
+
+}
+*/
 
 char* add_spaces(char* a,size_t n){
   size_t len = strlen(a);
@@ -438,7 +475,7 @@ char *get_string(MatBinTree *mbt, Network *net){
         	input[0][i] = (double)mat->data[i];
         }
 		int res         = useNr(net, input);
-		printf("%d ", res);
+		//printf("%d ", res);
 		mbt->txt        = malloc(sizeof(char) * 2);
 		mbt->txt[0] = res + 97;
 		//mbt->txt[0]     = res < 26 ?res + 97 : res + 41;
