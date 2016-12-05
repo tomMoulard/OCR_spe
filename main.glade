@@ -220,6 +220,21 @@ Trust us, we have AdaBoost</property>
             <property name="y">54</property>
           </packing>
         </child>
+        <child>
+          <object class="GtkButton" id="button2">
+            <property name="label" translatable="yes">train network</property>
+            <property name="width_request">100</property>
+            <property name="height_request">30</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <signal name="clicked" handler="learn" swapped="no"/>
+          </object>
+          <packing>
+            <property name="x">211</property>
+            <property name="y">3</property>
+          </packing>
+        </child>
       </object>
     </child>
   </object>

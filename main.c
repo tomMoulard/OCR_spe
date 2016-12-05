@@ -137,6 +137,17 @@ void rotate_image(double angle)
   gtk_image_set_from_file(GTK_IMAGE(image), "images/tmp.bmp");
 }
 
+void learn()
+{   
+    printf("yolo\n");
+    Network *net = OpenNr("neuralNetwork.nr");
+    printf("yolo\n");
+    trainNetFinal(net);
+    printf("yolo\n");
+    saveNr(net, "network.nr");
+    printf("yolo\n");
+}
+
 char *compute()
 {   
     UnsignedMatrix *matrix = copy_mat(mat);
