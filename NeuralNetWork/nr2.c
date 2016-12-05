@@ -23,21 +23,46 @@ void shuffle(double *input, int len){
 	}
 }
 
+UnsignedMatrix **from_img_to_letters(char *filepath, size_t *len){
+  size_t lines = bmpWidth(filepath);
+  size_t cols = bmpHeight(filepath);
+  SDL_Surface *surf;
+  init_sdl();
+  PixelMatrix *image = new_pixel_matrix(lines, cols);
+  //printf("Display image : %s\n", filepath);
+  surf = load_image(filepath);
+  save_image(surf, image);
+  UnsignedMatrix *mat = new_unsigned_matrix(lines, cols);
+  binarize(image, mat);
+  free_pixel_matrix(image);
+
+  UnsignedMatrix *matrix = copy_mat(mat);
+
+  MatBinTree *mbt = new_matbintree(matrix);
+  xycut_test(mbt,1,1,10);
+  UnsignedMatrix **mats = get_letters(mbt,len);
+
+  free_matbintree(mbt);
+  SDL_FreeSurface(surf);
+  free_unsigned_matrix(mat);
+  return mats;
+}
+
 Network *initNet(){
     srand(time(NULL));
 	Network *net = malloc(sizeof(Network));
-	net->NumInput      = 2;//= 900;
-	net->NumOutput     = 1;//= 26;
-	net->NumHidden     = 2;//= (net->NumInput + net->NumOutput) / 2;
+	net->NumInput      = 900;
+	net->NumOutput     = 2;
+	net->NumHidden     = 150;
 	
 	double smallWeight = 0.5;
 
-	net->deltaWeightLH = malloc(sizeof(double *) * (net->NumHidden + 1));
-	net->WeightLH      = malloc(sizeof(double *) * (net->NumHidden + 1));
-	for(int i = 0; i < net->NumHidden  + 1; i++){
+	net->deltaWeightLH = malloc(sizeof(double *) * (net->NumInput + 1));
+	net->WeightLH      = malloc(sizeof(double *) * (net->NumInput + 1));
+	for(int i = 0; i < net->NumInput  + 1; i++){
 		net->deltaWeightLH[i] = malloc(sizeof(double) * net->NumHidden);
 		net->WeightLH[i]      = malloc(sizeof(double) * net->NumHidden);
-		for(int j = 0; j < net->NumInput;j++){
+		for(int j = 0; j < net->NumHidden;j++){
 			net->deltaWeightLH[i][j] = 0.0;
 			net->WeightLH[i][j] = 2.0 * (rando() - 0.5) * smallWeight;
 		}
@@ -140,12 +165,15 @@ void trainNetwork(Network *net, size_t _epoch, double eta,\
 				}
 			}
 		}
-		printf("Error : %f\n", net->Error);
+		printf("epoch : %zu -> Error : %f\n", epoch, net->Error);
 	}
-	for(int i = 0; i < net->Numpattern; i++){
+	for(int i = 0; i < net->NumOutput; i++){
 		printf("input :\n");
-		for(int j = 0; j < 2; j++){
-			printf("%f ", input[i][j]);
+		for(int j = 0; j < 900; j++){
+			printf("%c ", input[i][j]? '#' : ' ');
+			if(j % 30 == 29){
+				printf("\n");
+			}
 		}
 		printf("\noutput : ");
 		printf("%f\n", net->Output[i][0]);
@@ -159,7 +187,7 @@ int useNetwork(Network net, double *input){
 
 	return res;
 }*/
-
+/*
 int main()//int argc, char const *argv[])
 {
 	Network *net = initNet();
@@ -186,6 +214,47 @@ int main()//int argc, char const *argv[])
 	target[2][0] = 1;
 	target[3] = malloc(sizeof(double) * 1);
 	target[3][0] = 0;
-	trainNetwork(net, 100000, 0.5, 0.9, input, target);
+	trainNetwork(net, 100000, 0.1, 0.9, input, target);
+	return 0;
+}
+*/
+void trainNetFinal(Network *net){
+	char *res  = malloc(sizeof(char) * 500);
+    FILE *file = fopen("trainingData/3.txt", "r");
+    char tmp = '0';
+    size_t i = 0;
+    int rep = 0;
+    while(tmp != '\n'){
+        rep += fscanf(file, "%c", &tmp);
+        res[i] = tmp;
+        i++;
+    }
+    fclose(file);
+
+    res[i + 1] = '\0';
+    size_t len2 = 0;
+    char *filePath        = "trainingData/3.bmp";
+    UnsignedMatrix **mats = from_img_to_letters(filePath,&len2);
+    len2 --;
+	net->Numpattern    = len2;
+	double **input  = malloc(sizeof(double *) * net->Numpattern);
+	double **target = malloc(sizeof(double *) * net->Numpattern);
+    for(i = 0; i < len2; ++i){
+		input[i]  = malloc(sizeof(double) * 900);
+		for(int j = 0; j < 900; ++j){
+			input[i][j] = (double)mats[i]->data[j];
+		}
+    }
+    for(size_t j = 0 ; j < len2; ++j){
+		target[j] = calloc(sizeof(double), 1);
+		target[j][0] = j;
+
+    }
+	trainNetwork(net, 100, 0.1, 0.9, input, target);
+}
+int main()//int argc, char const *argv[])
+{
+	Network *net = initNet();
+	trainNetFinal(net);
 	return 0;
 }
