@@ -146,7 +146,7 @@ char *compute()
     trainNetFinal(net);
     char *result = get_string(mbt, net);
     freeNetwork(net);
-    free_unsigned_matrix(mat);
+    //free_unsigned_matrix(mat);
     return result;
 }
 
