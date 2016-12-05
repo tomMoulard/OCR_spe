@@ -50,7 +50,7 @@ void saveNr(Network *net, char *filePath);
 
 void freeNetwork(Network *net); //called in SaveNr
 
-void get_string(MatBinTree *mbt, Network *net);
+char *get_string(MatBinTree *mbt, Network *net);
 
 void printNr(Network *net);
 
