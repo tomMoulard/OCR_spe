@@ -11,6 +11,7 @@ SRC=    ../types/pixel.c        \
 	    ../matrix_op/rlsa.c	    \
 	    ../image_op/sdl_fct.c	\
 	    ../image_op/binarize.c	\
+	    ../image_op/rotation.c	\
 	    ../images/database.c	\
 	    ../types/rectangle.c	\
 	    ../types/matrix.c		\

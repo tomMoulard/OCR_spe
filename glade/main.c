@@ -26,6 +26,7 @@ GtkWidget *wimage;
 GtkWidget *image;
 int first = 0;
 UnsignedMatrix *mat;
+double angle_final = 0.0;
 
 void display_image_gtk(const gchar *filename)
 {
@@ -101,18 +102,22 @@ void choose_image(char *file)
     display_image_gtk("../images/tmp.bmp");
     /*for(int i = 0; i < 5; i++)
         gtk_widget_set_opacity(button[i], 1.0);*/
-    //display image into widget
 }
 
-/*
 void rotate_image(double angle)
 {
-  mat = rotation(mat, angle);
-  SDL_Surface *surf = unsignedMAtrix_to_pict(mat, 1);
+  angle_final += angle;
+  if(angle_final >= 360.0)
+    angle_final -= 360.0;
+  if(angle_final <= -360.0)
+    angle_final += 360.0;
+  UnsignedMatrix *rot = rotation(mat, angle_final);
+  SDL_Surface *surf = unsignedMatrix_to_pict(rot, 1);
+  free_unsigned_matrix(rot);
   SDL_SaveBMP(surf, "../images/tmp.bmp");
-  gtk_image_set_from_file(image, "ii/images/tmp.bmp");
+  gtk_image_set_from_file(GTK_IMAGE(image), "../images/tmp.bmp");
 }
-*/
+
 
 //use all button to rotate the mat
 
@@ -124,9 +129,35 @@ void file_selected(GtkWidget *filechooserbutton)
   choose_image(filename);
 }
 
+void min_one()
+{   
+  rotate_image(-1.0);
+}
+
+void min_ten()
+{   
+  rotate_image(-10.0);
+}
+
+void plus_ninety()
+{   
+  rotate_image(90.0);
+}
+
+void plus_ten()
+{   
+  rotate_image(10.0);
+}
+
+void plus_one()
+{   
+  rotate_image(1.0);
+}
+
 void play_button()
 {
     //call for all op of the OCR
+    //mat = rotation(mat, angle_final);
     display_text("lol");
     gtk_widget_hide(window);
     //gtk_main_quit();
