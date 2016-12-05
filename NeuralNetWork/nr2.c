@@ -440,30 +440,7 @@ char *get_string(MatBinTree *mbt, Network *net){
 		int res         = useNr(net, input);
 		printf("%d ", res);
 		mbt->txt        = malloc(sizeof(char) * 2);
-		mbt->txt[0] = 35;
-		if (res == 63)
-		{
-			mbt->txt[0] = 46;
-		}
-		else{
-			if (res == 62)
-			{
-				mbt->txt[0] = 44;
-			}
-			else{
-				if (res >= 0)
-				{
-					mbt->txt[0] = res + 97;
-				}
-				if(res >= 26){
-					mbt->txt[0] = res + 65 - 26;
-				}
-				if (res >= 52)
-				{
-					mbt->txt[0] = res - 4;
-				}
-			}
-		}
+		mbt->txt[0] = res + 97;
 		//mbt->txt[0]     = res < 26 ?res + 97 : res + 41;
 		mbt->txt[1]     = '\0';
 		//Bashint input = unsignedmatToBashint(mat);
