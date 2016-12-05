@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.18.3 -->
+<!-- Generated with glade 3.20.0 -->
 <interface>
   <requires lib="gtk+" version="3.12"/>
   <object class="GtkFileFilter" id="filefilter1">
@@ -95,7 +95,7 @@
           </object>
           <packing>
             <property name="x">218</property>
-            <property name="y">167</property>
+            <property name="y">160</property>
           </packing>
         </child>
         <child>
@@ -109,8 +109,8 @@
             <signal name="clicked" handler="min_ten" swapped="no"/>
           </object>
           <packing>
-            <property name="x">111</property>
-            <property name="y">166</property>
+            <property name="x">114</property>
+            <property name="y">160</property>
           </packing>
         </child>
         <child>
@@ -126,7 +126,7 @@
           </object>
           <packing>
             <property name="x">324</property>
-            <property name="y">168</property>
+            <property name="y">160</property>
           </packing>
         </child>
         <child>
@@ -141,7 +141,7 @@
           </object>
           <packing>
             <property name="x">430</property>
-            <property name="y">170</property>
+            <property name="y">160</property>
           </packing>
         </child>
         <child>
@@ -179,11 +179,68 @@ Trust us, we have AdaBoost</property>
             <signal name="clicked" handler="min_one" swapped="no"/>
           </object>
           <packing>
-            <property name="x">5</property>
-            <property name="y">167</property>
+            <property name="x">8</property>
+            <property name="y">160</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="quit">
+            <property name="label">gtk-quit</property>
+            <property name="width_request">525</property>
+            <property name="height_request">50</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="halign">start</property>
+            <property name="margin_left">5</property>
+            <property name="margin_right">5</property>
+            <property name="margin_top">5</property>
+            <property name="margin_bottom">5</property>
+            <property name="border_width">5</property>
+            <property name="use_stock">True</property>
+            <property name="always_show_image">True</property>
+            <signal name="clicked" handler="on_quit_clicked" swapped="no"/>
+          </object>
+          <packing>
+            <property name="y">700</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkTextView" id="textBox2">
+            <property name="name">textBox2</property>
+            <property name="width_request">504</property>
+            <property name="height_request">100</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+          </object>
+          <packing>
+            <property name="x">15</property>
+            <property name="y">254</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="textBox">
+            <property name="name">textBox</property>
+            <property name="width_request">300</property>
+            <property name="height_request">300</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">label</property>
+            <child internal-child="accessible">
+              <object class="AtkObject" id="textBox-atkobject">
+                <property name="AtkObject::accessible-name" translatable="yes">textBox</property>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="x">20</property>
+            <property name="y">369</property>
           </packing>
         </child>
       </object>
+    </child>
+    <child type="titlebar">
+      <placeholder/>
     </child>
   </object>
 </interface>
