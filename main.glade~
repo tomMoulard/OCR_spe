@@ -264,7 +264,6 @@ Trust us, we have AdaBoost</property>
             <property name="sensitive">False</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
-            <property name="valign">baseline</property>
             <signal name="clicked" handler="seg" swapped="no"/>
           </object>
           <packing>
