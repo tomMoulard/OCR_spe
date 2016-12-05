@@ -2,17 +2,20 @@
 <!-- Generated with glade 3.18.3 -->
 <interface>
   <requires lib="gtk+" version="3.12"/>
+  <object class="GtkFileFilter" id="filefilter1">
+    <patterns>
+      <pattern>*.bmp</pattern>
+    </patterns>
+  </object>
   <object class="GtkWindow" id="window">
     <property name="name">window</property>
     <property name="can_focus">False</property>
     <property name="opacity">0.94999999999999996</property>
     <property name="type">popup</property>
     <property name="title" translatable="yes">window</property>
-    <property name="default_width">640</property>
-    <property name="default_height">480</property>
     <property name="type_hint">utility</property>
     <property name="has_resize_grip">True</property>
-    <signal name="destroy" handler="destroy_main" swapped="no"/>
+    <signal name="destroy" handler="destroy" swapped="no"/>
     <child>
       <object class="GtkFixed" id="fixed1">
         <property name="visible">True</property>
@@ -40,7 +43,9 @@
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
             <property name="valign">baseline</property>
+            <property name="relief">half</property>
             <property name="use_stock">True</property>
+            <property name="xalign">0.49000000953674316</property>
             <property name="yalign">0.44999998807907104</property>
             <signal name="clicked" handler="play_button" after="yes" swapped="yes"/>
           </object>
@@ -51,10 +56,13 @@
         </child>
         <child>
           <object class="GtkFileChooserButton" id="filechooserbutton1">
+            <property name="name">chooser</property>
             <property name="width_request">100</property>
             <property name="height_request">80</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="filter">filefilter1</property>
+            <signal name="file-set" handler="file_selected" swapped="no"/>
           </object>
           <packing>
             <property name="x">43</property>
@@ -76,27 +84,14 @@
           </packing>
         </child>
         <child>
-          <object class="GtkButton" id="button2">
-            <property name="label" translatable="yes">button</property>
-            <property name="width_request">100</property>
-            <property name="height_request">80</property>
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
-          </object>
-          <packing>
-            <property name="x">5</property>
-            <property name="y">166</property>
-          </packing>
-        </child>
-        <child>
           <object class="GtkButton" id="button3">
-            <property name="label" translatable="yes">button</property>
+            <property name="label" translatable="yes">+90°</property>
             <property name="width_request">100</property>
             <property name="height_request">80</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
+            <signal name="clicked" handler="plus_ninety" swapped="no"/>
           </object>
           <packing>
             <property name="x">218</property>
@@ -105,12 +100,13 @@
         </child>
         <child>
           <object class="GtkButton" id="button4">
-            <property name="label" translatable="yes">button</property>
+            <property name="label" translatable="yes">-10°</property>
             <property name="width_request">100</property>
             <property name="height_request">80</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
+            <signal name="clicked" handler="min_ten" swapped="no"/>
           </object>
           <packing>
             <property name="x">111</property>
@@ -119,12 +115,14 @@
         </child>
         <child>
           <object class="GtkButton" id="button5">
-            <property name="label" translatable="yes">button</property>
+            <property name="label" translatable="yes">+10°</property>
             <property name="width_request">100</property>
             <property name="height_request">80</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
+            <property name="xalign">0.46000000834465027</property>
+            <signal name="clicked" handler="plus_ten" swapped="no"/>
           </object>
           <packing>
             <property name="x">324</property>
@@ -133,12 +131,13 @@
         </child>
         <child>
           <object class="GtkButton" id="button6">
-            <property name="label" translatable="yes">button</property>
+            <property name="label" translatable="yes">+1°</property>
             <property name="width_request">100</property>
             <property name="height_request">80</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
+            <signal name="clicked" handler="plus_one" swapped="no"/>
           </object>
           <packing>
             <property name="x">430</property>
@@ -167,6 +166,21 @@ Trust us, we have AdaBoost</property>
           <packing>
             <property name="x">160</property>
             <property name="y">55</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="button2">
+            <property name="label" translatable="yes">-1°</property>
+            <property name="width_request">100</property>
+            <property name="height_request">80</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <signal name="clicked" handler="min_one" swapped="no"/>
+          </object>
+          <packing>
+            <property name="x">5</property>
+            <property name="y">167</property>
           </packing>
         </child>
       </object>
