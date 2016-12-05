@@ -1,27 +1,44 @@
+# define _XOPEN_SOURCE 500
+
 # include <gtk/gtk.h>
 # include <stdio.h>
+# include <stdlib.h>
 # include <err.h>
-//# include <SDL/SDL.h>
-//# include <SDL/SDL_image.h>
+# include <SDL/SDL.h>
+# include <SDL/SDL_image.h>
+
+# include "../types/pixel.h"
+# include "../image_op/binarize.h"
+# include "../matrix_op/rlsa.h"
+# include "../types/rectangle.h"
+# include "../types/matrix.h"
+# include "../types/matbintree.h"
+# include "../matrix_op/xycut.h"
+# include "../image_op/sdl_fct.h"
+# include "../images/database.h"
+# include "../image_op/rotation.h"
+
+//neural NetWork
+# include "../NeuralNetWork/nr.h"
 
 GtkWidget *window;
+GtkWidget *wimage;
 GtkWidget *image;
-//UnsignedMatrix *mat;
+int first = 0;
+UnsignedMatrix *mat;
 
-GtkWidget *display_image(const gchar *filename)
+void display_image_gtk(const gchar *filename)
 {
-    GtkWidget *wimage = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    wimage = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_default_size(GTK_WINDOW(wimage), 320, 200);
     gtk_window_set_title(GTK_WINDOW(wimage), "GtkImage");
     g_signal_connect(G_OBJECT(wimage), "destroy", 
                               G_CALLBACK(gtk_main_quit), NULL);
     GtkWidget *pVBox = gtk_box_new(FALSE, 0);
     gtk_container_add(GTK_CONTAINER(wimage), pVBox);
-    GtkWidget *image = gtk_image_new_from_file(filename);
+    image = gtk_image_new_from_file(filename);
     gtk_box_pack_start(GTK_BOX(pVBox), image, FALSE, FALSE, 5);
     gtk_widget_show_all(wimage);
-    return image;
-
 }
 
 void display_text(const gchar *text)
@@ -44,9 +61,10 @@ void display_text(const gchar *text)
     gtk_widget_show_all(wtext);
 }
 
+
 int main(int argc, char *argv[])
 {
-    //init_sdl();
+    init_sdl();
     GtkBuilder      *builder; 
     gtk_init(&argc, &argv);
     builder = gtk_builder_new();
@@ -59,13 +77,16 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-
 //see how to use the chooser file
 
-/*
-void chose_image()
-{
+
+void choose_image(char *file)
+{   
     //test if it is a bmp
+    if(first)
+      gtk_widget_hide(wimage);
+    else
+      first = 1;
     //get the image, bineraze it and save it to a file
     size_t lines = bmpWidth(file);
     size_t cols = bmpHeight(file);
@@ -75,14 +96,15 @@ void chose_image()
     save_image(surf, img);
     binarize(img, mat);
     surf = unsignedMatrix_to_pict(mat, 1);
-    SDL_SaveBMP(surf, "images/tmp.bmp");
+    SDL_SaveBMP(surf, "../images/tmp.bmp");
     free_pixel_matrix(img);
-    image = display_image("../images/tmp.bmp");
-    for(int i = 0; i < 5; i++)
-        gtk_widget_set_opacity(button[i], 1.0);
+    display_image_gtk("../images/tmp.bmp");
+    /*for(int i = 0; i < 5; i++)
+        gtk_widget_set_opacity(button[i], 1.0);*/
     //display image into widget
 }
 
+/*
 void rotate_image(double angle)
 {
   mat = rotation(mat, angle);
@@ -90,10 +112,17 @@ void rotate_image(double angle)
   SDL_SaveBMP(surf, "../images/tmp.bmp");
   gtk_image_set_from_file(image, "ii/images/tmp.bmp");
 }
-
 */
 
 //use all button to rotate the mat
+
+void file_selected(GtkWidget *filechooserbutton)
+{
+  char *filename =
+    gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(filechooserbutton));
+  printf("%s\n", filename);
+  choose_image(filename);
+}
 
 void play_button()
 {

@@ -8,11 +8,9 @@
     <property name="opacity">0.94999999999999996</property>
     <property name="type">popup</property>
     <property name="title" translatable="yes">window</property>
-    <property name="default_width">640</property>
-    <property name="default_height">480</property>
     <property name="type_hint">utility</property>
     <property name="has_resize_grip">True</property>
-    <signal name="destroy" handler="destroy_main" swapped="no"/>
+    <signal name="destroy" handler="destroy" swapped="no"/>
     <child>
       <object class="GtkFixed" id="fixed1">
         <property name="visible">True</property>
@@ -51,10 +49,12 @@
         </child>
         <child>
           <object class="GtkFileChooserButton" id="filechooserbutton1">
+            <property name="name">chooser</property>
             <property name="width_request">100</property>
             <property name="height_request">80</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <signal name="file-set" handler="file_selected" swapped="no"/>
           </object>
           <packing>
             <property name="x">43</property>
