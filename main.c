@@ -195,10 +195,8 @@ int main(int argc, char *argv[]) {
     Network *net = OpenNr("network.nr");
     printf("let's train the network\n");
     trainNetFinal(net);
-    printf("coucou\n");
-    printNr(net);
     char *str = get_string(mbt, net);
-    saveNr(net);
+    freeNetwork(net);
     printf("%s\n", str);
     free(str);
     SDL_FreeSurface(surf);
