@@ -150,7 +150,7 @@ Network *initNet(){
 	net->NumInput      = 900;
 	net->NumOutput     = 64;
 	net->NumHidden     = 800;
-	
+
 	double smallWeight = 0.5;
 
 	net->deltaWeightLH = malloc(sizeof(double *) * (net->NumInput + 1));
@@ -384,7 +384,7 @@ int useNr(Network *net, double **input){
 	trainNetwork(net, 1, 0.01, 0.9, input, target, 1);
 	int res = 0;
 	for(int i = 0; i < net->NumOutput; ++i){
-		//printf("net->Output[0][i] = %f\n", net->Output[0][i]);	
+		//printf("net->Output[0][i] = %f\n", net->Output[0][i]);
 		if(net->Output[0][res] < net->Output[0][i]){
 			res = i;
 		}
@@ -415,7 +415,7 @@ char* add_spaces(char* a,size_t n){
   return new;
 }
 
-char *get_string(MatBinTree *mbt, Network *net){
+void get_string(MatBinTree *mbt, Network *net){
     if (mbt) {
       if (!mbt->left && !mbt->right) {
         UnsignedMatrix *mat = expand_mat(mbt->key,30,30);
@@ -456,27 +456,13 @@ char *get_string(MatBinTree *mbt, Network *net){
 		//Bashint input = unsignedmatToBashint(mat);
 		//mbt->txt      = useNetwork(net, input);
         free_unsigned_matrix(mat);
-        return mbt->txt;
       }
       else{
-        if (mbt->ver) {
-          char* temp = add_spaces(get_string(mbt->left, net),mbt->ver / 10);
-          mbt->txt   = concatenate(temp,get_string(mbt->right, net));
-          return mbt->txt;
-        }
-        if (mbt->hor) {
-          char *temp = concatenate(get_string(mbt->left, net),"\n");
-          mbt->txt   = concatenate(temp,get_string(mbt->right, net));
-          return mbt->txt;
-        }
-        mbt->txt = concatenate(get_string(mbt->left, net),get_string(mbt->right, net));
-        return mbt->txt;
-
-        //free(temp);
+				get_string(mbt->left,net);
+				get_string(mbt->right,net);
       }
 
     }
-    return "";
 }
 /*
 int main()//int argc, char const *argv[])

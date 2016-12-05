@@ -192,9 +192,9 @@ int main(int argc, char *argv[]) {
     printf("let's train the network\n");
     trainNetFinal(net);
     printf("coucou\n");
-    char *str = get_string(mbt, net);
-    printf("\n \n %s\n", str);
-    free(str);
+    get_string(mbt, net);
+    //printf("\n \n %s\n", str);
+    //free(str);
     SDL_FreeSurface(surf);
     //SDL_FreeSurface(img);
     free_unsigned_matrix(mat);
