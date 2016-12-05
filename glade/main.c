@@ -24,6 +24,7 @@
 GtkWidget *window;
 GtkWidget *wimage;
 GtkWidget *image;
+GtkWidget *textBox;
 int first = 0;
 UnsignedMatrix *mat;
 double angle_final = 0.0;
@@ -66,13 +67,24 @@ void display_text(const gchar *text)
 int main(int argc, char *argv[])
 {
     init_sdl();
-    GtkBuilder      *builder; 
+    GtkBuilder      *builder;
+    //GtkWidget       *windows;
+    
     gtk_init(&argc, &argv);
+
     builder = gtk_builder_new();
     gtk_builder_add_from_file (builder, "main.glade", NULL);
+
     window = GTK_WIDGET(gtk_builder_get_object(builder, "window"));
     gtk_builder_connect_signals(builder, NULL);
+
+    
+    textBox = GTK_WIDGET(gtk_builder_get_object(builder, "lbl_hello"));
+    gtk_builder_connect_signals(builder, NULL);
+
+    
     g_object_unref(builder);
+    
     gtk_widget_show(window);
     gtk_main();
     return 0;
@@ -158,12 +170,25 @@ void play_button()
 {
     //call for all op of the OCR
     //mat = rotation(mat, angle_final);
-    display_text("lol");
-    gtk_widget_hide(window);
+    
+    //display_text("lol");
+    gtk_label_set_text(GTK_LABEL(textBox), "Hello, world!");
+    /////////////gtk_widget_hide(window);
     //gtk_main_quit();
 }
+
+/*void print_text()
+{
+
+}*/
 
 void destroy()
 {
     gtk_main_quit();
+}
+
+
+void on_quit_clicked()
+{   
+    destroy();
 }
