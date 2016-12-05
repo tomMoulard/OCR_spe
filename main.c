@@ -7,17 +7,17 @@
 # include <SDL/SDL.h>
 # include <SDL/SDL_image.h>
 
-# include "../types/pixel.h"
-# include "../image_op/binarize.h"
-# include "../matrix_op/rlsa.h"
-# include "../types/rectangle.h"
-# include "../types/matrix.h"
-# include "../types/matbintree.h"
-# include "../matrix_op/xycut.h"
-# include "../image_op/sdl_fct.h"
-# include "../images/database.h"
-# include "../image_op/rotation.h"
-# include "../NeuralNetWork/nr2.h"
+# include "types/pixel.h"
+# include "image_op/binarize.h"
+# include "matrix_op/rlsa.h"
+# include "types/rectangle.h"
+# include "types/matrix.h"
+# include "types/matbintree.h"
+# include "matrix_op/xycut.h"
+# include "image_op/sdl_fct.h"
+# include "images/database.h"
+# include "image_op/rotation.h"
+# include "NeuralNetWork/nr2.h"
 
 GtkWidget *window;
 GtkWidget *wimage;
@@ -116,10 +116,10 @@ void choose_image(char *file)
     save_image(surf, img);
     binarize(img, mat);
     surf = unsignedMatrix_to_pict(mat, 1);
-    SDL_SaveBMP(surf, "../images/tmp.bmp");
+    SDL_SaveBMP(surf, "images/tmp.bmp");
     SDL_FreeSurface(surf);
     free_pixel_matrix(img);
-    display_image_gtk("../images/tmp.bmp");
+    display_image_gtk("images/tmp.bmp");
     //gtk_widget_set_opacity(button[i], 1.0);
 }
 
@@ -133,8 +133,8 @@ void rotate_image(double angle)
   UnsignedMatrix *rot = rotation(mat, angle_final);
   SDL_Surface *surf = unsignedMatrix_to_pict(rot, 1);
   free_unsigned_matrix(rot);
-  SDL_SaveBMP(surf, "../images/tmp.bmp");
-  gtk_image_set_from_file(GTK_IMAGE(image), "../images/tmp.bmp");
+  SDL_SaveBMP(surf, "images/tmp.bmp");
+  gtk_image_set_from_file(GTK_IMAGE(image), "images/tmp.bmp");
 }
 
 char *compute()
@@ -143,10 +143,8 @@ char *compute()
     MatBinTree *mbt = new_matbintree(matrix);
     xycut_test(mbt,1,1,10);
     Network *net = OpenNr("network.nr");
-    /*trainNetFinal(net);
-    printf("yolo\n");
-    char *result = get_string(mbt, net);*/
-    char *result ="  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi. Proin porttitor, orci nec nonummy molestie, enim est eleifend mi, non fermentum diam nisl sit amet erat. Duis semper. Duis arcu massa, scelerisque vitae, consequat in, pretium a, enim. Pellentesque congue. Ut in risus volutpat libero pharetra tempor. Cras vestibulum bibendum augue. Praesent egestas leo in pede. Praesent blandit odio eu enim. Pellentesque sed dui ut augue blandit sodales. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Aliquam nibh. Mauris ac mauris sed pede pellentesque fermentum. Maecenas adipiscing ante non diam sodales hendrerit.\n    Ut velit mauris, egestas sed, gravida nec, ornare ut, mi. Aenean ut orci vel massa suscipit pulvinar. Nulla sollicitudin. Fusce varius, ligula non tempus aliquam, nunc turpis ullamcorper nibh, in tempus sapien eros vitae ligula. Pellentesque rhoncus nunc et augue. Integer id felis. Curabitur aliquet pellentesque diam. Integer quis metus vitae elit lobortis egestas. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Morbi vel erat non mauris convallis vehicula. Nulla et sapien. Integer tortor tellus, aliquam faucibus, convallis id, congue eu, quam. Mauris ullamcorper felis vitae erat. Proin feugiat, augue non elementum posuere, metus purus iaculis lectus, et tristique ligula justo vitae magna.\n   Aliquam convallis sollicitudin purus. Praesent aliquam, enim at fermentum mollis, ligula massa adipiscing nisl, ac euismod nibh nisl eu lectus. Fusce vulputate sem at sapien. Vivamus leo. Aliquam euismod libero eu enim. Nulla nec felis sed leo placerat imperdiet. Aenean suscipit nulla in justo. Suspendisse cursus rutrum augue. Nulla tincidunt tincidunt mi. Curabitur iaculis, lorem vel rhoncus faucibus, felis magna fermentum augue, et ultricies lacus lorem varius purus. Curabitur eu amet";
+    trainNetFinal(net);
+    char *result = get_string(mbt, net);
     freeNetwork(net);
     free_unsigned_matrix(mat);
     return result;

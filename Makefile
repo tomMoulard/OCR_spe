@@ -1,23 +1,23 @@
 # Makefile
 
 CC=gcc
-CPPFLAGS= -MMD -D_XOPEN_SOURCE=500 `pkg-config --cflags sdl`
+CPPFLAGS= -MMD -D_XOPEN_SOURCE=500 `pkg-config --cflags sdl gtk+-3.0`
 CFLAGS= -Wall -Wextra -std=c99 -g
 LDFLAGS=
-LDLIBS= `pkg-config --libs sdl` -lSDL_image -lm
+LDLIBS= `pkg-config --libs sdl gtk+-3.0` -lSDL_image -lm -export-dynamic
 
-SRC=	types/pixel.c   \
-	main.c			    \
-	matrix_op/rlsa.c	\
-	image_op/sdl_fct.c	\
-	image_op/binarize.c	\
-	images/database.c	\
-	types/rectangle.c	\
-	types/matrix.c		\
-	types/matbintree.c	\
-	matrix_op/xycut.c   \
-    image_op/rotation.c \
-	NeuralNetWork/nr2.c
+SRC=    NeuralNetWork/nr2.c     \
+        types/pixel.c           \
+	    main.c			        \
+	    matrix_op/rlsa.c	    \
+	    image_op/sdl_fct.c	    \
+	    image_op/binarize.c	    \
+	    image_op/rotation.c	    \
+	    images/database.c	    \
+	    types/rectangle.c	    \
+	    types/matrix.c		    \
+	    types/matbintree.c	    \
+	    matrix_op/xycut.c
 
 OBJ= ${SRC:.c=.o}
 DEP= ${SRC:.c=.d}
