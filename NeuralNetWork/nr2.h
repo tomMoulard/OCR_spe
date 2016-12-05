@@ -37,4 +37,19 @@ struct Network{
 
 };
 
+//################################Functions###############################
+
+int useNr(Network *net, double **input);
+
+void trainNetFinal(Network *net);
+
+Network *OpenNr(char *filePath);
+
+void saveNr(Network *net, char *filePath);
+
+void freeNetwork(Network *net); //called in SaveNr
+
+char *get_string(MatBinTree *mbt, Network *net);
+void printNr(Network *net);
+
 # endif

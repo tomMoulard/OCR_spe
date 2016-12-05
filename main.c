@@ -16,7 +16,7 @@
 # include "image_op/rotation.h"
 
 //neural NetWork
-# include "NeuralNetWork/nr.h"
+# include "NeuralNetWork/nr2.h"
 
 const char usage[] =
   "<image path> <op>\n"
@@ -35,9 +35,9 @@ int main(int argc, char *argv[]) {
   //neural Network
   if(argc == 2){
     printf("getting the network from file\n");
-    Network net = getNetwork(argv[1]);
+    Network *net = OpenNr(argv[1]);
     printf("let's train the network\n");
-    net = trainNet(net);
+    trainNetFinal(net);
     printf("let's save the network\n");
     saveNr(net, argv[1]);
     return 0;
@@ -45,7 +45,7 @@ int main(int argc, char *argv[]) {
   if(argc != 3)
     errx(1, "%s", usage);
   unsigned op = strtoul(argv[2], NULL, 10);
-  if(op == 0 || op > 8)
+  if(op == 0 || op > 9)
     errx(1, "%s", usage);
   size_t lines        = bmpWidth(argv[1]);
   size_t cols         = bmpHeight(argv[1]);
@@ -170,24 +170,39 @@ int main(int argc, char *argv[]) {
     UnsignedMatrix *matrix   = copy_mat(mat);
     //UnsignedMatrix *matrix = eraseimage(mat);
     MatBinTree *mbt          = new_matbintree(matrix);
-    SDL_Surface *img;
+    //SDL_Surface *img;
 
     xycut_test(mbt,1,1,10);
-    size_t len = 0;
-    UnsignedMatrix **mats = get_letters(mbt,&len);
-
-    for (size_t i = 0; i < len; i++) {
-      //printf("i = %zu\n", i);
-      if(i == 467){
-        surf = unsignedMatrix_to_pict(mats[i],1);
-        img = display_image(surf);
-      }
-    }
-    //printf("len = %zu\n", len);
-
-
+    printf("Opening the network\n");
+    Network *net = OpenNr("network.nr");
+    printf("Network Oppened\n");
+    char *str = get_string(mbt, net);
+    printf("%s\n", str);
+    free(str);
     SDL_FreeSurface(surf);
-    SDL_FreeSurface(img);
+    //SDL_FreeSurface(img);
+    free_unsigned_matrix(mat);
+    return 0;
+  }
+  if (op == 9){
+    UnsignedMatrix *matrix   = copy_mat(mat);
+    //UnsignedMatrix *matrix = eraseimage(mat);
+    MatBinTree *mbt          = new_matbintree(matrix);
+    //SDL_Surface *img;
+
+    xycut_test(mbt,1,1,10);
+    printf("getting the network from file\n");
+    Network *net = OpenNr("network.nr");
+    printf("let's train the network\n");
+    trainNetFinal(net);
+    printf("coucou\n");
+    printNr(net);
+    char *str = get_string(mbt, net);
+    saveNr(net);
+    printf("%s\n", str);
+    free(str);
+    SDL_FreeSurface(surf);
+    //SDL_FreeSurface(img);
     free_unsigned_matrix(mat);
     return 0;
   }

@@ -830,8 +830,8 @@ char *get_string(MatBinTree *mbt, Network net){
 
     }
     return "";
-
 }
+
 char* appendChar(char *a, char *b){
     size_t la , lb ;
     la        = strlen(a);

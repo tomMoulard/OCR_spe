@@ -17,7 +17,7 @@ SRC=	types/pixel.c   \
 	types/matbintree.c	\
 	matrix_op/xycut.c   \
     image_op/rotation.c \
-	NeuralNetWork/nr.c
+	NeuralNetWork/nr2.c
 
 OBJ= ${SRC:.c=.o}
 DEP= ${SRC:.c=.d}
