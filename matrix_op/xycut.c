@@ -236,26 +236,3 @@ void xycut_test(MatBinTree *mbt, int hor,int ver,size_t coef){
   }
   split_lines(mbt);
 }
-
-char *concatenate(char* a,char* b){
-  size_t la = strlen(a);
-  size_t lb = strlen(b);
-  char* res = malloc((la + lb + 1) * sizeof(char));
-  strcpy(res,a);
-  strcat(res,b);
-  return res;
-}
-
-char* add_spaces(char* a,size_t n){
-  size_t len = strlen(a);
-  char *new = malloc((len + n) * sizeof(char));
-  strcpy(new,a);
-  if (n == 0) {
-    return new;
-  }
-  for (size_t i = len; i < len + n; i++) {
-    new[i] = ' ';
-  }
-  new[len + n - 1] = '\0';
-  return new;
-}
