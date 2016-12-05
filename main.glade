@@ -184,8 +184,8 @@ Trust us, we have AdaBoost</property>
         <child>
           <object class="GtkButton" id="quit">
             <property name="label">gtk-quit</property>
-            <property name="width_request">505</property>
-            <property name="height_request">30</property>
+            <property name="width_request">485</property>
+            <property name="height_request">28</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
@@ -201,8 +201,8 @@ Trust us, we have AdaBoost</property>
             <signal name="clicked" handler="on_quit_clicked" swapped="no"/>
           </object>
           <packing>
-            <property name="x">11</property>
-            <property name="y">246</property>
+            <property name="x">22</property>
+            <property name="y">327</property>
           </packing>
         </child>
         <child>
@@ -233,6 +233,42 @@ Trust us, we have AdaBoost</property>
           <packing>
             <property name="x">211</property>
             <property name="y">3</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="erase">
+            <property name="label" translatable="yes">Erase image</property>
+            <property name="name">erase</property>
+            <property name="width_request">100</property>
+            <property name="height_request">80</property>
+            <property name="visible">True</property>
+            <property name="sensitive">False</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="opacity">0.96999999999999997</property>
+            <property name="resize_mode">immediate</property>
+            <signal name="clicked" handler="erase" swapped="no"/>
+          </object>
+          <packing>
+            <property name="x">67</property>
+            <property name="y">246</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="segmentation">
+            <property name="label" translatable="yes">Segmentation</property>
+            <property name="name">segmentation</property>
+            <property name="width_request">100</property>
+            <property name="height_request">80</property>
+            <property name="visible">True</property>
+            <property name="sensitive">False</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <signal name="clicked" handler="seg" swapped="no"/>
+          </object>
+          <packing>
+            <property name="x">267</property>
+            <property name="y">249</property>
           </packing>
         </child>
       </object>
