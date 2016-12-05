@@ -252,8 +252,10 @@ void trainNetwork(Network *net, size_t _epoch, double eta,\
 					net->SumO[p][k] += net->Hidden[p][l] * net->WeightHO[l][k];
 				}
 				net->Output[p][k] = sigmoid(net->SumO[p][k]);
-				net->Error        += 0.5 * (target[p][k] - net->Output[p][k]) * (target[p][k] - net->Output[p][k]);/* SSE */
-				net->deltaO[k]    = (target[p][k] - net->Output[p][k]) * net->Output[p][k] * (1.0 - net->Output[p][k]);
+				net->Error        += 0.5 * (target[p][k] - net->Output[p][k]) *\
+					 (target[p][k] - net->Output[p][k]);/* SSE */
+				net->deltaO[k]    = (target[p][k] - net->Output[p][k]) *\
+					 net->Output[p][k] * (1.0 - net->Output[p][k]);
 			}
 				if(evalutate){ return;}
 			for(int j = 0; j < net->NumHidden;j++){
@@ -265,9 +267,10 @@ void trainNetwork(Network *net, size_t _epoch, double eta,\
 											    * (1.0 - net->Hidden[p][j]);
 			}
 			for(int j = 0; j < net->NumHidden;j++){
-				net->deltaWeightLH[net->NumHidden][j] = eta * net->deltaH[j] + alpha *\
-							 net->deltaWeightLH[net->NumHidden][j];
-				net->WeightLH[net->NumHidden][j]      += net->deltaWeightLH[net->NumHidden][j];
+				net->deltaWeightLH[net->NumHidden][j] = eta * net->deltaH[j] +\
+					 alpha * net->deltaWeightLH[net->NumHidden][j];
+				net->WeightLH[net->NumHidden][j] +=\
+					 net->deltaWeightLH[net->NumHidden][j];
 				for(int n = 0; n < net->NumInput; n++){
 					net->deltaWeightLH[n][j] = eta * input[p][n] *\
 							 net->deltaH[j] + alpha * net->deltaWeightLH[n][j];
@@ -275,9 +278,10 @@ void trainNetwork(Network *net, size_t _epoch, double eta,\
 				}
 			}
 			for(int k = 0; k < net->NumOutput; k++){
-				net->deltaWeightHO[net->NumHidden][k] = eta * net->deltaO[k] + alpha *\
-									 net->deltaWeightHO[net->NumHidden][k] ;
-				net->WeightHO[net->NumHidden][k]      += net->deltaWeightHO[net->NumHidden][k];
+				net->deltaWeightHO[net->NumHidden][k] = eta * net->deltaO[k] +\
+					 alpha * net->deltaWeightHO[net->NumHidden][k] ;
+				net->WeightHO[net->NumHidden][k] +=\
+					 net->deltaWeightHO[net->NumHidden][k];
 				for(int o = 0; o < net->NumHidden ;o++){
                     net->deltaWeightHO[o][k] = eta * net->Hidden[p][o] *\
                     		 net->deltaO[k] + alpha * net->deltaWeightHO[o][k] ;
@@ -285,7 +289,9 @@ void trainNetwork(Network *net, size_t _epoch, double eta,\
 				}
 			}
 		}
-		if(epoch % 100 == 99){printf("epoch : %zu -> Error : %f\n", epoch, net->Error);}
+		if(epoch % 100 == 99){
+			printf("epoch : %zu -> Error : %f\n", epoch, net->Error);
+		}
 		if(net->Error < 0.0005){break;}
 	}
 	for(int i = 0; i < net->NumOutput; i++){
@@ -496,7 +502,8 @@ char *get_string(MatBinTree *mbt, Network *net){
           mbt->txt   = concatenate(temp,get_string(mbt->right, net));
           return mbt->txt;
         }
-        mbt->txt = concatenate(get_string(mbt->left, net),get_string(mbt->right, net));
+        mbt->txt = 
+        	concatenate(get_string(mbt->left, net),get_string(mbt->right, net));
         return mbt->txt;
 
         //free(temp);

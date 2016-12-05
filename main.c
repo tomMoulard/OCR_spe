@@ -6,6 +6,7 @@
 # include <err.h>
 # include <SDL/SDL.h>
 # include <SDL/SDL_image.h>
+#include <time.h>
 
 # include "types/pixel.h"
 # include "image_op/binarize.h"
@@ -166,6 +167,16 @@ void learn()
     saveNr(net, "network.nr");
 }
 
+char *getttTime ()
+{
+    time_t tiime;
+    time(&tiime);
+    struct tm *pTime = gmtime(&tiime);
+    char buffer[100];
+    sprintf(buffer, "%d%d%d", pTime->tm_hour, pTime->tm_min, pTime->tm_sec);
+    return buffer;
+}
+
 char *compute()
 {   
     UnsignedMatrix *matrix = copy_mat(mat);
@@ -176,6 +187,10 @@ char *compute()
     char *result = get_string(mbt, net);
     freeNetwork(net);
     //free_unsigned_matrix(mat);
+    FILE *file;
+    file = fopen(getttTime(), "w" );
+    fprintf(file, result);
+    fclose(file);
     return result;
 }
 
