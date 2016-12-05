@@ -48,21 +48,30 @@ UnsignedMatrix **from_img_to_letters(char *filepath, size_t *len){
 }
 
 void printNr(Network *net){
+	for(int i = 0; i < net->NumInput  + 1; i++){
+		for(int j = 0; j < net->NumHidden;j++){
+			printf("net->deltaWeightLH[%d][%d] = %f\n", i, j, net->deltaWeightLH[i][j]);
+			printf("net->WeightLH[%d][%d]      = %f\n", i, j, net->WeightLH[i][j]);
+		}
+	}
+	for(int i = 0; i < net->NumOutput  + 1; i++){
+		for(int j = 0; j < net->NumHidden;j++){
+			printf("net->deltaWeightHO[%d][%d] = %f\n", j, i, net->deltaWeightHO[j][i]);
+			printf("net->WeightHO[%d][%d]      = %f\n", j, i, net->WeightHO[j][i]);
+		}
+	}
 	printf("Error : %f\n", net->Error);
 	printf("Numpattern : %d\n", net->Numpattern);
 	printf("NumHidden : %d\n", net->NumHidden);
 	printf("NumInput : %d\n", net->NumInput);
 	printf("NumOutput : %d\n", net->NumOutput);
-	for(int i = 0; i < net->Numpattern; ++i){
-		printf("%f ", net->Output[0][i]);
-	}
 	printf("\n");
 }
 
 Network *OpenNrFromFile(char *filePath){
 	Network *net = malloc(sizeof(Network));
-	net->NumInput = -1;
-	return net;
+	//net->NumInput = -1;
+	//return net;
 	FILE *nr = fopen(filePath, "r");
 	if(nr == NULL){
 		net->NumInput = -1;
@@ -79,7 +88,8 @@ Network *OpenNrFromFile(char *filePath){
 		net->deltaWeightLH[i] = malloc(sizeof(double) * net->NumHidden);
 		net->WeightLH[i]      = malloc(sizeof(double) * net->NumHidden);
 		for(int j = 0; j < net->NumHidden;j++){
-			fscanf(nr,"%lf %lf\n", &net->deltaWeightLH[i][j], &net->WeightLH[i][j]);
+			fscanf(nr,"%lf\n", &net->deltaWeightLH[i][j]);
+			fscanf(nr,"%lf\n",  &net->WeightLH[i][j]);
 		}
 	}
 	net->deltaWeightHO = malloc(sizeof(double *) * (net->NumHidden + 1));
@@ -90,11 +100,11 @@ Network *OpenNrFromFile(char *filePath){
 	}
 	for(int i = 0; i < net->NumOutput  + 1; i++){
 		for(int j = 0; j < net->NumHidden;j++){
-			fscanf(nr,"%lf %lf\n", &net->deltaWeightHO[j][i], &net->WeightHO[j][i]);
+			fscanf(nr,"%lf\n", &net->deltaWeightHO[j][i]);
+			fscanf(nr,"%lf\n", &net->WeightHO[j][i]);
 		}
 	}
 	fclose(nr);
-	printNr(net);
 	return net;
 }
 
@@ -132,12 +142,14 @@ void saveNr(Network *net, char *filePath){
 
 	for(int i = 0; i < net->NumInput  + 1; i++){
 		for(int j = 0; j < net->NumHidden;j++){
-			fprintf(nr,"%f %f\n", net->deltaWeightLH[i][j], net->WeightLH[i][j]);
+			fprintf(nr,"%lf\n", net->deltaWeightLH[i][j]);
+			fprintf(nr,"%lf\n", net->WeightLH[i][j]);
 		}
 	}
 	for(int i = 0; i < net->NumOutput  + 1; i++){
 		for(int j = 0; j < net->NumHidden;j++){
-			fprintf(nr,"%f %f\n", net->deltaWeightHO[j][i], net->WeightHO[j][i]);
+			fprintf(nr,"%f\n", net->deltaWeightHO[j][i]);
+			fprintf(nr,"%f\n", net->WeightHO[j][i]);
 		}
 	}
 	fclose(nr);
@@ -146,10 +158,11 @@ void saveNr(Network *net, char *filePath){
 
 Network *initNet(){
     srand(time(NULL));
-	Network *net = malloc(sizeof(Network));
-	net->NumInput      = 900;
-	net->NumOutput     = 64;
-	net->NumHidden     = 800;
+	Network *net   = malloc(sizeof(Network));
+	net->Error     = 0;
+	net->NumInput  = 900;
+	net->NumOutput = 64;
+	net->NumHidden = 800;
 	
 	double smallWeight = 0.5;
 
@@ -181,9 +194,9 @@ Network *initNet(){
 	for(int l = 0; l < net->NumOutput; l++){
 
 	}
-	net->SumDow    = malloc(sizeof(double) * net->NumHidden);
-	net->deltaH    = malloc(sizeof(double) * net->NumHidden);
-	net->deltaO    = malloc(sizeof(double) * net->NumOutput);
+	net->SumDow = malloc(sizeof(double) * net->NumHidden);
+	net->deltaH = malloc(sizeof(double) * net->NumHidden);
+	net->deltaO = malloc(sizeof(double) * net->NumOutput);
 
 	return net;
 }

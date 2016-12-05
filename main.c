@@ -34,14 +34,12 @@ const char usage[] =
 int main(int argc, char *argv[]) {
   //neural Network
   if(argc == 2){
-    printf("getting the network from file\n");
     Network *net = OpenNr(argv[1]);
-    printf("let's train the network\n");
-    trainNetFinal(net);
-    printf("let's save the network\n");
+    printNr(net);
     saveNr(net, argv[1]);
-    return 0;
   }
+  else
+  {
   if(argc != 3)
     errx(1, "%s", usage);
   unsigned op = strtoul(argv[2], NULL, 10);
@@ -200,4 +198,5 @@ int main(int argc, char *argv[]) {
     free_unsigned_matrix(mat);
     return 0;
   }
+}
 }
