@@ -29,6 +29,8 @@ GtkWidget *ten;
 GtkWidget *ninety;
 GtkWidget *minusten;
 GtkWidget *minusone;
+GtkWidget *era;
+GtkWidget *segm;
 int first = 0;
 UnsignedMatrix *mat;
 double angle_final = 0.0;
@@ -85,6 +87,8 @@ int main(int argc, char *argv[])
     ten = GTK_WIDGET(gtk_builder_get_object(builder, "ten"));
     minusten = GTK_WIDGET(gtk_builder_get_object(builder, "minusten"));
     ninety = GTK_WIDGET(gtk_builder_get_object(builder, "ninety"));
+    era = GTK_WIDGET(gtk_builder_get_object(builder, "erase"));
+    segm = GTK_WIDGET(gtk_builder_get_object(builder, "segmentation"));
     g_object_unref(builder);
     gtk_widget_show(window);
     gtk_main();
@@ -105,6 +109,8 @@ void choose_image(char *file)
       gtk_widget_set_sensitive (ten, TRUE); 
       gtk_widget_set_sensitive (minusten, TRUE); 
       gtk_widget_set_sensitive (ninety, TRUE); 
+      gtk_widget_set_sensitive (era, TRUE); 
+      gtk_widget_set_sensitive (segm, TRUE); 
       first = 1;
     }
     //get the image, bineraze it and save it to a file
@@ -135,6 +141,29 @@ void rotate_image(double angle)
   free_unsigned_matrix(rot);
   SDL_SaveBMP(surf, "images/tmp.bmp");
   gtk_image_set_from_file(GTK_IMAGE(image), "images/tmp.bmp");
+}
+
+void erase()
+{   
+    UnsignedMatrix *e = eraseimage(mat);
+    SDL_Surface *surf = unsignedMatrix_to_pict(e, 1);
+    SDL_SaveBMP(surf, "images/tmp.bmp");
+    display_image_gtk("images/tmp.bmp");
+}
+
+void seg()
+{
+    MatBinTree *t = new_matbintree(mat);
+    xycut(t, 10, 10, 0);
+    display_leaves(t);
+    free_matbintree(t);
+}
+
+void learn()
+{   
+    Network *net = OpenNr("neuralNetwork.nr");
+    trainNetFinal(net);
+    saveNr(net, "network.nr");
 }
 
 char *compute()
