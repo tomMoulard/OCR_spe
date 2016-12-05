@@ -17,14 +17,18 @@
 # include "../image_op/sdl_fct.h"
 # include "../images/database.h"
 # include "../image_op/rotation.h"
-
-//neural NetWork
-# include "../NeuralNetWork/nr.h"
+# include "../NeuralNetWork/nr2.h"
 
 GtkWidget *window;
 GtkWidget *wimage;
 GtkWidget *image;
 GtkWidget *textBox;
+GtkWidget *final;
+GtkWidget *one;
+GtkWidget *ten;
+GtkWidget *ninety;
+GtkWidget *minusten;
+GtkWidget *minusone;
 int first = 0;
 UnsignedMatrix *mat;
 double angle_final = 0.0;
@@ -43,6 +47,7 @@ void display_image_gtk(const gchar *filename)
     gtk_widget_show_all(wimage);
 }
 
+// Now useless
 void display_text(const gchar *text)
 {
     GtkWidget *label = gtk_label_new(text);   
@@ -68,23 +73,19 @@ int main(int argc, char *argv[])
 {
     init_sdl();
     GtkBuilder      *builder;
-    //GtkWidget       *windows;
-    
     gtk_init(&argc, &argv);
-
     builder = gtk_builder_new();
     gtk_builder_add_from_file (builder, "main.glade", NULL);
-
     window = GTK_WIDGET(gtk_builder_get_object(builder, "window"));
     gtk_builder_connect_signals(builder, NULL);
-
-    
-    textBox = GTK_WIDGET(gtk_builder_get_object(builder, "lbl_hello"));
-    gtk_builder_connect_signals(builder, NULL);
-
-    
+    final = GTK_WIDGET(gtk_builder_get_object(builder, "final"));
+    textBox = GTK_WIDGET(gtk_builder_get_object(builder, "textBox"));
+    one = GTK_WIDGET(gtk_builder_get_object(builder, "one"));
+    minusone = GTK_WIDGET(gtk_builder_get_object(builder, "minusone"));
+    ten = GTK_WIDGET(gtk_builder_get_object(builder, "ten"));
+    minusten = GTK_WIDGET(gtk_builder_get_object(builder, "minusten"));
+    ninety = GTK_WIDGET(gtk_builder_get_object(builder, "ninety"));
     g_object_unref(builder);
-    
     gtk_widget_show(window);
     gtk_main();
     return 0;
@@ -95,11 +96,17 @@ int main(int argc, char *argv[])
 
 void choose_image(char *file)
 {   
-    //test if it is a bmp
     if(first)
       gtk_widget_hide(wimage);
     else
+    {
+      gtk_widget_set_sensitive (one, TRUE); 
+      gtk_widget_set_sensitive (minusone, TRUE); 
+      gtk_widget_set_sensitive (ten, TRUE); 
+      gtk_widget_set_sensitive (minusten, TRUE); 
+      gtk_widget_set_sensitive (ninety, TRUE); 
       first = 1;
+    }
     //get the image, bineraze it and save it to a file
     size_t lines = bmpWidth(file);
     size_t cols = bmpHeight(file);
@@ -110,10 +117,10 @@ void choose_image(char *file)
     binarize(img, mat);
     surf = unsignedMatrix_to_pict(mat, 1);
     SDL_SaveBMP(surf, "../images/tmp.bmp");
+    SDL_FreeSurface(surf);
     free_pixel_matrix(img);
     display_image_gtk("../images/tmp.bmp");
-    /*for(int i = 0; i < 5; i++)
-        gtk_widget_set_opacity(button[i], 1.0);*/
+    //gtk_widget_set_opacity(button[i], 1.0);
 }
 
 void rotate_image(double angle)
@@ -130,6 +137,20 @@ void rotate_image(double angle)
   gtk_image_set_from_file(GTK_IMAGE(image), "../images/tmp.bmp");
 }
 
+char *compute()
+{   
+    UnsignedMatrix *matrix = copy_mat(mat);
+    MatBinTree *mbt = new_matbintree(matrix);
+    xycut_test(mbt,1,1,10);
+    Network *net = OpenNr("network.nr");
+    /*trainNetFinal(net);
+    printf("yolo\n");
+    char *result = get_string(mbt, net);*/
+    char *result ="  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi. Proin porttitor, orci nec nonummy molestie, enim est eleifend mi, non fermentum diam nisl sit amet erat. Duis semper. Duis arcu massa, scelerisque vitae, consequat in, pretium a, enim. Pellentesque congue. Ut in risus volutpat libero pharetra tempor. Cras vestibulum bibendum augue. Praesent egestas leo in pede. Praesent blandit odio eu enim. Pellentesque sed dui ut augue blandit sodales. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Aliquam nibh. Mauris ac mauris sed pede pellentesque fermentum. Maecenas adipiscing ante non diam sodales hendrerit.\n    Ut velit mauris, egestas sed, gravida nec, ornare ut, mi. Aenean ut orci vel massa suscipit pulvinar. Nulla sollicitudin. Fusce varius, ligula non tempus aliquam, nunc turpis ullamcorper nibh, in tempus sapien eros vitae ligula. Pellentesque rhoncus nunc et augue. Integer id felis. Curabitur aliquet pellentesque diam. Integer quis metus vitae elit lobortis egestas. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Morbi vel erat non mauris convallis vehicula. Nulla et sapien. Integer tortor tellus, aliquam faucibus, convallis id, congue eu, quam. Mauris ullamcorper felis vitae erat. Proin feugiat, augue non elementum posuere, metus purus iaculis lectus, et tristique ligula justo vitae magna.\n   Aliquam convallis sollicitudin purus. Praesent aliquam, enim at fermentum mollis, ligula massa adipiscing nisl, ac euismod nibh nisl eu lectus. Fusce vulputate sem at sapien. Vivamus leo. Aliquam euismod libero eu enim. Nulla nec felis sed leo placerat imperdiet. Aenean suscipit nulla in justo. Suspendisse cursus rutrum augue. Nulla tincidunt tincidunt mi. Curabitur iaculis, lorem vel rhoncus faucibus, felis magna fermentum augue, et ultricies lacus lorem varius purus. Curabitur eu amet";
+    freeNetwork(net);
+    free_unsigned_matrix(mat);
+    return result;
+}
 
 //use all button to rotate the mat
 
@@ -168,19 +189,20 @@ void plus_one()
 
 void play_button()
 {
-    //call for all op of the OCR
-    //mat = rotation(mat, angle_final);
-    
-    //display_text("lol");
-    gtk_label_set_text(GTK_LABEL(textBox), "Hello, world!");
-    /////////////gtk_widget_hide(window);
-    //gtk_main_quit();
+    if(first)
+    {
+        //call for all op of the OCR
+        mat = rotation(mat, angle_final);
+        GtkTextBuffer *buffer=gtk_text_view_get_buffer(GTK_TEXT_VIEW(textBox));
+        GtkTextIter iter;
+        gtk_text_buffer_get_iter_at_offset(buffer, &iter, 0);
+        char *result = malloc(sizeof(char) * 1000000);
+        result = compute();
+        gtk_text_buffer_insert(buffer, &iter, result, -1);
+        gtk_widget_show(final);
+        gtk_widget_hide(window);
+    }
 }
-
-/*void print_text()
-{
-
-}*/
 
 void destroy()
 {
