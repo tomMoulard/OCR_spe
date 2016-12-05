@@ -4,9 +4,7 @@
 /* return the width of a bmp file */
 unsigned int bmpWidth(char *file_name)
 {
-    SDL_Surface *surf = SDL_LoadBMP(filename);
-    unsigned int width = surf->w;
-    /*FILE *fp;
+    FILE *fp;
     fp = fopen(file_name, "rb");
     int r;
     if(!fp)
@@ -20,16 +18,14 @@ unsigned int bmpWidth(char *file_name)
             printf("fail");
         r = file_header.Width;
         fclose(fp);
-    }*/
-    return width;
+    }
+    return r;
 }
 
 /* return the height of a bmp file */
 unsigned int bmpHeight(char *file_name)
 {
-    SDL_Surface *surf = SDL_LoadBMP(filename);
-    unsigned int height = surf->h;
-    /*FILE *fp;
+    FILE *fp;
     fp = fopen(file_name, "rb");
     int r;
     if(!fp)
@@ -43,8 +39,8 @@ unsigned int bmpHeight(char *file_name)
             printf("fail");
         r = file_header.Height;
         fclose(fp);
-    }*/
-    return height;
+    }
+    return r;
 }
 
 /* functions to create the database */
