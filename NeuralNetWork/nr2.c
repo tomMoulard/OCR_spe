@@ -156,13 +156,23 @@ void saveNr(Network *net, char *filePath){
 	freeNetwork(net);
 }
 
+int getPos(Network *net){
+	int res = 0;
+	for(int i = 0; i < net->NumOutput; ++i){
+		if(net->Output[0][res] < net->Output[0][i]){
+			res = i;
+		}
+	}
+	return res;
+}
+
 Network *initNet(){
     srand(time(NULL));
 	Network *net   = malloc(sizeof(Network));
 	net->Error     = 0;
 	net->NumInput  = 900;
 	net->NumOutput = 64;
-	net->NumHidden = 100;
+	net->NumHidden = 150;
 	
 	double smallWeight = 0.5;
 
@@ -306,7 +316,7 @@ void trainNetwork(Network *net, size_t _epoch, double eta,\
 		for(int j = 0; j < net->NumOutput; ++j){
 			printf("%f ", net->Output[i][j]);
 		}
-		printf("\n");
+		printf("%s\n", fromLetterToChar(getpos(net)));
 	}
 
 }
@@ -375,22 +385,16 @@ void trainNetFinal(Network *net){
 		target[j][j] = 1;
 
     }
-	trainNetwork(net, 10000, 0.002, 0.9, input, target, 0);
+	trainNetwork(net, 1000, 0.011, 0.9, input, target, 0);
 }
+
 
 int useNr(Network *net, double **input){
 	double **target = malloc(sizeof(double *));
 	target[0] = calloc(sizeof(double), net->NumOutput);
 	net->Numpattern = 1;
 	trainNetwork(net, 1, 0.01, 0.9, input, target, 1);
-	int res = 0;
-	for(int i = 0; i < net->NumOutput; ++i){
-		//printf("net->Output[0][i] = %f\n", net->Output[0][i]);	
-		if(net->Output[0][res] < net->Output[0][i]){
-			res = i;
-		}
-	}
-	return res;
+	return getpos(net);
 }
 
 char *concatenate(char* a,char* b){
@@ -471,6 +475,16 @@ char* add_spaces(char* a,size_t n){
   return new;
 }
 
+char fromLetterToChar(int pos){
+	char res = '\0';
+	if(res < 26){ mbt->txt[0] = res + 97;}
+	if(res < 52 && res > 26){ mbt->txt[0] = res + 39;}
+	if(res < 63 && res > 52){ mbt->txt[0] = res - 4;}
+	if(res == 63){ mbt->txt[0] = '44';}
+	if(res == 64){ mbt->txt[0] = '46';}
+	return res;
+}
+
 char *get_string(MatBinTree *mbt, Network *net){
     if (mbt) {
       if (!mbt->left && !mbt->right) {
@@ -480,12 +494,11 @@ char *get_string(MatBinTree *mbt, Network *net){
         for(int i = 0; i < 900; ++i){
         	input[0][i] = (double)mat->data[i];
         }
-		int res         = useNr(net, input);
+		int res     = useNr(net, input);
 		//printf("%d ", res);
-		mbt->txt        = malloc(sizeof(char) * 2);
-		mbt->txt[0] = res + 97;
-		//mbt->txt[0]     = res < 26 ?res + 97 : res + 41;
-		mbt->txt[1]     = '\0';
+		mbt->txt    = malloc(sizeof(char) * 2);
+		mbt->txt[0] = fromLetterToChar(res);
+		mbt->txt[1] = '\0';
 		//Bashint input = unsignedmatToBashint(mat);
 		//mbt->txt      = useNetwork(net, input);
         free_unsigned_matrix(mat);
